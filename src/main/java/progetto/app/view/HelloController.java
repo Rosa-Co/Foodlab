@@ -1,4 +1,4 @@
-package progetto.app.controller;
+package progetto.app.view;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

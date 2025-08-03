@@ -9,4 +9,6 @@ module progetto.app {
     exports progetto.app;
     exports progetto.app.controller;
     opens progetto.app.controller to javafx.fxml;
+    exports progetto.app.view;
+    opens progetto.app.view to javafx.fxml;
 }

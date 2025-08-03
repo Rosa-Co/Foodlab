@@ -18,7 +18,8 @@ public class Main extends Application {
         scene.setFill(Color.TRANSPARENT); //Setta la scena trasparente
         stage.initStyle(StageStyle.TRANSPARENT); // Rimuove i pulsanti dalla splash screen e rende trasparente lo stage
         stage.setScene(scene);
-        stage.setResizable(false);
+        stage.setResizable(true);
+        stage.setTitle("FoodLab");
         stage.show();
     }
 
