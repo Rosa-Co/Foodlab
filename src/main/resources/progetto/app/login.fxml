@@ -1,44 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="progetto.app.view.LoginGUI">
+
+   <!-- Sinistra: Login card -->
+   <left>
+      <StackPane BorderPane.alignment="CENTER" prefWidth="350">
+         <VBox alignment="CENTER" spacing="15"
+               style="-fx-background-color: linear-gradient(to bottom, #FFFFFF, #FFF9F5); -fx-background-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10,0,0,5);">
+            <padding>
+               <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
+            <Label text="Benvenuto" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <Label text="Accedi al tuo account" style="-fx-opacity: 0.7;"/>
+
+            <TextField fx:id="usernameField" promptText="Username" focusTraversable="false" />
+            <PasswordField fx:id="passwordField" promptText="Password" focusTraversable="false" />
+            <CheckBox text="Ricordami"/>
+
+            <Button fx:id="loginButton" text="Accedi" onAction="#handleLogin" maxWidth="Infinity"/>
 
 
-<AnchorPane fx:id="anchorPane" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" styleClass="bg-root" stylesheets="@../../css/loginPage.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="progetto.app.view.Login">
-   <children>
-      <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="300.0" spacing="15.0" style="-fx-background-color: transparent;" HBox.hgrow="ALWAYS">
-               <children>
-                  <Label styleClass="title-label" text="Entra in cucina!" />
-                  <TextField focusTraversable="false" maxWidth="180.0" promptText="Email">
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </TextField>
-                  <PasswordField focusTraversable="false" maxWidth="180.0" promptText="Password" />
-                  <Button mnemonicParsing="false" styleClass="login-button" text="Accedi" />
-                  <Button mnemonicParsing="false" styleClass="register-button" text="Registrati" />
-               </children>
-            </VBox>
-            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="300.0" style="-fx-background-color: transparent;" HBox.hgrow="ALWAYS">
-               <children>
-                  <ImageView fx:id="imageView" fitHeight="400.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
-                     <image>
-                        <Image url="@undraw_chef_yoa7.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </VBox>
-         </children>
-      </HBox>
-   </children>
-</AnchorPane>
+         </VBox>
+      </StackPane>
+   </left>
+
+   <!-- Destra: pannello feature card -->
+   <center>
+      <StackPane BorderPane.alignment="CENTER">
+         <VBox fx:id="featuresPane" alignment="TOP_CENTER" spacing="20"
+               style="-fx-background-color: linear-gradient(to bottom right, #FFF5E6, #FFE8D6, #FFD6C2); -fx-padding: 0;" />
+      </StackPane>
+   </center>
+</BorderPane>

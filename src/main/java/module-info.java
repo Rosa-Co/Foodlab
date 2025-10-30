@@ -2,8 +2,13 @@ module progetto.app {
     requires javafx.controls;
     requires javafx.fxml;
 
-    requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
+    requires atlantafx.base;
+    requires org.kordamp.ikonli.fontawesome5;
+    requires org.kordamp.ikonli.javafx;
+    requires com.zaxxer.hikari;
+    requires java.sql;
+    requires org.postgresql.jdbc;
 
     opens progetto.app to javafx.fxml;
     exports progetto.app;
