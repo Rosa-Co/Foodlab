@@ -3,19 +3,18 @@ package progetto.app.view;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import progetto.app.controller.AppController;
 
 public class LoginGUI {
+
+    AppController mainController = null;
 
     @FXML
     private TextField usernameField;
@@ -29,8 +28,19 @@ public class LoginGUI {
     @FXML
     private VBox featuresPane;
 
+    @FXML private VBox loginPane;
+    @FXML private VBox registerPane;
+    @FXML private TextField registerNameField;
+    @FXML private TextField registerSurnameField;
+    @FXML private TextField registerUsernameField;
+    @FXML private TextField registerEmailField;
+    @FXML private PasswordField registerPasswordField;
+    @FXML private PasswordField registerConfirmPasswordField;
+    @FXML private CheckBox acceptTermsCheck;
+    @FXML private Button registerButton;
+
     @FXML
-    private void handleLogin() {
+    public void handleLogin() {
         String user = usernameField.getText();
         String pass = passwordField.getText();
 
@@ -150,6 +160,24 @@ public class LoginGUI {
         card.getChildren().addAll(iconContainer, textBox);
         return card;
     }
+    @FXML
+    private void handleRegister() {
+        // Logica di registrazione
+    }
+    @FXML
+    private void showRegisterForm() {
+        loginPane.setVisible(false);
+        loginPane.setManaged(false); //così non occupa spazio nel layout.
+        registerPane.setVisible(true);
+        registerPane.setManaged(true);
+    }
 
+    @FXML
+    private void showLoginForm() {
+        registerPane.setVisible(false);
+        registerPane.setManaged(false);
+        loginPane.setVisible(true);
+        loginPane.setManaged(true);
+    }
 
 }

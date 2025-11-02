@@ -1,42 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.*?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+<ScrollPane xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="progetto.app.view.LoginGUI">
+            fx:controller="progetto.app.view.LoginGUI"
+            fitToWidth="true" fitToHeight="true"
+            style="-fx-background: transparent; -fx-background-color: transparent;">
 
-   <!-- Sinistra: Login card -->
-   <left>
-      <StackPane BorderPane.alignment="CENTER" prefWidth="350">
-         <VBox alignment="CENTER" spacing="15"
-               style="-fx-background-color: linear-gradient(to bottom, #FFFFFF, #FFF9F5); -fx-background-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10,0,0,5);">
-            <padding>
-               <Insets top="30" right="30" bottom="30" left="30"/>
-            </padding>
+   <BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+               xmlns:fx="http://javafx.com/fxml/1">
 
-            <Label text="Benvenuto" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
-            <Label text="Accedi al tuo account" style="-fx-opacity: 0.7;"/>
+      <!-- Sinistra: Login/Register card -->
+      <left>
+         <StackPane BorderPane.alignment="CENTER" prefWidth="380">
+            <!-- Login Form -->
+            <VBox fx:id="loginPane" alignment="CENTER" spacing="15"
+                  style="-fx-background-color: linear-gradient(to bottom, #FFFFFF, #FFF9F5); -fx-background-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10,0,0,5);">
+               <padding>
+                  <Insets top="30" right="30" bottom="30" left="30"/>
+               </padding>
 
-            <TextField fx:id="usernameField" promptText="Username" focusTraversable="false" />
-            <PasswordField fx:id="passwordField" promptText="Password" focusTraversable="false" />
-            <CheckBox text="Ricordami"/>
+               <Label text="Benvenuto" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+               <Label text="Accedi al tuo account" style="-fx-opacity: 0.7;"/>
 
-            <Button fx:id="loginButton" text="Accedi" onAction="#handleLogin" maxWidth="Infinity"/>
+               <TextField fx:id="usernameField" promptText="Username" focusTraversable="false" />
+               <PasswordField fx:id="passwordField" promptText="Password" focusTraversable="false" />
 
+               <Button fx:id="loginButton" text="Accedi" onAction="#handleLogin" maxWidth="Infinity"
+                       styleClass="accent"/>
 
-         </VBox>
-      </StackPane>
-   </left>
+               <Separator prefWidth="200"/>
 
-   <!-- Destra: pannello feature card -->
-   <center>
-      <StackPane BorderPane.alignment="CENTER">
-         <VBox fx:id="featuresPane" alignment="TOP_CENTER" spacing="20"
-               style="-fx-background-color: linear-gradient(to bottom right, #FFF5E6, #FFE8D6, #FFD6C2); -fx-padding: 0;" />
-      </StackPane>
-   </center>
-</BorderPane>
+               <HBox alignment="CENTER" spacing="5">
+                  <Label text="Non hai un account?" style="-fx-opacity: 0.7;"/>
+                  <Hyperlink fx:id="showRegisterLink" text="Registrati" onAction="#showRegisterForm"
+                             style="-fx-font-weight: bold;"/>
+               </HBox>
+            </VBox>
+
+            <!-- Register Form -->
+            <VBox fx:id="registerPane" alignment="CENTER" spacing="15" visible="false" managed="false"
+                  style="-fx-background-color: linear-gradient(to bottom, #FFFFFF, #FFF9F5); -fx-background-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10,0,0,5);">
+               <padding>
+                  <Insets top="30" right="30" bottom="30" left="30"/>
+               </padding>
+
+               <Label text="Registrazione" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+               <Label text="Crea un nuovo account" style="-fx-opacity: 0.7;"/>
+
+               <TextField fx:id="registerUsernameField" promptText="Username" focusTraversable="false" />
+               <HBox spacing="5">
+                  <TextField fx:id="registerNameField" promptText="Nome" focusTraversable="false" />
+                  <TextField fx:id="registerSurnameField" promptText="Cognome" focusTraversable="false" />
+               </HBox>
+               <TextField fx:id="registerEmailField" promptText="Email" focusTraversable="false" />
+               <PasswordField fx:id="registerPasswordField" promptText="Password" focusTraversable="false" />
+               <PasswordField fx:id="registerConfirmPasswordField" promptText="Conferma Password" focusTraversable="false" />
+
+               <!-- Selezione tipo utente -->
+               <VBox spacing="10" alignment="CENTER">
+                  <Label text="Tipo di account" style="-fx-font-size: 13px; -fx-opacity: 0.7;"/>
+                  <HBox spacing="30" alignment="CENTER">
+                     <RadioButton fx:id="userTypeRadio" text="👤 Utente" selected="true" style="-fx-font-size: 14px; -fx-background-color: transparent;">
+                        <toggleGroup>
+                           <ToggleGroup fx:id="userTypeGroup"/>
+                        </toggleGroup>
+                     </RadioButton>
+                     <RadioButton fx:id="chefTypeRadio" text="👨‍🍳 Chef" toggleGroup="$userTypeGroup" style="-fx-font-size: 14px; -fx-background-color: transparent;"/>
+                  </HBox>
+               </VBox>
+
+               <CheckBox fx:id="acceptTermsCheck" text="Accetto i termini e condizioni" wrapText="true"/>
+
+               <Button fx:id="registerButton" text="Registrati" onAction="#handleRegister" maxWidth="Infinity"
+                       styleClass="accent"/>
+
+               <Separator prefWidth="200"/>
+
+               <HBox alignment="CENTER" spacing="5">
+                  <Label text="Hai già un account?" style="-fx-opacity: 0.7;"/>
+                  <Hyperlink fx:id="showLoginLink" text="Accedi" onAction="#showLoginForm"
+                             style="-fx-font-weight: bold;"/>
+               </HBox>
+            </VBox>
+         </StackPane>
+      </left>
+
+      <!-- Destra: pannello feature card -->
+      <center>
+         <StackPane BorderPane.alignment="CENTER">
+            <VBox fx:id="featuresPane" alignment="TOP_CENTER" spacing="20"
+                  style="-fx-background-color: linear-gradient(to bottom right, #FFF5E6, #FFE8D6, #FFD6C2); -fx-padding: 0;" />
+         </StackPane>
+      </center>
+   </BorderPane>
+
+</ScrollPane>

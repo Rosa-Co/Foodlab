@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<!-- Card 1: Corsi Attivi -->
+<HBox xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      spacing="20">
+
+    <VBox spacing="10" style="-fx-padding: 25; -fx-background-color: -color-bg-default; -fx-background-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10,0,0,2);" prefWidth="200">
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <StackPane style="-fx-background-color: #E3F2FD; -fx-background-radius: 8px; -fx-padding: 10;">
+                <FontIcon iconLiteral="fas-book-open" iconSize="24" style="-fx-icon-color: #1976D2;"/>
+            </StackPane>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="↑ 12%" style="-fx-text-fill: #4CAF50; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+        </HBox>
+        <Label fx:id="activeCoursesCount" text="8" styleClass="title-1"/>
+        <Label text="Corsi Attivi" style="-fx-opacity: 0.7;"/>
+    </VBox>
+
+    <!-- Card 2: Sessioni Questo Mese -->
+    <VBox spacing="10" style="-fx-padding: 25; -fx-background-color: -color-bg-default; -fx-background-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10,0,0,2);" prefWidth="200">
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <StackPane style="-fx-background-color: #F3E5F5; -fx-background-radius: 8px; -fx-padding: 10;">
+                <FontIcon iconLiteral="fas-calendar-alt" iconSize="24" style="-fx-icon-color: #7B1FA2;"/>
+            </StackPane>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="↑ 8%" style="-fx-text-fill: #4CAF50; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+        </HBox>
+        <Label fx:id="sessionsThisMonth" text="24" styleClass="title-1"/>
+        <Label text="Sessioni Questo Mese" style="-fx-opacity: 0.7;"/>
+    </VBox>
+
+    <!-- Card 3: Ricette Insegnate -->
+    <VBox spacing="10" style="-fx-padding: 25; -fx-background-color: -color-bg-default; -fx-background-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10,0,0,2);" prefWidth="200">
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <StackPane style="-fx-background-color: #FFF3E0; -fx-background-radius: 8px; -fx-padding: 10;">
+                <FontIcon iconLiteral="fas-clipboard-list" iconSize="24" style="-fx-icon-color: #F57C00;"/>
+            </StackPane>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="↑ 15%" style="-fx-text-fill: #4CAF50; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+        </HBox>
+        <Label fx:id="recipesCount" text="42" styleClass="title-1"/>
+        <Label text="Ricette Insegnate" style="-fx-opacity: 0.7;"/>
+    </VBox>
+
+    <!-- Card 4: Studenti Totali -->
+    <VBox spacing="10" style="-fx-padding: 25; -fx-background-color: -color-bg-default; -fx-background-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10,0,0,2);" prefWidth="200">
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <StackPane style="-fx-background-color: #E8F5E9; -fx-background-radius: 8px; -fx-padding: 10;">
+                <FontIcon iconLiteral="fas-users" iconSize="24" style="-fx-icon-color: #388E3C;"/>
+            </StackPane>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="↑ 23%" style="-fx-text-fill: #4CAF50; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+        </HBox>
+        <Label fx:id="studentsCount" text="156" styleClass="title-1"/>
+        <Label text="Studenti Totali" style="-fx-opacity: 0.7;"/>
+    </VBox>
+</HBox>

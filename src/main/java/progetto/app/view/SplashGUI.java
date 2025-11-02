@@ -12,12 +12,14 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import progetto.app.controller.FXMLLoaderManager;
+import progetto.app.controller.AppController;
 import progetto.app.controller.TypeWritingController;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class SplashGUI implements Initializable{
+    AppController appController = AppController.getInstance();
     @FXML
     private ImageView logo;
     @FXML
@@ -71,10 +73,12 @@ public class SplashGUI implements Initializable{
                     */
 
                     Stage currentStage = (Stage) logo.getScene().getWindow();
-                    Stage mainStage = FXMLLoaderManager.changeStage(currentStage,"/progetto/app/login.fxml","Homepage");
-                    mainStage.setResizable(true);
-                    //currentStage.hide(); // Chiude la splash screen
-                    //mainStage.show();  // Mostra la finestra principale
+                    //Stage mainStage = FXMLLoaderManager.changeStage(currentStage,"/progetto/app/login.fxml","Homepage");
+                    //mainStage.setResizable(true);*/
+                    appController.navigateTo("login");
+                    appController.setPrimaryStageResizable(true);
+                    currentStage.hide(); // Chiude la splash screen
+                    appController.showPrimaryStage();  // Mostra la finestra principale
                 }catch (Exception e){
                     e.printStackTrace();
                 }
