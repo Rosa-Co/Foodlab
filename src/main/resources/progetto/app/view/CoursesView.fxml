@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="progetto.app.view.CoursesViewGUI"
+      spacing="20"
+      style="-fx-padding: 30;">
+
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Label text="Gestione Corsi" styleClass="title-2" HBox.hgrow="ALWAYS"/>
+        <Button fx:id="addCourseButton" text="Nuovo Corso" styleClass="accent">
+            <graphic>
+                <FontIcon iconLiteral="fas-plus" iconSize="14"/>
+            </graphic>
+        </Button>
+    </HBox>
+
+    <!-- Filtri -->
+    <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 15; -fx-background-color: -color-bg-default; -fx-background-radius: 8px;">
+        <Label text="Filtri:"/>
+        <ComboBox fx:id="categoryFilter" promptText="Categoria" prefWidth="200"/>
+        <ComboBox fx:id="statusFilter" promptText="Stato" prefWidth="150"/>
+        <Button fx:id="applyFiltersButton" text="Applica" styleClass="accent"/>
+        <Button fx:id="resetFiltersButton" text="Reset" styleClass="flat"/>
+    </HBox>
+
+    <!-- Lista corsi con dettagli -->
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+        <VBox fx:id="coursesContainer" spacing="15"/>
+    </ScrollPane>
+</VBox>

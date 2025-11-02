@@ -2,15 +2,11 @@ package progetto.app;
 
 import atlantafx.base.theme.PrimerLight;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import progetto.app.controller.AppController;
-import progetto.app.controller.FXMLLoaderManager;
-import progetto.app.database.DatabaseConnection;
 
 import java.io.IOException;
 
@@ -19,8 +15,11 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
         AppController appController = AppController.getInstance();
         appController.setPrimaryStage(stage);
-        appController.loadView("dashboard", "/progetto/app/dashboard.fxml");
+        appController.loadView("dashboard", "/progetto/app/Dashboard.fxml");
         appController.loadView("login", "/progetto/app/login.fxml");
+        appController.loadView("courses", "/progetto/app/view/CoursesView.fxml");
+        appController.loadView("report", "/progetto/app/view/ReportView.fxml");
+        appController.loadView("home", "/progetto/app/view/HomeView.fxml");
 
         /*Parent root = FXMLLoader.load(getClass().getResource("Splash.fxml"));
         Scene scene = new Scene(root);

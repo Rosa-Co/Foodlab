@@ -1,154 +1,150 @@
 package progetto.app.view;
 
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import progetto.app.controller.AppController;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Controller principale della Dashboard.
+ * Gestisce solo la sidebar e il container centrale.
+ * Le view specifiche sono file FXML separati caricati dinamicamente.
+ */
 public class DashboardGUI implements Initializable {
 
-    // Views
-    @FXML private VBox homeView;
-    @FXML private VBox coursesView;
-    @FXML private VBox reportView;
+    @FXML private StackPane contentContainer;
 
-    // Sidebar buttons (dai file inclusi)
+    // Sidebar buttons
     @FXML private Button homeButton;
     @FXML private Button coursesButton;
     @FXML private Button reportButton;
 
-    // Header elements
+    // Header
     @FXML private Label chefNameLabel;
     @FXML private MenuItem logoutMenuItem;
 
-    // Stats labels
-    @FXML private Label activeCoursesCount;
-    @FXML private Label sessionsThisMonth;
-    @FXML private Label recipesCount;
-    @FXML private Label studentsCount;
-
-    // Report
-    @FXML private ComboBox<String> monthSelector;
-    @FXML private Button generateReportButton;
-    @FXML private Label totalCoursesLabel;
-    @FXML private Label onlineSessionsLabel;
-    @FXML private Label practicalSessionsLabel;
-    @FXML private Label avgRecipesLabel;
-    @FXML private Label minRecipesLabel;
-    @FXML private Label maxRecipesLabel;
-    @FXML private StackPane chartContainer;
-
-    // Tables
-    @FXML private TableView recentCoursesTable;
-    @FXML private VBox coursesContainer;
-    @FXML private Button addCourseButton;
-    @FXML private ComboBox<String> categoryFilter;
-    @FXML private ComboBox<String> statusFilter;
+    private final AppController appController = AppController.getInstance();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Usa Platform.runLater per aspettare che fx:include carichi tutti gli elementi
-        javafx.application.Platform.runLater(() -> {
+        Platform.runLater(() -> {
             setupEventHandlers();
-            loadDashboardData();
+            loadInitialView();
         });
     }
 
     private void setupEventHandlers() {
-        // Navigation buttons (potrebbero essere null se fx:include non è ancora caricato)
+
         if (homeButton != null) {
-            homeButton.setOnAction(e -> showHomeView());
+            homeButton.setOnAction(e -> loadHomeView());
         }
         if (coursesButton != null) {
-            coursesButton.setOnAction(e -> showCoursesView());
+            coursesButton.setOnAction(e -> loadCoursesView());
         }
         if (reportButton != null) {
-            reportButton.setOnAction(e -> showReportView());
+            reportButton.setOnAction(e -> loadReportView());
         }
 
-        // Header actions
+        // Logout
         if (logoutMenuItem != null) {
             logoutMenuItem.setOnAction(e -> handleLogout());
         }
-
-        // Course actions
-        if (addCourseButton != null) {
-            addCourseButton.setOnAction(e -> showAddCourseDialog());
-        }
-
-        // Report actions
-        if (generateReportButton != null) {
-            generateReportButton.setOnAction(e -> generateReport());
-        }
     }
 
-    private void loadDashboardData() {
-        // Carica dati dal database
-        if (chefNameLabel != null) {
-            chefNameLabel.setText("Chef " + getCurrentChefName());
-        }
-        // ... altre operazioni di caricamento
+    private void loadInitialView() {
+        // Carica la home di default
+        loadHomeView();
     }
 
-    private String getCurrentChefName() {
-        // Recupera nome chef dal session manager
-        return "Mario Rossi";
-    }
-
-    private void showHomeView() {
-        switchView(homeView);
+    /**
+     * Carica la vista Home nel container centrale
+     */
+    private void loadHomeView() {
+        loadViewInContainer("home");
         updateSidebarSelection(homeButton);
     }
 
-    private void showCoursesView() {
-        switchView(coursesView);
+    /**
+     * Carica la vista Corsi nel container centrale
+     */
+    private void loadCoursesView() {
+        loadViewInContainer("courses");
         updateSidebarSelection(coursesButton);
     }
 
-    private void showReportView() {
-        switchView(reportView);
+    /**
+     * Carica la vista Report nel container centrale
+     */
+    private void loadReportView() {
+        loadViewInContainer("report");
         updateSidebarSelection(reportButton);
     }
 
-    private void switchView(VBox targetView) {
-        homeView.setVisible(false);
-        homeView.setManaged(false);
-        coursesView.setVisible(false);
-        coursesView.setManaged(false);
-        reportView.setVisible(false);
-        reportView.setManaged(false);
-
-        targetView.setVisible(true);
-        targetView.setManaged(true);
+    /**
+     * Carica dinamicamente una view FXML nel container centrale
+     */
+    private void loadViewInContainer(String nameView) {
+        Parent view = appController.getView(nameView);
+        try{
+            contentContainer.getChildren().clear();
+            contentContainer.getChildren().add(view);
+        } catch (Exception e) {
+            System.err.println("Errore nel caricamento della view: " + nameView);
+        }
     }
 
-    private void updateSidebarSelection(Button selected) {
-        homeButton.getStyleClass().removeAll("accent");
-        coursesButton.getStyleClass().removeAll("accent");
-        reportButton.getStyleClass().removeAll("accent");
+    /**
+     * Aggiorna lo stile della sidebar per evidenziare la sezione attiva
+     */
+    private void updateSidebarSelection(Button selectedButton) {
+        // Rimuovi accent da tutti
+        if (homeButton != null) {
+            homeButton.getStyleClass().removeAll("accent");
+            if (!homeButton.getStyleClass().contains("flat")) {
+                homeButton.getStyleClass().add("flat");
+            }
+        }
+        if (coursesButton != null) {
+            coursesButton.getStyleClass().removeAll("accent");
+            if (!coursesButton.getStyleClass().contains("flat")) {
+                coursesButton.getStyleClass().add("flat");
+            }
+        }
+        if (reportButton != null) {
+            reportButton.getStyleClass().removeAll("accent");
+            if (!reportButton.getStyleClass().contains("flat")) {
+                reportButton.getStyleClass().add("flat");
+            }
+        }
 
-        homeButton.getStyleClass().add("flat");
-        coursesButton.getStyleClass().add("flat");
-        reportButton.getStyleClass().add("flat");
-
-        selected.getStyleClass().remove("flat");
-        selected.getStyleClass().add("accent");
+        // Aggiungi accent al selezionato
+        if (selectedButton != null) {
+            selectedButton.getStyleClass().remove("flat");
+            selectedButton.getStyleClass().add("accent");
+        }
     }
 
-    private void showAddCourseDialog() {
-        // Mostra dialog per aggiungere corso
-        System.out.println("Apertura dialog nuovo corso...");
-    }
-
-    private void generateReport() {
-        // Genera report con JFreeChart
-        System.out.println("Generazione report...");
-    }
-
+    /**
+     * Gestisce il logout
+     */
     private void handleLogout() {
-        // Torna al login
         System.out.println("Logout...");
+        appController.navigateTo("login");
+    }
+
+    /**
+     * Imposta il nome dello chef nell'header
+     */
+    public void setChefName(String name) {
+        if (chefNameLabel != null) {
+            chefNameLabel.setText("Chef " + name);
+        }
     }
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="progetto.app.view.ReportViewGUI"
+      spacing="20"
+      style="-fx-padding: 30;">
+
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Label text="Report Mensile" styleClass="title-2" HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="monthSelector" promptText="Seleziona Mese" prefWidth="200"/>
+        <Button fx:id="generateReportButton" text="Genera Report" styleClass="accent"/>
+    </HBox>
+
+    <!-- Statistiche numeriche -->
+    <GridPane hgap="20" vgap="20">
+        <VBox spacing="10" style="-fx-padding: 20; -fx-background-color: -color-bg-default; -fx-background-radius: 8px;" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <Label text="Corsi Totali" style="-fx-opacity: 0.7;"/>
+            <Label fx:id="totalCoursesLabel" text="0" styleClass="title-1"/>
+        </VBox>
+
+        <VBox spacing="10" style="-fx-padding: 20; -fx-background-color: -color-bg-default; -fx-background-radius: 8px;" GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <Label text="Sessioni Online" style="-fx-opacity: 0.7;"/>
+            <Label fx:id="onlineSessionsLabel" text="0" styleClass="title-1"/>
+        </VBox>
+
+        <VBox spacing="10" style="-fx-padding: 20; -fx-background-color: -color-bg-default; -fx-background-radius: 8px;" GridPane.columnIndex="2" GridPane.rowIndex="0">
+            <Label text="Sessioni Pratiche" style="-fx-opacity: 0.7;"/>
+            <Label fx:id="practicalSessionsLabel" text="0" styleClass="title-1"/>
+        </VBox>
+    </GridPane>
+
+    <!-- Statistiche ricette -->
+    <VBox spacing="15" style="-fx-padding: 20; -fx-background-color: -color-bg-default; -fx-background-radius: 8px;">
+        <Label text="Ricette nelle Sessioni Pratiche" styleClass="title-3"/>
+        <HBox spacing="30">
+            <VBox spacing="5">
+                <Label text="Media" style="-fx-opacity: 0.7;"/>
+                <Label fx:id="avgRecipesLabel" text="0.0" styleClass="title-2"/>
+            </VBox>
+            <VBox spacing="5">
+                <Label text="Minimo" style="-fx-opacity: 0.7;"/>
+                <Label fx:id="minRecipesLabel" text="0" styleClass="title-2"/>
+            </VBox>
+            <VBox spacing="5">
+                <Label text="Massimo" style="-fx-opacity: 0.7;"/>
+                <Label fx:id="maxRecipesLabel" text="0" styleClass="title-2"/>
+            </VBox>
+        </HBox>
+    </VBox>
+
+    <!-- Grafico JFreeChart -->
+    <VBox spacing="15" style="-fx-padding: 20; -fx-background-color: -color-bg-default; -fx-background-radius: 8px;">
+        <Label text="Andamento Mensile" styleClass="title-3"/>
+        <StackPane fx:id="chartContainer" prefHeight="400" style="-fx-background-color: white; -fx-background-radius: 5px;"/>
+    </VBox>
+</VBox>
