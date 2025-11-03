@@ -1,4 +1,7 @@
 package progetto.app.dao.postgree;
 
-public class ChefDAO_Postgree {
+import progetto.app.dao.Interface.ChefDAO;
+
+public class ChefDAO_Postgree implements ChefDAO {
+
 }

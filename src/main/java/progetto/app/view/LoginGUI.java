@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import progetto.app.controller.AppController;
+import progetto.app.dialog.ErrorDialog;
 
 public class LoginGUI {
 
@@ -41,6 +42,9 @@ public class LoginGUI {
 
     @FXML
     public void handleLogin() {
+        ErrorDialog errorDialog = new ErrorDialog("Errore di accesso.", "Errore di login. Riprova più tardi.").show();
+        errorDialog = null;
+        
         String user = usernameField.getText();
         String pass = passwordField.getText();
 
@@ -162,7 +166,7 @@ public class LoginGUI {
     }
     @FXML
     private void handleRegister() {
-        // Logica di registrazione
+        // Logica di registrazione grafica
     }
     @FXML
     private void showRegisterForm() {
