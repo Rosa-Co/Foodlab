@@ -158,7 +158,7 @@
             <!-- Info versione -->
             <VBox spacing="5" style="-fx-padding: 15; -fx-background-color: -color-bg-subtle; -fx-background-radius: 8px;">
                 <Label text="Versione 1.0.0" style="-fx-opacity: 0.5; -fx-font-size: 10px;"/>
-                <Label text="© 2024 UninaFoodLab" style="-fx-opacity: 0.5; -fx-font-size: 10px;"/>
+                <Label text="© 2025 UninaFoodLab" style="-fx-opacity: 0.5; -fx-font-size: 10px;"/>
             </VBox>
         </VBox>
     </left>

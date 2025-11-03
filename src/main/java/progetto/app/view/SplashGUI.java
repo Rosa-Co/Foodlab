@@ -75,7 +75,7 @@ public class SplashGUI implements Initializable{
                     Stage currentStage = (Stage) logo.getScene().getWindow();
                     //Stage mainStage = FXMLLoaderManager.changeStage(currentStage,"/progetto/app/login.fxml","Homepage");
                     //mainStage.setResizable(true);*/
-                    appController.navigateTo("dashboard");
+                    appController.navigateTo("login");
                     appController.setPrimaryStageResizable(true);
                     currentStage.hide(); // Chiude la splash screen
                     appController.showPrimaryStage();  // Mostra la finestra principale
