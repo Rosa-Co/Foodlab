@@ -9,6 +9,7 @@ module progetto.app {
     requires com.zaxxer.hikari;
     requires java.sql;
     requires org.postgresql.jdbc;
+    requires org.controlsfx.controls;
 
     opens progetto.app to javafx.fxml;
     exports progetto.app;

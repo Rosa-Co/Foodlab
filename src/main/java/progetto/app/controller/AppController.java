@@ -27,6 +27,11 @@ public class AppController {
         this.primaryStage = stage;
     }
 
+    /**
+     * Formatta il percorso FXML per assicurarsi che sia corretto.
+     * @param fxmlPath Il percorso FXML da formattare
+     * @return Il percorso FXML formattato correttamente.
+     */
     private static String formatFxmlPath(String fxmlPath){
         // Assicura che il percorso inizi con /
         if (!fxmlPath.startsWith("/")) {
@@ -46,15 +51,23 @@ public class AppController {
         return fxmlPath;
     }
 
+    /**
+     * Carica una vista FXML e il suo controller in cache.
+     * @param name Nome identificativo della vista
+     * @param fxmlPath Percorso del file FXML
+     */
     public void loadView(String name, String fxmlPath) {
         try {
+            if (views.containsKey(name)) {
+                throw new IllegalArgumentException("La vista con nome : '" + name + "' esiste già in cache.");
+            }
             fxmlPath = formatFxmlPath(fxmlPath);
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
             Object controller = loader.getController();
             views.put(name, root);
             controllers.put(name, controller);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -81,8 +94,19 @@ public class AppController {
         return newScene;
     }
 
+    public void navigateToLogin() {
+        navigateTo("login");
+    }
 
-    public void navigateTo(String name) {
+    public void navigateToDashboard() {
+        navigateTo("dashboard");
+    }
+
+    public void navigateToHome() {
+        navigateTo("home");
+    }
+
+    private void navigateTo(String name) {
         Parent view = views.get(name);
         if (view != null && primaryStage != null) {
             primaryStage.setScene(new Scene(view));

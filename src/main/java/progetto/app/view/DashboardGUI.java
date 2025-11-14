@@ -136,7 +136,7 @@ public class DashboardGUI implements Initializable {
      */
     private void handleLogout() {
         System.out.println("Logout...");
-        appController.navigateTo("login");
+        appController.navigateToLogin();
     }
 
     /**

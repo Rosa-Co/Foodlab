@@ -16,11 +16,11 @@ public class Main extends Application {
         AppController appController = AppController.getInstance();
         appController.setPrimaryStage(stage);
 
-        appController.loadView("dashboard", "/progetto/app/Dashboard.fxml");
         appController.loadView("login", "/progetto/app/login.fxml");
+        appController.loadView("dashboard", "/progetto/app/Dashboard.fxml");
+        appController.loadView("home", "/progetto/app/view/HomeView.fxml");
         appController.loadView("courses", "/progetto/app/view/CoursesView.fxml");
         appController.loadView("report", "/progetto/app/view/ReportView.fxml");
-        appController.loadView("home", "/progetto/app/view/HomeView.fxml");
 
 
         Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
