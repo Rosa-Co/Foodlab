@@ -10,6 +10,7 @@ module progetto.app {
     requires java.sql;
     requires org.postgresql.jdbc;
     requires org.controlsfx.controls;
+    requires jbcrypt;
 
     opens progetto.app to javafx.fxml;
     exports progetto.app;

@@ -6,8 +6,13 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import org.mindrot.jbcrypt.BCrypt;
+import progetto.app.dao.Interface.ChefDAO;
+import progetto.app.dao.Interface.UserDAO;
+import progetto.app.model.User;
 
 public class AppController {
 
@@ -15,7 +20,8 @@ public class AppController {
     private Stage primaryStage;
     private final Map<String, Parent> views = new HashMap<>();
     private final Map<String, Object> controllers = new HashMap<>();
-
+    private UserDAO userDAO;
+    private ChefDAO chefDAO;
     private AppController() {}
 
     public static AppController getInstance() {
@@ -128,5 +134,28 @@ public class AppController {
     }
     public void showPrimaryStage(){
         primaryStage.show();
+    }
+
+    public void registerUser(String username, String password, String name, String surname, String email) throws Exception {
+        //controlla se l'utente esiste già
+        if(userDAO.getUserByEmail(email) != null){
+            throw new Exception("User already exists");
+        }
+        //Hash della password
+        String pswHashed = BCrypt.hashpw(password, BCrypt.gensalt());
+        User user = new User(username, email, pswHashed, name, surname);
+
+        try {
+            userDAO.addUser(user);
+        } catch (SQLException e) {
+            e.printStackTrace(); //PERSONALIZZA EXCEPTION!!!!
+        }
+    }
+
+    public boolean loginUser(String password, String email) throws SQLException {
+        User user = userDAO.getUserByEmail(email);
+        if(user == null){ return false; }
+
+        return BCrypt.checkpw(password, user.getPassword());
     }
 }

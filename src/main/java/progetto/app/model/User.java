@@ -6,25 +6,26 @@ public class User {
     private String email;
     private String name;
     private String surname;
-    private Boolean isChef;
+    private String password;
 
-    public User(int id, String username, String email, String name, String surname, Boolean isChef) {
-        this.id = id;
+    public User(String username, String email, String password, String name, String surname) {
         this.username = username;
         this.email = email;
+        this.password = password;
         this.name = name;
         this.surname = surname;
-        this.isChef = isChef;
     }
 
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id;}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public void setId(int id) {this.id = id;}
 
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
     public String getUsername() {
         return username;
     }
@@ -55,13 +56,5 @@ public class User {
 
     public void setSurname(String surname) {
         this.surname = surname;
-    }
-
-    public Boolean getIsChef() {
-        return isChef;
-    }
-
-    public void setIsChef(Boolean isChef) {
-        this.isChef = isChef;
     }
 }

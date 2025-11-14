@@ -20,7 +20,7 @@ import progetto.app.dialog.WarningDialog;
 
 public class LoginGUI {
 
-    AppController mainController = null;
+    AppController mainController = AppController.getInstance();
 
     @FXML
     private TextField usernameField;
