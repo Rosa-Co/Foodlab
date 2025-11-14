@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
+//classe deprecata, sostituita da AppController, forse verrà eliminata in futuro.
 public class FXMLLoaderManager {
 
     // Memorizza i controller già caricati per riutilizzarli
@@ -102,7 +102,7 @@ public class FXMLLoaderManager {
     }
 
 
-    /*
+    /* Funzioni deprecate per cambiare scena e mostrare lo stage, probabile vanno eliminate.
     public static Scene changeScene(Stage stage, String fxmlPath, String title) throws IOException{
         Scene newScene = setScene(stage,fxmlPath,title);
         stage.show();
@@ -136,6 +136,11 @@ public class FXMLLoaderManager {
         parentPane.getChildren().setAll(root);
     }
 
+    /**
+     * Formatta il percorso FXML per assicurarsi che sia corretto.
+     * @param fxmlPath Il percorso FXML da formattare
+     * @return Il percorso FXML formattato correttamente.
+     */
     private static String formatPath(String fxmlPath){
         // Assicura che il percorso inizi con /
         if (!fxmlPath.startsWith("/")) {

@@ -1,5 +1,6 @@
 package progetto.app.view;
 
+import atlantafx.base.controls.Notification;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -8,10 +9,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import progetto.app.controller.AppController;
 import progetto.app.dialog.ErrorDialog;
+import progetto.app.dialog.InfoDialog;
+import progetto.app.dialog.WarningDialog;
+
 
 public class LoginGUI {
 
@@ -42,14 +47,15 @@ public class LoginGUI {
 
     @FXML
     public void handleLogin() {
-        ErrorDialog errorDialog = new ErrorDialog("Errore di accesso.", "Errore di login. Riprova più tardi.").show();
+        ErrorDialog errorDialog = new ErrorDialog("Warn di accesso.", "Errore di login. Riprova più tardi.").show();
 
         String user = usernameField.getText();
         String pass = passwordField.getText();
 
         if (user.isEmpty() || pass.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Inserisci username e password");
-            alert.showAndWait();
+            InfoDialog infoDialog = new InfoDialog("Info di accesso.", "Errore di login. Riprova più tardi.").show();
+
+            WarningDialog warningDialog = new WarningDialog("Warn di accesso.", "Errore di login. Riprova più tardi.").show();
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Login eseguito correttamente!");
             alert.showAndWait();
