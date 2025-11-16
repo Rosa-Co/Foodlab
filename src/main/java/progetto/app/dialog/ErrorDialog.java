@@ -1,6 +1,8 @@
 package progetto.app.dialog;
 
+import atlantafx.base.theme.Styles;
 import javafx.scene.control.Alert;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 
 public class ErrorDialog extends BaseAlertDialog {
@@ -9,6 +11,8 @@ public class ErrorDialog extends BaseAlertDialog {
         getAlert().setAlertType(Alert.AlertType.ERROR);
         setTitleAndHeader("Errore", header);
         setContent(content);
+
+        getAlert().getDialogPane().getStyleClass().add(Styles.DANGER);
     }
 
     @Override

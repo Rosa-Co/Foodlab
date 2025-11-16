@@ -1,5 +1,6 @@
 package progetto.app.dialog;
 
+import atlantafx.base.theme.Styles;
 import javafx.scene.control.Alert;
 
 public class InfoDialog extends BaseAlertDialog{
@@ -8,6 +9,8 @@ public class InfoDialog extends BaseAlertDialog{
         getAlert().setAlertType(Alert.AlertType.INFORMATION);
         setTitleAndHeader("Informazione", header);
         setContent(content);
+
+        getAlert().getDialogPane().getStyleClass().add(Styles.SUCCESS);
     }
 
     @Override

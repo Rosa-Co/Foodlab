@@ -34,6 +34,7 @@ public class Main extends Application {
 
         splashStage.setScene(splashScene);
         splashStage.show();
+
     }
 
     public static void main(String[] args) {
