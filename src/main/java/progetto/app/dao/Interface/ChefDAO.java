@@ -1,21 +1,23 @@
 package progetto.app.dao.Interface;
 
-import progetto.app.model.User;
+import progetto.app.exception.DAOException;
+import progetto.app.model.Chef;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface ChefDAO {
 
-    void addChef(User user) throws SQLException;
+    void addChef(Chef ch) throws DAOException;
 
-    User getChefById(int id) throws SQLException;
+    Chef getChefById(int id) throws DAOException;
 
-    User getChefByEmail(String email) throws SQLException;
+    Chef getChefByEmail(String email) throws DAOException;
 
-    List<User> getallChefs() throws SQLException; //devo gestire la flag
+    Chef getChefByUsername(String username) throws DAOException;
 
-    void updateChef(User user) throws SQLException;
+    List<Chef> getallChefs() throws DAOException; //devo gestire la flag
 
-    void deleteChef(User user) throws SQLException;
+    void updateChef(Chef ch) throws DAOException;
+
+    void deleteChef(Chef ch) throws DAOException;
 }

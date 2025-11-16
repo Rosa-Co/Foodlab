@@ -51,7 +51,7 @@
     <VBox spacing="10" style="-fx-padding: 25; -fx-background-color: -color-bg-default; -fx-background-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10,0,0,2);" prefWidth="200">
         <HBox alignment="CENTER_LEFT" spacing="10">
             <StackPane style="-fx-background-color: #E8F5E9; -fx-background-radius: 8px; -fx-padding: 10;">
-                <FontIcon iconLiteral="fas-users" iconSize="24" style="-fx-icon-color: #388E3C;"/>
+                <FontIcon iconLiteral="fas-allievos" iconSize="24" style="-fx-icon-color: #388E3C;"/>
             </StackPane>
             <Region HBox.hgrow="ALWAYS"/>
             <Label text="↑ 23%" style="-fx-text-fill: #4CAF50; -fx-font-size: 12px; -fx-font-weight: bold;"/>

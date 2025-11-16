@@ -46,23 +46,6 @@ public class LoginGUI {
     @FXML private Button registerButton;
 
     @FXML
-    public void handleLogin() {
-        ErrorDialog errorDialog = new ErrorDialog("Warn di accesso.", "Errore di login. Riprova più tardi.").show();
-
-        String user = usernameField.getText();
-        String pass = passwordField.getText();
-
-        if (user.isEmpty() || pass.isEmpty()) {
-            InfoDialog infoDialog = new InfoDialog("Info di accesso.", "Errore di login. Riprova più tardi.").show();
-
-            WarningDialog warningDialog = new WarningDialog("Warn di accesso.", "Errore di login. Riprova più tardi.").show();
-        } else {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Login eseguito correttamente!");
-            alert.showAndWait();
-        }
-    }
-
-    @FXML
     private void initialize() {
         setupFeatures();
     }
@@ -169,9 +152,22 @@ public class LoginGUI {
         card.getChildren().addAll(iconContainer, textBox);
         return card;
     }
+
+    @FXML
+    public void handleLogin() {
+        System.out.println("fuori if del login");
+        if(!usernameField.getText().isEmpty() && !passwordField.getText().isEmpty()){
+            System.out.println("Dentro if del login");
+            if(mainController.login(usernameField.getText().strip(),passwordField.getText())){
+                System.out.println("Dentrissimo if del login");
+                mainController.navigateToDashboard();
+            }
+        }
+    }
     @FXML
     private void handleRegister() {
         // Logica di registrazione
+        mainController.registerUser("ciao","ciao","ciao","ciao","ciao@ciao.ciao");
     }
     @FXML
     private void showRegisterForm() {

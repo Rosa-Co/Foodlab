@@ -11,8 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 import org.mindrot.jbcrypt.BCrypt;
 import progetto.app.dao.Interface.ChefDAO;
-import progetto.app.dao.Interface.UserDAO;
-import progetto.app.model.User;
+import progetto.app.dao.Interface.AllievoDAO;
+import progetto.app.dao.postgree.AllievoDAO_Postgree;
+import progetto.app.dao.postgree.ChefDAO_Postgree;
+import progetto.app.exception.DAOException;
+import progetto.app.model.Allievo;
+import progetto.app.model.Chef;
 
 public class AppController {
 
@@ -20,8 +24,8 @@ public class AppController {
     private Stage primaryStage;
     private final Map<String, Parent> views = new HashMap<>();
     private final Map<String, Object> controllers = new HashMap<>();
-    private UserDAO userDAO;
-    private ChefDAO chefDAO;
+    private AllievoDAO allievoDAO = getAllievoDAO();
+    private ChefDAO chefDAO = getChefDAO();
     private AppController() {}
 
     public static AppController getInstance() {
@@ -31,6 +35,15 @@ public class AppController {
 
     public void setPrimaryStage(Stage stage) {
         this.primaryStage = stage;
+    }
+
+    public AllievoDAO getAllievoDAO() {
+        if(this.allievoDAO == null) this.allievoDAO = new AllievoDAO_Postgree();
+        return this.allievoDAO;
+    }
+    public ChefDAO getChefDAO() {
+        if(this.chefDAO == null) this.chefDAO = new ChefDAO_Postgree();
+        return this.chefDAO;
     }
 
     /**
@@ -136,26 +149,79 @@ public class AppController {
         primaryStage.show();
     }
 
-    public void registerUser(String username, String password, String name, String surname, String email) throws Exception {
+    public void registerUser(String username, String password, String name, String surname, String email) {
         //controlla se l'utente esiste già
-        if(userDAO.getUserByEmail(email) != null){
-            throw new Exception("User already exists");
+        if(allievoDAO.getAllievoByEmail(email) != null){
+            //("User already exists");
         }
         //Hash della password
-        String pswHashed = BCrypt.hashpw(password, BCrypt.gensalt());
-        User user = new User(username, email, pswHashed, name, surname);
+        String pswHashed = BCrypt.hashpw(password, BCrypt.gensalt(10));
+        Allievo allievo = new Allievo(username, email, pswHashed, name, surname);
 
         try {
-            userDAO.addUser(user);
-        } catch (SQLException e) {
-            e.printStackTrace(); //PERSONALIZZA EXCEPTION!!!!
+            allievoDAO.addAllievo(allievo);
+        } catch (DAOException e) {
+            e.printStackTrace(); //! DA RIVEDERE
         }
     }
 
-    public boolean loginUser(String password, String email) throws SQLException {
-        User user = userDAO.getUserByEmail(email);
-        if(user == null){ return false; }
+    public boolean login(String username, String password) {
+        return loginUser(username, password) || loginChef(username, password);
+    }
+    public boolean loginUser(String username, String password)  {
+       /* Allievo allievo = null;
+        try {
+             System.out.println("prima di get");
+             allievo = allievoDAO.getAllievoByUsername(username);
+             System.out.println("dopo di get");
+        }catch (Exception e){System.out.println(e); }
+        if(allievo == null) return false;
+        System.out.println(allievo);
+        System.out.println(allievo.getPassword());
+        System.out.println(password);
+        return BCrypt.checkpw(password, allievo.getPassword());*/
+        try {
+            Allievo allievo = allievoDAO.getAllievoByUsername(username);
+            if (allievo == null) return false;
 
-        return BCrypt.checkpw(password, user.getPassword());
+            String hashedPassword = allievo.getPassword();
+
+            // STAMPA QUESTI VALORI
+            System.out.println("=== DEBUG LOGIN ===");
+            System.out.println("username: " + username);
+            System.out.println("Hash dal DB: [" + hashedPassword + "]");
+            System.out.println("Lunghezza hash: " + hashedPassword.length());
+            System.out.println("Primi 4 caratteri: [" + hashedPassword.substring(0, Math.min(4, hashedPassword.length())) + "]");
+            System.out.println("Hash è null? " + (hashedPassword == null));
+            System.out.println("Hash è vuoto? " + hashedPassword.isEmpty());
+
+            return BCrypt.checkpw(password, hashedPassword);
+
+        } catch (Exception e) {
+            System.out.println("ERRORE: " + e.getClass().getName());
+            System.out.println("MESSAGGIO: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void registerChef(String username, String password, String name, String surname, String email)  {
+        if(chefDAO.getChefByEmail(email) != null){
+            //("Chef already exists");
+        }
+        String pswHashed = BCrypt.hashpw(password, BCrypt.gensalt(10));
+        Chef chef = new Chef(username, email, pswHashed, name, surname);
+
+        try {
+            chefDAO.addChef(chef);
+        } catch (DAOException e) {
+            e.printStackTrace(); //! DA RIVEDERE
+        }
+    }
+
+    public boolean loginChef(String username, String password)  {
+        Chef chef = getChefDAO().getChefByEmail(username);
+        if(chef == null){ return false; }
+        return BCrypt.checkpw(password, chef.getPassword());
     }
 }
