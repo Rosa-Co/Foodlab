@@ -43,6 +43,8 @@ public class LoginGUI {
     @FXML private PasswordField registerPasswordField;
     @FXML private PasswordField registerConfirmPasswordField;
     @FXML private CheckBox acceptTermsCheck;
+    @FXML private RadioButton userTypeRadio;
+    @FXML private RadioButton chefTypeRadio;
     @FXML private Button registerButton;
 
     @FXML
@@ -154,20 +156,75 @@ public class LoginGUI {
     }
 
     @FXML
-    public void handleLogin() {
-        System.out.println("fuori if del login");
+    private void handleLogin() {
         if(!usernameField.getText().isEmpty() && !passwordField.getText().isEmpty()){
-            System.out.println("Dentro if del login");
             if(mainController.login(usernameField.getText().strip(),passwordField.getText())){
-                System.out.println("Dentrissimo if del login");
                 mainController.navigateToDashboard();
             }
         }
     }
     @FXML
     private void handleRegister() {
-        // Logica di registrazione
-        mainController.registerUser("ciao","ciao","ciao","ciao","ciao@ciao.ciao");
+        if (!areAllFieldsFilled()) {
+            ErrorDialog err= new ErrorDialog("Registrazione Fallita","Riempire tutti i campi");
+            err.show();
+            return;
+        }
+
+        if (!doPasswordsMatch()) {
+            ErrorDialog err= new ErrorDialog("Registrazione Fallita","Le password non coincidono!");
+            err.show();
+            return;
+        }
+
+        if (!areTermsAccepted()) {
+            ErrorDialog err= new ErrorDialog("Registrazione Fallita","Accetta i termini e condizioni!");
+            err.show();
+            return;
+        }
+
+        boolean registrationSuccessful = performRegistration();
+
+        if (registrationSuccessful) {
+            mainController.navigateToDashboard();
+        }
+    }
+
+    private boolean areAllFieldsFilled() {
+        return !registerNameField.getText().isEmpty() &&
+                !registerSurnameField.getText().isEmpty() &&
+                !registerUsernameField.getText().isEmpty() &&
+                !registerEmailField.getText().isEmpty() &&
+                !registerPasswordField.getText().isEmpty() &&
+                !registerConfirmPasswordField.getText().isEmpty();
+    }
+
+    private boolean doPasswordsMatch() {
+        return registerPasswordField.getText().equals(registerConfirmPasswordField.getText());
+    }
+
+    private boolean areTermsAccepted() {
+        return acceptTermsCheck.isSelected();
+    }
+
+    private boolean performRegistration() {
+        if (userTypeRadio.isSelected()) {
+            return mainController.registerUser(
+                    registerUsernameField.getText(),
+                    registerPasswordField.getText(),
+                    registerNameField.getText(),
+                    registerSurnameField.getText(),
+                    registerEmailField.getText()
+            );
+        } else {
+            return mainController.registerChef(
+                    registerUsernameField.getText(),
+                    registerPasswordField.getText(),
+                    registerNameField.getText(),
+                    registerSurnameField.getText(),
+                    registerEmailField.getText()
+            );
+        }
     }
     @FXML
     private void showRegisterForm() {

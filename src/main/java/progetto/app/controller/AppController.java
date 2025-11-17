@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import org.mindrot.jbcrypt.BCrypt;
@@ -14,6 +13,8 @@ import progetto.app.dao.Interface.ChefDAO;
 import progetto.app.dao.Interface.AllievoDAO;
 import progetto.app.dao.postgree.AllievoDAO_Postgree;
 import progetto.app.dao.postgree.ChefDAO_Postgree;
+import progetto.app.dialog.ErrorDialog;
+import progetto.app.dialog.WarningDialog;
 import progetto.app.exception.DAOException;
 import progetto.app.model.Allievo;
 import progetto.app.model.Chef;
@@ -149,79 +150,79 @@ public class AppController {
         primaryStage.show();
     }
 
-    public void registerUser(String username, String password, String name, String surname, String email) {
-        //controlla se l'utente esiste già
-        if(allievoDAO.getAllievoByEmail(email) != null){
-            //("User already exists");
-        }
-        //Hash della password
-        String pswHashed = BCrypt.hashpw(password, BCrypt.gensalt(10));
-        Allievo allievo = new Allievo(username, email, pswHashed, name, surname);
-
-        try {
-            allievoDAO.addAllievo(allievo);
-        } catch (DAOException e) {
-            e.printStackTrace(); //! DA RIVEDERE
-        }
-    }
 
     public boolean login(String username, String password) {
         return loginUser(username, password) || loginChef(username, password);
     }
-    public boolean loginUser(String username, String password)  {
-       /* Allievo allievo = null;
+
+    public boolean registerUser(String username, String password, String name, String surname, String email) {
+        if(allievoDAO.getAllievoByEmail(email) != null){
+            WarningDialog warningDialog= new WarningDialog("L'utente esiste già.","Proseguire sulla schermata di accesso.");
+            warningDialog.show();
+            return false;
+        }
+        String pswHashed = BCrypt.hashpw(password, BCrypt.gensalt(10));
+        Allievo allievo = new Allievo(username, pswHashed, email, name, surname);
+
         try {
-             System.out.println("prima di get");
-             allievo = allievoDAO.getAllievoByUsername(username);
-             System.out.println("dopo di get");
-        }catch (Exception e){System.out.println(e); }
-        if(allievo == null) return false;
-        System.out.println(allievo);
-        System.out.println(allievo.getPassword());
-        System.out.println(password);
-        return BCrypt.checkpw(password, allievo.getPassword());*/
+            allievoDAO.addAllievo(allievo);
+            return  true;
+        } catch (DAOException e) {
+            ErrorDialog errorDialog= new ErrorDialog("Registrazione utente fallita!","Provare più tardi.");
+            errorDialog.show();
+            return false;
+        }
+    }
+
+
+    public boolean loginUser(String username, String password)  {
         try {
             Allievo allievo = allievoDAO.getAllievoByUsername(username);
             if (allievo == null) return false;
-
             String hashedPassword = allievo.getPassword();
-
-            // STAMPA QUESTI VALORI
-            System.out.println("=== DEBUG LOGIN ===");
-            System.out.println("username: " + username);
-            System.out.println("Hash dal DB: [" + hashedPassword + "]");
-            System.out.println("Lunghezza hash: " + hashedPassword.length());
-            System.out.println("Primi 4 caratteri: [" + hashedPassword.substring(0, Math.min(4, hashedPassword.length())) + "]");
-            System.out.println("Hash è null? " + (hashedPassword == null));
-            System.out.println("Hash è vuoto? " + hashedPassword.isEmpty());
-
             return BCrypt.checkpw(password, hashedPassword);
 
         } catch (Exception e) {
             System.out.println("ERRORE: " + e.getClass().getName());
             System.out.println("MESSAGGIO: " + e.getMessage());
-            e.printStackTrace();
+            ErrorDialog errorDialog= new ErrorDialog("Utente non trovato.","Controlla i campi e riprova.");
+            errorDialog.show();
             return false;
         }
     }
 
-    public void registerChef(String username, String password, String name, String surname, String email)  {
+    public boolean registerChef(String username, String password, String name, String surname, String email)  {
         if(chefDAO.getChefByEmail(email) != null){
-            //("Chef already exists");
+            WarningDialog warningDialog= new WarningDialog("Lo chef esiste già.","Proseguire sulla schermata di accesso.");
+            warningDialog.show();
+            return false;
         }
         String pswHashed = BCrypt.hashpw(password, BCrypt.gensalt(10));
-        Chef chef = new Chef(username, email, pswHashed, name, surname);
+        Chef chef = new Chef(username, pswHashed, email, name, surname);
 
         try {
             chefDAO.addChef(chef);
+            return true;
         } catch (DAOException e) {
-            e.printStackTrace(); //! DA RIVEDERE
+            ErrorDialog errorDialog= new ErrorDialog("Registrazione chef fallita!","Provare più tardi.");
+            errorDialog.show();
+            return false;
         }
     }
 
     public boolean loginChef(String username, String password)  {
-        Chef chef = getChefDAO().getChefByEmail(username);
-        if(chef == null){ return false; }
-        return BCrypt.checkpw(password, chef.getPassword());
+        try {
+            Chef chef = chefDAO.getChefByUsername(username);
+            if (chef == null) return false;
+            String hashedPassword = chef.getPassword();
+            return BCrypt.checkpw(password, hashedPassword);
+
+        } catch (Exception e) {
+            System.out.println("ERRORE: " + e.getClass().getName());
+            System.out.println("MESSAGGIO: " + e.getMessage());
+            ErrorDialog errorDialog= new ErrorDialog("Chef non trovato","Controlla i campi e riprova");
+            errorDialog.show();
+            return false;
+        }
     }
 }
