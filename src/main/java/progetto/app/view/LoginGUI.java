@@ -191,12 +191,12 @@ public class LoginGUI {
     }
 
     private boolean areAllFieldsFilled() {
-        return !registerNameField.getText().isEmpty() &&
-                !registerSurnameField.getText().isEmpty() &&
-                !registerUsernameField.getText().isEmpty() &&
-                !registerEmailField.getText().isEmpty() &&
-                !registerPasswordField.getText().isEmpty() &&
-                !registerConfirmPasswordField.getText().isEmpty();
+        return !registerNameField.getText().trim().isEmpty() &&
+                !registerSurnameField.getText().trim().isEmpty() &&
+                !registerUsernameField.getText().trim().isEmpty() &&
+                !registerEmailField.getText().trim().isEmpty() &&
+                !registerPasswordField.getText().trim().isEmpty() &&
+                !registerConfirmPasswordField.getText().trim().isEmpty();
     }
 
     private boolean doPasswordsMatch() {
