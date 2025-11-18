@@ -17,6 +17,8 @@ import progetto.app.dialog.ErrorDialog;
 import progetto.app.dialog.InfoDialog;
 import progetto.app.dialog.WarningDialog;
 
+import static progetto.app.controller.AppController.checkEmail;
+
 
 public class LoginGUI {
 
@@ -165,6 +167,11 @@ public class LoginGUI {
     }
     @FXML
     private void handleRegister() {
+        if(!checkEmail(registerEmailField.getText().strip())){
+            ErrorDialog err=new ErrorDialog("Registrazione Fallita","Formato email non valido");
+            err.show();
+            return;
+        }
         if (!areAllFieldsFilled()) {
             ErrorDialog err= new ErrorDialog("Registrazione Fallita","Riempire tutti i campi");
             err.show();

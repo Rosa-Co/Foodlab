@@ -236,4 +236,12 @@ public class AppController {
         }
         return false;
     }
+
+    public static boolean checkEmail(String email) {
+        if (email == null) {
+            return false;
+        }
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
 }
