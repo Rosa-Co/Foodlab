@@ -17,6 +17,8 @@ import progetto.app.dialog.ErrorDialog;
 import progetto.app.dialog.InfoDialog;
 import progetto.app.dialog.WarningDialog;
 
+import static progetto.app.controller.AppController.checkEmail;
+
 
 public class LoginGUI {
 
@@ -157,7 +159,7 @@ public class LoginGUI {
 
     @FXML
     private void handleLogin() {
-        if(!usernameField.getText().isEmpty() && !passwordField.getText().isEmpty()){
+        if(!usernameField.getText().isBlank() && !passwordField.getText().isBlank()){
             if(mainController.login(usernameField.getText().strip(),passwordField.getText())){
                 mainController.navigateToDashboard();
             }
@@ -165,6 +167,11 @@ public class LoginGUI {
     }
     @FXML
     private void handleRegister() {
+        if(!checkEmail(registerEmailField.getText().strip())){
+            ErrorDialog err=new ErrorDialog("Registrazione Fallita","Formato email non valido");
+            err.show();
+            return;
+        }
         if (!areAllFieldsFilled()) {
             ErrorDialog err= new ErrorDialog("Registrazione Fallita","Riempire tutti i campi");
             err.show();
@@ -191,12 +198,12 @@ public class LoginGUI {
     }
 
     private boolean areAllFieldsFilled() {
-        return !registerNameField.getText().isEmpty() &&
-                !registerSurnameField.getText().isEmpty() &&
-                !registerUsernameField.getText().isEmpty() &&
-                !registerEmailField.getText().isEmpty() &&
-                !registerPasswordField.getText().isEmpty() &&
-                !registerConfirmPasswordField.getText().isEmpty();
+        return !registerNameField.getText().trim().isEmpty() &&
+                !registerSurnameField.getText().trim().isEmpty() &&
+                !registerUsernameField.getText().trim().isEmpty() &&
+                !registerEmailField.getText().trim().isEmpty() &&
+                !registerPasswordField.getText().trim().isEmpty() &&
+                !registerConfirmPasswordField.getText().trim().isEmpty();
     }
 
     private boolean doPasswordsMatch() {
