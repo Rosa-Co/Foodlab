@@ -159,7 +159,7 @@ public class LoginGUI {
 
     @FXML
     private void handleLogin() {
-        if(!usernameField.getText().isEmpty() && !passwordField.getText().isEmpty()){
+        if(!usernameField.getText().isBlank() && !passwordField.getText().isBlank()){
             if(mainController.login(usernameField.getText().strip(),passwordField.getText())){
                 mainController.navigateToDashboard();
             }

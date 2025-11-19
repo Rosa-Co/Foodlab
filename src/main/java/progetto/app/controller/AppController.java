@@ -182,12 +182,16 @@ public class AppController {
     public boolean loginUser(String username, String password)  {
         try {
             Allievo allievo = allievoDAO.getAllievoByUsername(username);
-            if (allievo == null) return false;
+            if (allievo == null) {
+                ErrorDialog err= new ErrorDialog("L'account non esiste","Controlla i dati e riprova");
+                err.show();
+                return false;
+            }
             String hashedPassword = allievo.getPassword();
             return BCrypt.checkpw(password, hashedPassword);
 
         } catch (Exception e) {
-            ErrorDialog errorDialog= new ErrorDialog("Utente non trovato.","Controlla i campi e riprova.");
+            ErrorDialog errorDialog= new ErrorDialog("Password non corretta.","Riprova.");
             errorDialog.show();
             return false;
         }
