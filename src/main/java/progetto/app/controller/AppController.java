@@ -30,7 +30,7 @@ public class AppController {
     private AllievoDAO allievoDAO = getAllievoDAO();
     private ChefDAO chefDAO = getChefDAO();
     private static final String EMAIL_REGEX =
-            "^[a-zA-Z0-9_+&-]+(?:\\.[a-zA-Z0-9_+&-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+            "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
 
     private static final Pattern pattern = Pattern.compile(EMAIL_REGEX);
 
