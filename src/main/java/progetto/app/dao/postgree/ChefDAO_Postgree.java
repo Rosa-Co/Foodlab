@@ -51,7 +51,7 @@ public class ChefDAO_Postgree implements ChefDAO {
     }
 
     public Chef getChefByUsername(String username) throws DAOException{
-        String sql = "SELECT * FROM chef WHERE username=?";
+        String sql = "SELECT * FROM chef WHERE LOWER(username)=LOWER(?)";
         Chef ch = null;
         try(Connection con = DatabaseConnection.getConnection();PreparedStatement ps= con.prepareStatement(sql)){
             ps.setString(1,username);
@@ -70,7 +70,7 @@ public class ChefDAO_Postgree implements ChefDAO {
 
     @Override
     public Chef getChefByEmail(String email) throws DAOException {
-        String sql = "SELECT * FROM chef WHERE email = ?";//devo aggiungere la cond?
+        String sql = "SELECT * FROM chef WHERE LOWER(email) = LOWER(?)";
         Chef ch = null;
         try(Connection con = DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql)){
             ps.setString(1,email);

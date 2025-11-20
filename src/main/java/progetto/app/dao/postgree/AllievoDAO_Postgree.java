@@ -52,7 +52,7 @@ public class AllievoDAO_Postgree implements AllievoDAO {
 
     @Override
     public Allievo getAllievoByEmail(String email) throws DAOException {
-        String sql = "SELECT * FROM allievo WHERE email = ?";
+        String sql = "SELECT * FROM allievo WHERE LOWER(email) = LOWER(?)";
         Allievo allievo = null;
         try(Connection con=DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql)){
             ps.setString(1,email);
@@ -90,13 +90,14 @@ public class AllievoDAO_Postgree implements AllievoDAO {
     }
 
     public Allievo getAllievoByUsername(String username) throws DAOException {
-        String sql = "SELECT * FROM allievo WHERE username = ?";
+        String sql = "SELECT * FROM allievo WHERE LOWER(username) = LOWER(?)";
         Allievo allievo = null;
         try(Connection con=DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql)){
             ps.setString(1,username);
             try(ResultSet rs = ps.executeQuery()) {
                 if(rs.next()) {
-                    allievo = new Allievo(rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));                }
+                    allievo = new Allievo(rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
+                }
             } catch(SQLException e) {
                 throw new DAOException("username non trovato",e);
             }

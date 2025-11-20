@@ -159,6 +159,11 @@ public class AppController {
 
 
     public boolean login(String username, String password) {
+        if(!isLogged(username, password)){
+            ErrorDialog err= new ErrorDialog("L'account non esiste","Controlla i dati e riprova");
+            err.show();
+            return false;
+        }
         return loginUser(username, password) || loginChef(username, password);
     }
 
@@ -178,20 +183,22 @@ public class AppController {
         }
     }
 
-
+    //! Risolvere la gestione di utente non trovato/password errata
     public boolean loginUser(String username, String password)  {
         try {
             Allievo allievo = allievoDAO.getAllievoByUsername(username);
             if (allievo == null) {
-                ErrorDialog err= new ErrorDialog("L'account non esiste","Controlla i dati e riprova");
-                err.show();
                 return false;
-            }
+            }//! tecnicamente inutile
             String hashedPassword = allievo.getPassword();
-            return BCrypt.checkpw(password, hashedPassword);
+            if(!BCrypt.checkpw(password, hashedPassword)){
+                ErrorDialog errorDialog= new ErrorDialog("Password non corretta.","Riprova.");
+                errorDialog.show();
+                return false;
+            } else return true;
 
         } catch (Exception e) {
-            ErrorDialog errorDialog= new ErrorDialog("Password non corretta.","Riprova.");
+            ErrorDialog errorDialog= new ErrorDialog("Errore in fase di login.","Riprova.");
             errorDialog.show();
             return false;
         }
@@ -212,16 +219,24 @@ public class AppController {
             return false;
         }
     }
-
+    
+    //! Risolvere la gestione di utente non trovato/password errata
     public boolean loginChef(String username, String password)  {
         try {
             Chef chef = chefDAO.getChefByUsername(username);
-            if (chef == null) return false;
+            if (chef == null) {
+                return false;
+            }
             String hashedPassword = chef.getPassword();
-            return BCrypt.checkpw(password, hashedPassword);
+            if(!BCrypt.checkpw(password, hashedPassword)){
+                ErrorDialog errorDialog= new ErrorDialog("Password errata","Riprova");
+                errorDialog.show();
+                return false;
+            }
+            return true;
 
         } catch (Exception e) {
-            ErrorDialog errorDialog= new ErrorDialog("Chef non trovato","Controlla i campi e riprova");
+            ErrorDialog errorDialog= new ErrorDialog("Errore in fase di login","Riprova");
             errorDialog.show();
             return false;
         }
@@ -247,5 +262,9 @@ public class AppController {
         }
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
+    }
+
+    public boolean isLogged(String username,String password){
+        return allievoDAO.getAllievoByUsername(username) != null || chefDAO.getChefByUsername(username) != null;
     }
 }
