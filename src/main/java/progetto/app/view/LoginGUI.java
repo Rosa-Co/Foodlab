@@ -164,6 +164,10 @@ public class LoginGUI {
                 mainController.navigateToDashboard();
             }
         }
+        else{
+            WarningDialog warningDialog=new WarningDialog("Attenzione!","Riempire tutti i campi.");
+            warningDialog.show();
+        }
     }
     @FXML
     private void handleRegister() {
@@ -173,20 +177,20 @@ public class LoginGUI {
             return;
         }
         if (!areAllFieldsFilled()) {
-            ErrorDialog err= new ErrorDialog("Registrazione Fallita","Riempire tutti i campi");
-            err.show();
+            WarningDialog warn= new WarningDialog("Attenzione!","Riempire tutti i campi.");
+            warn.show();
             return;
         }
 
         if (!doPasswordsMatch()) {
-            ErrorDialog err= new ErrorDialog("Registrazione Fallita","Le password non coincidono!");
-            err.show();
+            WarningDialog warn= new WarningDialog("Attenzione!","Le password non coincidono.");
+            warn.show();
             return;
         }
 
         if (!areTermsAccepted()) {
-            ErrorDialog err= new ErrorDialog("Registrazione Fallita","Accetta i termini e condizioni!");
-            err.show();
+            WarningDialog warn= new WarningDialog("Attenzione!","Per proseguire, accettare termini e condizioni.");
+            warn.show();
             return;
         }
 

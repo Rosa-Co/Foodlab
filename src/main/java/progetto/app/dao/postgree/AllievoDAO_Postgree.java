@@ -3,7 +3,10 @@ package progetto.app.dao.postgree;
 import progetto.app.dao.Interface.AllievoDAO;
 import progetto.app.database.DatabaseConnection;
 import progetto.app.exception.DAOException;
+import progetto.app.exception.DuplicateUserException;
+import progetto.app.exception.UserNotFoundException;
 import progetto.app.model.Allievo;
+import progetto.app.model.User;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -30,7 +33,12 @@ public class AllievoDAO_Postgree implements AllievoDAO {
             }
             ps.executeUpdate();
         } catch(SQLException e) {
-            throw new DAOException("Impossibile aggiungere utente",e);
+            if ("23505".equals(e.getSQLState())){
+                throw new DuplicateUserException("Account già esistente.");
+            }
+            else {
+                throw new DAOException("Impossibile aggiungere utente");
+            }
         }
     }
 
@@ -51,19 +59,18 @@ public class AllievoDAO_Postgree implements AllievoDAO {
     }
 
     @Override
-    public Allievo getAllievoByEmail(String email) throws DAOException {
+    public Allievo getAllievoByEmail(String email) throws DAOException, UserNotFoundException {
         String sql = "SELECT * FROM allievo WHERE LOWER(email) = LOWER(?)";
         Allievo allievo = null;
         try(Connection con=DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql)){
             ps.setString(1,email);
             try(ResultSet rs = ps.executeQuery()) {
                 if(rs.next()) {
-                    System.out.println("valore di allievo password : : " + rs.getString("password"));
                     allievo = new Allievo(rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
-                    System.out.println("valore di allievo: " + allievo);
                 }
-            } catch(SQLException e) {
-                throw new DAOException("Email non trovata",e);
+                else{
+                    throw new UserNotFoundException("L'email non è corretta.");
+                }
             }
         }catch(SQLException e) {
             throw new DAOException("Errore durante la ricerca per email dell'allievo",e);
@@ -72,24 +79,26 @@ public class AllievoDAO_Postgree implements AllievoDAO {
     }
 
     @Override
-    public Allievo getAllievoById(int id) throws DAOException {
+    public Allievo getAllievoById(int id) throws DAOException,UserNotFoundException {
         String sql = "SELECT * FROM allievo WHERE id = ?";
         Allievo allievo = null;
         try(Connection con=DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql)){
             ps.setInt(1,id);
             try(ResultSet rs = ps.executeQuery()) {
                 if(rs.next()) {
-                    allievo = new Allievo(rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));                }
-                } catch(SQLException e) {
-                    throw new DAOException("Id non trovato",e);
+                    allievo = new Allievo(rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
                 }
+                else {
+                    throw new UserNotFoundException("L'id non è corretto.");
+                }
+            }
             }catch(SQLException e) {
                 throw new DAOException("Errore durante la ricerca per id dell'allievo",e);
             }
         return allievo;
     }
 
-    public Allievo getAllievoByUsername(String username) throws DAOException {
+    public Allievo getAllievoByUsername(String username) throws UserNotFoundException {
         String sql = "SELECT * FROM allievo WHERE LOWER(username) = LOWER(?)";
         Allievo allievo = null;
         try(Connection con=DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql)){
@@ -98,8 +107,9 @@ public class AllievoDAO_Postgree implements AllievoDAO {
                 if(rs.next()) {
                     allievo = new Allievo(rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
                 }
-            } catch(SQLException e) {
-                throw new DAOException("username non trovato",e);
+                else{
+                    throw new UserNotFoundException("L'username non è corretto.");
+                }
             }
         }catch(SQLException e) {
             throw new DAOException("Errore durante la ricerca per username dell'allievo",e);
