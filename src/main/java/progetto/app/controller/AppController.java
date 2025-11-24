@@ -18,11 +18,14 @@ import progetto.app.dialog.WarningDialog;
 import progetto.app.exception.*;
 import progetto.app.model.Allievo;
 import progetto.app.model.Chef;
+import progetto.app.model.User;
+
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 public class AppController {
 
+    //private User user;
     private static AppController instance;  // Singleton per accesso globale
     private Stage primaryStage;
     private final Map<String, Parent> views = new HashMap<>();
@@ -201,10 +204,11 @@ public class AppController {
         }
     }
 
-    public boolean loginUser(String username, String password)  {
+    public boolean loginUser(String username, String password) {
         try {
             Allievo allievo = allievoDAO.getAllievoByUsername(username);
             if (allievo == null) return false;
+            //this.user = allievo;
             String hashedPassword = allievo.getPassword();
             if(!BCrypt.checkpw(password, hashedPassword)){
                 ErrorDialog errorDialog= new ErrorDialog("Password errata.","Riprova.");
@@ -239,10 +243,11 @@ public class AppController {
         }
     }
 
-    public boolean loginChef(String username, String password)  {
+    public boolean loginChef(String username, String password) {
         try {
             Chef chef = chefDAO.getChefByUsername(username);
             if (chef == null) return false;
+            //this.user=chef;
             String hashedPassword = chef.getPassword();
             if(!BCrypt.checkpw(password, hashedPassword)){
                 ErrorDialog errorDialog= new ErrorDialog("Password errata","Riprova");
@@ -318,5 +323,5 @@ public class AppController {
                 return false;
             }
         }
-    }
+    }//!da togliere
 }

@@ -33,7 +33,7 @@ public class AllievoDAO_Postgree implements AllievoDAO {
             }
             ps.executeUpdate();
         } catch(SQLException e) {
-            if ("23505".equals(e.getSQLState())){
+            if ("23505".equals(e.getSQLState())){//!controlla if
                 throw new DuplicateUserException("Account già esistente.");
             }
             else {

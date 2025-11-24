@@ -170,7 +170,7 @@ public class LoginGUI {
         }
     }
     @FXML
-    private void handleRegister() {
+    private void handleRegister() {//crea metodi nell'app controller per gestire le dialog e qui limitati a chiamare quei metodi
         if(!checkEmail(registerEmailField.getText().strip())){
             ErrorDialog err=new ErrorDialog("Registrazione Fallita","Formato email non valido");
             err.show();
@@ -210,7 +210,7 @@ public class LoginGUI {
                 !registerConfirmPasswordField.getText().trim().isEmpty();
     }
 
-    private boolean doPasswordsMatch() {
+    private boolean doPasswordsMatch() {//fai metodo nell'app controller
         return registerPasswordField.getText().equals(registerConfirmPasswordField.getText());
     }
 
