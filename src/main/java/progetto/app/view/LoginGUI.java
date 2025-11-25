@@ -17,6 +17,8 @@ import progetto.app.dialog.ErrorDialog;
 import progetto.app.dialog.InfoDialog;
 import progetto.app.dialog.WarningDialog;
 
+import static progetto.app.controller.AppController.checkEmail;
+
 
 public class LoginGUI {
 
@@ -43,6 +45,8 @@ public class LoginGUI {
     @FXML private PasswordField registerPasswordField;
     @FXML private PasswordField registerConfirmPasswordField;
     @FXML private CheckBox acceptTermsCheck;
+    @FXML private RadioButton userTypeRadio;
+    @FXML private RadioButton chefTypeRadio;
     @FXML private Button registerButton;
 
     @FXML
@@ -157,20 +161,84 @@ public class LoginGUI {
     }
 
     @FXML
-    public void handleLogin() {
-        System.out.println("fuori if del login");
-        if(!usernameField.getText().isEmpty() && !passwordField.getText().isEmpty()){
-            System.out.println("Dentro if del login");
+    private void handleLogin() {
+        if(!usernameField.getText().isBlank() && !passwordField.getText().isBlank()){
             if(mainController.login(usernameField.getText().strip(),passwordField.getText())){
-                System.out.println("Dentrissimo if del login");
                 mainController.navigateToDashboard();
             }
+        }
+        else{
+            WarningDialog warningDialog=new WarningDialog("Attenzione!","Riempire tutti i campi.");
+            warningDialog.show();
         }
     }
     @FXML
     private void handleRegister() {
-        // Logica di registrazione
-        mainController.registerUser("ciao","ciao","ciao","ciao","ciao@ciao.ciao");
+        if(!checkEmail(registerEmailField.getText().strip())){
+            ErrorDialog err=new ErrorDialog("Registrazione Fallita","Formato email non valido");
+            err.show();
+            return;
+        }
+        if (!areAllFieldsFilled()) {
+            WarningDialog warn= new WarningDialog("Attenzione!","Riempire tutti i campi.");
+            warn.show();
+            return;
+        }
+
+        if (!doPasswordsMatch()) {
+            WarningDialog warn= new WarningDialog("Attenzione!","Le password non coincidono.");
+            warn.show();
+            return;
+        }
+
+        if (!areTermsAccepted()) {
+            WarningDialog warn= new WarningDialog("Attenzione!","Per proseguire, accettare termini e condizioni.");
+            warn.show();
+            return;
+        }
+
+        boolean registrationSuccessful = performRegistration();
+
+        if (registrationSuccessful) {
+            mainController.navigateToDashboard();
+        }
+    }
+
+    private boolean areAllFieldsFilled() {
+        return !registerNameField.getText().trim().isEmpty() &&
+                !registerSurnameField.getText().trim().isEmpty() &&
+                !registerUsernameField.getText().trim().isEmpty() &&
+                !registerEmailField.getText().trim().isEmpty() &&
+                !registerPasswordField.getText().trim().isEmpty() &&
+                !registerConfirmPasswordField.getText().trim().isEmpty();
+    }
+
+    private boolean doPasswordsMatch() {
+        return registerPasswordField.getText().equals(registerConfirmPasswordField.getText());
+    }
+
+    private boolean areTermsAccepted() {
+        return acceptTermsCheck.isSelected();
+    }
+
+    private boolean performRegistration() {
+        if (userTypeRadio.isSelected()) {
+            return mainController.registerUser(
+                    registerUsernameField.getText(),
+                    registerPasswordField.getText(),
+                    registerNameField.getText(),
+                    registerSurnameField.getText(),
+                    registerEmailField.getText()
+            );
+        } else {
+            return mainController.registerChef(
+                    registerUsernameField.getText(),
+                    registerPasswordField.getText(),
+                    registerNameField.getText(),
+                    registerSurnameField.getText(),
+                    registerEmailField.getText()
+            );
+        }
     }
     @FXML
     private void showRegisterForm() {
