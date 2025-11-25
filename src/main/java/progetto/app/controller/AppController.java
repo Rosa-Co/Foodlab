@@ -25,7 +25,7 @@ import java.util.regex.Matcher;
 
 public class AppController {
 
-    //private User user;
+    private User userLogged;
     private static AppController instance;  // Singleton per accesso globale
     private Stage primaryStage;
     private final Map<String, Parent> views = new HashMap<>();
@@ -162,10 +162,6 @@ public class AppController {
 
 
     public boolean login(String username, String password) {
-            /*if (!isLogged(username)) {
-                return false;
-            }
-            return loginUser(username, password) || loginChef(username, password);*/
         try{
            if(allievoDAO.getAllievoByUsername(username) != null){
                return loginUser(username, password);
@@ -208,7 +204,7 @@ public class AppController {
         try {
             Allievo allievo = allievoDAO.getAllievoByUsername(username);
             if (allievo == null) return false;
-            //this.user = allievo;
+            this.userLogged = allievo;
             String hashedPassword = allievo.getPassword();
             if(!BCrypt.checkpw(password, hashedPassword)){
                 ErrorDialog errorDialog= new ErrorDialog("Password errata.","Riprova.");
@@ -243,11 +239,11 @@ public class AppController {
         }
     }
 
-    public boolean loginChef(String username, String password) {
+    public boolean loginChef(String username, String password) throws UserNotFoundException{//!dev essere checked per mettere throws senza warning
         try {
             Chef chef = chefDAO.getChefByUsername(username);
             if (chef == null) return false;
-            //this.user=chef;
+            this.userLogged=chef;
             String hashedPassword = chef.getPassword();
             if(!BCrypt.checkpw(password, hashedPassword)){
                 ErrorDialog errorDialog= new ErrorDialog("Password errata","Riprova");
@@ -310,18 +306,4 @@ public class AppController {
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
-
-    public boolean isLogged(String username){
-        try {
-            return allievoDAO.getAllievoByUsername(username) != null;
-        }catch (UserNotFoundException e){
-            try{
-                return chefDAO.getChefByUsername(username) != null;
-            }catch (ChefNotFoundException e1){
-                ErrorDialog errorDialog= new ErrorDialog(e.getMessage(),"Riprova.");
-                errorDialog.show();
-                return false;
-            }
-        }
-    }//!da togliere
 }
