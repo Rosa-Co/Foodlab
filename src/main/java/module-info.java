@@ -21,7 +21,7 @@ module progetto.app {
     opens progetto.app.controller to javafx.fxml;
 
     exports progetto.app.view;
-    exports progetto.app.dao.interfaces;
+    exports progetto.app.dao.Interface;
     exports progetto.app.exception;
     exports progetto.app.model;
 

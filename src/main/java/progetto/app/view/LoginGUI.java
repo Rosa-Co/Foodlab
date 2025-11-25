@@ -19,7 +19,6 @@ import progetto.app.dialog.WarningDialog;
 
 import static progetto.app.controller.AppController.checkEmail;
 
-
 public class LoginGUI {
 
     AppController mainController = AppController.getInstance();
@@ -36,27 +35,41 @@ public class LoginGUI {
     @FXML
     private VBox featuresPane;
 
-    @FXML private VBox loginPane;
-    @FXML private VBox registerPane;
-    @FXML private TextField registerNameField;
-    @FXML private TextField registerSurnameField;
-    @FXML private TextField registerUsernameField;
-    @FXML private TextField registerEmailField;
-    @FXML private PasswordField registerPasswordField;
-    @FXML private PasswordField registerConfirmPasswordField;
-    @FXML private CheckBox acceptTermsCheck;
-    @FXML private RadioButton userTypeRadio;
-    @FXML private RadioButton chefTypeRadio;
-    @FXML private Button registerButton;
+    @FXML
+    private VBox loginPane;
+    @FXML
+    private VBox registerPane;
+    @FXML
+    private TextField registerNameField;
+    @FXML
+    private TextField registerSurnameField;
+    @FXML
+    private TextField registerUsernameField;
+    @FXML
+    private TextField registerEmailField;
+    @FXML
+    private PasswordField registerPasswordField;
+    @FXML
+    private PasswordField registerConfirmPasswordField;
+    @FXML
+    private CheckBox acceptTermsCheck;
+    @FXML
+    private RadioButton userTypeRadio;
+    @FXML
+    private RadioButton chefTypeRadio;
+    @FXML
+    private Button registerButton;
 
     @FXML
     private void initialize() {
         setupFeatures();
     }
+
     @FXML
     private void showTerms() {
         mainController.showTermsOfService();
     }
+
     private void setupFeatures() {
         // Header section
         VBox headerBox = new VBox(8);
@@ -69,15 +82,18 @@ public class LoginGUI {
         Label subtitle = new Label("La tua piattaforma per condividere passione culinaria");
         subtitle.setStyle("-fx-font-size: 14px; -fx-opacity: 0.7; -fx-text-alignment: center;");
         subtitle.setWrapText(true);
-        //subtitle.setMaxWidth(400);
+        // subtitle.setMaxWidth(400);
 
         headerBox.getChildren().addAll(mainTitle, subtitle);
 
         // Features cards - usando gli enum di FontAwesome5
         Object[][] features = {
-                {FontAwesomeSolid.UTENSILS, "Ricette Creative", "Crea e condividi piatti unici e originali con la nostra community di food lover.", "#FF6B6B"},
-                {FontAwesomeSolid.COFFEE, "Ingredienti Freschi", "Scopri ingredienti freschi e stagionali consigliati dai migliori chef.", "#4ECDC4"},
-                {FontAwesomeSolid.USERS, "Community Attiva", "Connettiti con altri appassionati, commenta e valuta le ricette.", "#FFE66D"}
+                { FontAwesomeSolid.UTENSILS, "Ricette Creative",
+                        "Crea e condividi piatti unici e originali con la nostra community di food lover.", "#FF6B6B" },
+                { FontAwesomeSolid.COFFEE, "Ingredienti Freschi",
+                        "Scopri ingredienti freschi e stagionali consigliati dai migliori chef.", "#4ECDC4" },
+                { FontAwesomeSolid.USERS, "Community Attiva",
+                        "Connettiti con altri appassionati, commenta e valuta le ricette.", "#FFE66D" }
         };
 
         VBox cardsContainer = new VBox(20);
@@ -86,7 +102,7 @@ public class LoginGUI {
         cardsContainer.setMaxWidth(450);
 
         for (Object[] f : features) {
-            HBox card = createFeatureCard(f[0], (String)f[1], (String)f[2], (String)f[3]);
+            HBox card = createFeatureCard(f[0], (String) f[1], (String) f[2], (String) f[3]);
             cardsContainer.getChildren().add(card);
         }
 
@@ -105,8 +121,7 @@ public class LoginGUI {
                 "-fx-background-color: -color-bg-default; " +
                         "-fx-background-radius: 12px; " +
                         "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0, 0, 3); " +
-                        "-fx-cursor: hand;"
-        );
+                        "-fx-cursor: hand;");
 
         // Hover effect
         card.setOnMouseEntered(e -> card.setStyle(
@@ -114,15 +129,13 @@ public class LoginGUI {
                         "-fx-background-radius: 12px; " +
                         "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0, 0, 5); " +
                         "-fx-cursor: hand; " +
-                        "-fx-translate-y: -2px;"
-        ));
+                        "-fx-translate-y: -2px;"));
 
         card.setOnMouseExited(e -> card.setStyle(
                 "-fx-background-color: -color-bg-default; " +
                         "-fx-background-radius: 12px; " +
                         "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0, 0, 3); " +
-                        "-fx-cursor: hand;"
-        ));
+                        "-fx-cursor: hand;"));
 
         // Icon container
         VBox iconContainer = new VBox();
@@ -133,19 +146,17 @@ public class LoginGUI {
 
         iconContainer.setStyle(
                 "-fx-background-color: " + accentColor + "20; " +
-                        "-fx-background-radius: 10px;"
-        );
+                        "-fx-background-radius: 10px;");
 
-        FontIcon icon = new FontIcon((FontAwesomeSolid)iconEnum);
+        FontIcon icon = new FontIcon((FontAwesomeSolid) iconEnum);
         icon.setIconSize(28);
-        icon.setIconColor(javafx.scene.paint.Color.web(accentColor));
+        icon.setIconColor(javafx.scene.paint.Color.valueOf(accentColor));
         iconContainer.getChildren().add(icon);
 
         // Text content
         VBox textBox = new VBox(5);
         textBox.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(textBox, Priority.ALWAYS);
-
 
         Label titleLabel = new Label(title);
         titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
@@ -162,37 +173,37 @@ public class LoginGUI {
 
     @FXML
     private void handleLogin() {
-        if(!usernameField.getText().isBlank() && !passwordField.getText().isBlank()){
-            if(mainController.login(usernameField.getText().strip(),passwordField.getText())){
+        if (!usernameField.getText().isBlank() && !passwordField.getText().isBlank()) {
+            if (mainController.login(usernameField.getText().strip(), passwordField.getText())) {
                 mainController.navigateToDashboard();
             }
-        }
-        else{
-            WarningDialog warningDialog=new WarningDialog("Attenzione!","Riempire tutti i campi.");
+        } else {
+            WarningDialog warningDialog = new WarningDialog("Attenzione!", "Riempire tutti i campi.");
             warningDialog.show();
         }
     }
+
     @FXML
     private void handleRegister() {
-        if(!checkEmail(registerEmailField.getText().strip())){
-            ErrorDialog err=new ErrorDialog("Registrazione Fallita","Formato email non valido");
+        if (!checkEmail(registerEmailField.getText().strip())) {
+            ErrorDialog err = new ErrorDialog("Registrazione Fallita", "Formato email non valido");
             err.show();
             return;
         }
         if (!areAllFieldsFilled()) {
-            WarningDialog warn= new WarningDialog("Attenzione!","Riempire tutti i campi.");
+            WarningDialog warn = new WarningDialog("Attenzione!", "Riempire tutti i campi.");
             warn.show();
             return;
         }
 
         if (!doPasswordsMatch()) {
-            WarningDialog warn= new WarningDialog("Attenzione!","Le password non coincidono.");
+            WarningDialog warn = new WarningDialog("Attenzione!", "Le password non coincidono.");
             warn.show();
             return;
         }
 
         if (!areTermsAccepted()) {
-            WarningDialog warn= new WarningDialog("Attenzione!","Per proseguire, accettare termini e condizioni.");
+            WarningDialog warn = new WarningDialog("Attenzione!", "Per proseguire, accettare termini e condizioni.");
             warn.show();
             return;
         }
@@ -228,22 +239,21 @@ public class LoginGUI {
                     registerPasswordField.getText(),
                     registerNameField.getText(),
                     registerSurnameField.getText(),
-                    registerEmailField.getText()
-            );
+                    registerEmailField.getText());
         } else {
             return mainController.registerChef(
                     registerUsernameField.getText(),
                     registerPasswordField.getText(),
                     registerNameField.getText(),
                     registerSurnameField.getText(),
-                    registerEmailField.getText()
-            );
+                    registerEmailField.getText());
         }
     }
+
     @FXML
     private void showRegisterForm() {
         loginPane.setVisible(false);
-        loginPane.setManaged(false); //così non occupa spazio nel layout.
+        loginPane.setManaged(false); // così non occupa spazio nel layout.
         registerPane.setVisible(true);
         registerPane.setManaged(true);
     }
