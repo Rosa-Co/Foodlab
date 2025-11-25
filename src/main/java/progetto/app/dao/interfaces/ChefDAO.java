@@ -1,4 +1,4 @@
-package progetto.app.dao.Interface;
+package progetto.app.dao.interfaces;
 
 import progetto.app.exception.DAOException;
 import progetto.app.model.Chef;
@@ -15,7 +15,7 @@ public interface ChefDAO {
 
     Chef getChefByUsername(String username) throws DAOException;
 
-    List<Chef> getallChefs() throws DAOException; //devo gestire la flag
+    List<Chef> getallChefs() throws DAOException; // devo gestire la flag
 
     void updateChef(Chef ch) throws DAOException;
 

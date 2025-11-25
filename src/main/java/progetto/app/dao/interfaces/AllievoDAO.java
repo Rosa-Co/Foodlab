@@ -1,4 +1,4 @@
-package progetto.app.dao.Interface;
+package progetto.app.dao.interfaces;
 
 import progetto.app.exception.DAOException;
 import progetto.app.model.Allievo;
@@ -17,7 +17,7 @@ public interface AllievoDAO {
 
     List<Allievo> getAllAllievos() throws DAOException;
 
-    void  updateAllievo(Allievo allievo) throws DAOException;
+    void updateAllievo(Allievo allievo) throws DAOException;
 
-    void  deleteAllievo(Allievo allievo) throws DAOException;
+    void deleteAllievo(Allievo allievo) throws DAOException;
 }

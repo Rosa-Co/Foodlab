@@ -3,18 +3,28 @@ package progetto.app;
 import atlantafx.base.theme.PrimerLight;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import progetto.app.controller.AppController;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class Main extends Application {
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws Exception {
+
+        Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
+
         AppController appController = AppController.getInstance();
+        AppController.setAppIcon(stage);
         appController.setPrimaryStage(stage);
+
+        // Imposta l'icona dell'applicazione
+        Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/progetto/app/logo.png")));
+        stage.getIcons().add(icon);
 
         appController.loadView("login", "/progetto/app/login.fxml");
         appController.loadView("dashboard", "/progetto/app/Dashboard.fxml");
@@ -22,10 +32,8 @@ public class Main extends Application {
         appController.loadView("courses", "/progetto/app/view/CoursesView.fxml");
         appController.loadView("report", "/progetto/app/view/ReportView.fxml");
 
-
-        Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
-
         Stage splashStage = new Stage();
+        AppController.setAppIcon(splashStage);
         splashStage.setResizable(false);
         splashStage.initStyle(StageStyle.TRANSPARENT);
 

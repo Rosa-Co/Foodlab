@@ -6,10 +6,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import progetto.app.controller.AppController;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
@@ -20,7 +23,7 @@ import java.util.ResourceBundle;
 public class DashboardGUI implements Initializable {
 
     @FXML private StackPane contentContainer;
-
+    @FXML private ImageView logoImage;
     // Sidebar buttons
     @FXML private Button homeButton;
     @FXML private Button coursesButton;
@@ -34,6 +37,16 @@ public class DashboardGUI implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        // Carica il logo
+        try {
+            Image logo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/progetto/app/logo.png")));
+            logoImage.setImage(logo);
+        } catch (Exception e) {
+            System.err.println("Logo non trovato, uso icona di default");
+            // Se il logo non viene trovato, non fa nulla (ImageView resta vuota)
+        }
+
         Platform.runLater(() -> {
             setupEventHandlers();
             loadInitialView();
@@ -142,9 +155,9 @@ public class DashboardGUI implements Initializable {
     /**
      * Imposta il nome dello chef nell'header
      */
-    public void setChefName(String name) {
+    public void setChefName() {
         if (chefNameLabel != null) {
-            chefNameLabel.setText("Chef " + name);
+            chefNameLabel.setText("Chef " + "PierLuigi");
         }
     }
 }

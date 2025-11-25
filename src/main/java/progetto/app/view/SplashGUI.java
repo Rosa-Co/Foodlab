@@ -11,7 +11,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import progetto.app.controller.FXMLLoaderManager;
 import progetto.app.controller.AppController;
 import progetto.app.controller.TypeWritingController;
 

@@ -49,7 +49,10 @@ public class LoginGUI {
     private void initialize() {
         setupFeatures();
     }
-
+    @FXML
+    private void showTerms() {
+        mainController.showTermsOfService();
+    }
     private void setupFeatures() {
         // Header section
         VBox headerBox = new VBox(8);

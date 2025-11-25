@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="progetto.app.view.AddCourseDialogController"
+      spacing="20"
+      style="-fx-background-color: -color-bg-default; -fx-padding: 24;">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <StackPane style="-fx-background-color: -color-accent-emphasis; -fx-background-radius: 10px; -fx-padding: 8;">
+            <FontIcon iconLiteral="fas-plus-circle" iconSize="20" style="-fx-icon-color: white;"/>
+        </StackPane>
+        <VBox spacing="2">
+            <Label text="Aggiungi Nuovo Corso" styleClass="title-3" style="-fx-font-weight: bold;"/>
+            <Label text="Compila i campi per creare un nuovo corso" style="-fx-opacity: 0.7; -fx-font-size: 12px;"/>
+        </VBox>
+    </HBox>
+
+    <Separator/>
+
+    <!-- Form -->
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+        <VBox spacing="16">
+
+            <!-- Categoria -->
+            <VBox spacing="6">
+                <Label text="Categoria *" style="-fx-font-weight: 600; -fx-font-size: 13px;">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-tag" iconSize="12" style="-fx-icon-color: -color-accent-emphasis;"/>
+                    </graphic>
+                </Label>
+                <ComboBox fx:id="categoryComboBox" promptText="Seleziona una categoria..." maxWidth="Infinity">
+                    <items>
+                        <javafx.collections.FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Cucina Italiana"/>
+                            <String fx:value="Cucina Internazionale"/>
+                            <String fx:value="Pasticceria"/>
+                            <String fx:value="Panificazione"/>
+                            <String fx:value="Cucina Vegetariana/Vegana"/>
+                            <String fx:value="Cucina Gourmet"/>
+                            <String fx:value="Street Food"/>
+                        </javafx.collections.FXCollections>
+                    </items>
+                </ComboBox>
+            </VBox>
+
+            <!-- Data di Inizio -->
+            <VBox spacing="6">
+                <Label text="Data di Inizio *" style="-fx-font-weight: 600; -fx-font-size: 13px;">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-calendar-day" iconSize="12" style="-fx-icon-color: -color-accent-emphasis;"/>
+                    </graphic>
+                </Label>
+                <DatePicker fx:id="startDatePicker" promptText="Seleziona la data..." maxWidth="Infinity"/>
+            </VBox>
+
+            <!-- Frequenza delle Sessioni -->
+            <VBox spacing="6">
+                <Label text="Frequenza delle Sessioni *" style="-fx-font-weight: 600; -fx-font-size: 13px;">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-redo" iconSize="12" style="-fx-icon-color: -color-accent-emphasis;"/>
+                    </graphic>
+                </Label>
+                <ComboBox fx:id="frequencyComboBox" promptText="Seleziona la frequenza..." maxWidth="Infinity">
+                    <items>
+                        <javafx.collections.FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Giornaliera"/>
+                            <String fx:value="Settimanale"/>
+                            <String fx:value="Bisettimanale"/>
+                            <String fx:value="Mensile"/>
+                        </javafx.collections.FXCollections>
+                    </items>
+                </ComboBox>
+            </VBox>
+
+            <!-- Numero di Sessioni -->
+            <VBox spacing="6">
+                <Label text="Numero di Sessioni *" style="-fx-font-weight: 600; -fx-font-size: 13px;">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-list-ol" iconSize="12" style="-fx-icon-color: -color-accent-emphasis;"/>
+                    </graphic>
+                </Label>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Spinner fx:id="sessionNumberSpinner" editable="true" prefWidth="150"
+                             initialValue="1" min="1" max="100" amountToStepBy="1"/>
+                    <Label text="sessioni totali" style="-fx-opacity: 0.7; -fx-font-size: 12px;"/>
+                </HBox>
+            </VBox>
+
+            <Separator/>
+
+            <!-- Sezione Modalità Sessioni -->
+            <VBox spacing="12">
+                <Label text="Modalità delle Sessioni" style="-fx-font-weight: bold; -fx-font-size: 14px;">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-chalkboard-teacher" iconSize="14" style="-fx-icon-color: -color-accent-emphasis;"/>
+                    </graphic>
+                </Label>
+
+                <Label text="Indica come si svolgeranno le sessioni del corso"
+                       style="-fx-opacity: 0.7; -fx-font-size: 12px; -fx-padding: 0 0 8 0;"/>
+
+                <!-- Toggle Group per Modalità -->
+                <VBox spacing="8">
+                    <RadioButton fx:id="onlineRadio" text="Tutte le sessioni online"
+                                 style="-fx-font-size: 13px;">
+                        <toggleGroup>
+                            <ToggleGroup fx:id="sessionModeGroup"/>
+                        </toggleGroup>
+                        <graphic>
+                            <FontIcon iconLiteral="fas-video" iconSize="14"/>
+                        </graphic>
+                    </RadioButton>
+
+                    <RadioButton fx:id="presenceRadio" text="Tutte le sessioni in presenza"
+                                 style="-fx-font-size: 13px;"
+                                 toggleGroup="$sessionModeGroup">
+                        <graphic>
+                            <FontIcon iconLiteral="fas-users" iconSize="14"/>
+                        </graphic>
+                    </RadioButton>
+
+                    <RadioButton fx:id="mixedRadio" text="Sessioni miste (online e in presenza)"
+                                 style="-fx-font-size: 13px;"
+                                 toggleGroup="$sessionModeGroup"
+                                 selected="true">
+                        <graphic>
+                            <FontIcon iconLiteral="fas-random" iconSize="14"/>
+                        </graphic>
+                    </RadioButton>
+                </VBox>
+
+                <!-- Info box per modalità mista -->
+                <HBox fx:id="mixedModeInfoBox" spacing="10"
+                      style="-fx-background-color: derive(-color-accent-emphasis, 90%); -fx-background-radius: 8px; -fx-padding: 12; -fx-border-color: -color-accent-emphasis; -fx-border-width: 1; -fx-border-radius: 8px;"
+                      managed="true" visible="true">
+                    <FontIcon iconLiteral="fas-info-circle" iconSize="16" style="-fx-icon-color: -color-accent-emphasis;"/>
+                    <Label text="Con la modalità mista, potrai specificare per ogni singola sessione se sarà online o in presenza durante la configurazione delle ricette."
+                           wrapText="true" style="-fx-font-size: 12px;" HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
+
+    <Separator/>
+
+    <!-- Footer con Azioni -->
+    <HBox spacing="12" alignment="CENTER_RIGHT">
+        <Label text="* Campi obbligatori" style="-fx-opacity: 0.5; -fx-font-size: 11px;" HBox.hgrow="ALWAYS"/>
+
+        <Button fx:id="cancelButton" text="Annulla" styleClass="flat" prefWidth="100">
+            <graphic>
+                <FontIcon iconLiteral="fas-times" iconSize="12"/>
+            </graphic>
+        </Button>
+
+        <Button fx:id="saveButton" text="Crea Corso" styleClass="accent" prefWidth="120">
+            <graphic>
+                <FontIcon iconLiteral="fas-check" iconSize="12"/>
+            </graphic>
+        </Button>
+    </HBox>
+
+</VBox>
