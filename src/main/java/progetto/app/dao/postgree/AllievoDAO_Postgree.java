@@ -14,26 +14,39 @@ import java.util.List;
 
 public class AllievoDAO_Postgree implements AllievoDAO {
 
+    private static final String UNIQUE_VIOLATION = "23505";
+
     public AllievoDAO_Postgree() {}
 
     @Override
-    public void addAllievo(Allievo allievo) throws DAOException{
+    public void addAllievo(Allievo allievo) throws DAOException {
+        String checkSql = "SELECT COUNT(*) FROM allievo WHERE LOWER(username) = LOWER(?) OR LOWER(email) = LOWER(?)";
+        try(Connection con=DatabaseConnection.getConnection()) {
+            try(PreparedStatement checkPs = con.prepareStatement(checkSql)) {
+                checkPs.setString(1, allievo.getUsername());
+                checkPs.setString(2, allievo.getEmail());
+                ResultSet checkRs = checkPs.executeQuery();
 
-        String sql = "INSERT INTO allievo (username,password,nome,cognome,email) VALUES (?,?,?,?,?)";
-        try(Connection con=DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, allievo.getUsername());
-            ps.setString(2, allievo.getPassword());
-            ps.setString(3, allievo.getName());
-            ps.setString(4, allievo.getSurname());
-            ps.setString(5, allievo.getEmail());
-            ResultSet rs = ps.getGeneratedKeys();
-            if(rs.next()) {
-                int id = rs.getInt(1);
-                allievo.setId(id);
+                if(checkRs.next() && checkRs.getInt(1) > 0) {
+                    throw new DuplicateUserException("Account già esistente.");
+                }
             }
-            ps.executeUpdate();
+            String sql = "INSERT INTO allievo (username,password,nome,cognome,email) VALUES (?,?,?,?,?)";
+            try(PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, allievo.getUsername());
+                ps.setString(2, allievo.getPassword());
+                ps.setString(3, allievo.getName());
+                ps.setString(4, allievo.getSurname());
+                ps.setString(5, allievo.getEmail());
+                ps.executeUpdate();
+                ResultSet rs = ps.getGeneratedKeys();
+                if(rs.next()) {
+                    int id = rs.getInt(1);
+                    allievo.setId(id);
+                }
+            }
         } catch(SQLException e) {
-            if ("23505".equals(e.getSQLState())){//!controlla if
+            if (UNIQUE_VIOLATION.equals(e.getSQLState())){
                 throw new DuplicateUserException("Account già esistente.");
             }
             else {

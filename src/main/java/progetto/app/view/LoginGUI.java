@@ -18,6 +18,7 @@ import progetto.app.dialog.InfoDialog;
 import progetto.app.dialog.WarningDialog;
 
 import static progetto.app.controller.AppController.checkEmail;
+import static progetto.app.controller.AppController.doPasswordsMatch;
 
 
 public class LoginGUI {
@@ -165,32 +166,27 @@ public class LoginGUI {
             }
         }
         else{
-            WarningDialog warningDialog=new WarningDialog("Attenzione!","Riempire tutti i campi.");
-            warningDialog.show();
+            mainController.showWarningDialog("Attenzione!","Riempire tutti i campi.");
         }
     }
     @FXML
     private void handleRegister() {//crea metodi nell'app controller per gestire le dialog e qui limitati a chiamare quei metodi
         if(!checkEmail(registerEmailField.getText().strip())){
-            ErrorDialog err=new ErrorDialog("Registrazione Fallita","Formato email non valido");
-            err.show();
+            mainController.showErrorDialog("Registrazione Fallita","Formato email non valido");
             return;
         }
         if (!areAllFieldsFilled()) {
-            WarningDialog warn= new WarningDialog("Attenzione!","Riempire tutti i campi.");
-            warn.show();
+            mainController.showWarningDialog("Attenzione!","Riempire tutti i campi.");
             return;
         }
 
-        if (!doPasswordsMatch()) {
-            WarningDialog warn= new WarningDialog("Attenzione!","Le password non coincidono.");
-            warn.show();
+        if (!doPasswordsMatch(registerPasswordField.getText(),registerConfirmPasswordField.getText())) {
+            mainController.showWarningDialog("Attenzione!","Le password non coincidono.");
             return;
         }
 
         if (!areTermsAccepted()) {
-            WarningDialog warn= new WarningDialog("Attenzione!","Per proseguire, accettare termini e condizioni.");
-            warn.show();
+            mainController.showWarningDialog("Attenzione!","Per proseguire, accettare termini e condizioni.");
             return;
         }
 
@@ -208,10 +204,6 @@ public class LoginGUI {
                 !registerEmailField.getText().trim().isEmpty() &&
                 !registerPasswordField.getText().trim().isEmpty() &&
                 !registerConfirmPasswordField.getText().trim().isEmpty();
-    }
-
-    private boolean doPasswordsMatch() {//fai metodo nell'app controller
-        return registerPasswordField.getText().equals(registerConfirmPasswordField.getText());
     }
 
     private boolean areTermsAccepted() {

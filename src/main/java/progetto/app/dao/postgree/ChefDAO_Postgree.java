@@ -12,30 +12,43 @@ import java.util.List;
 
 public class ChefDAO_Postgree implements ChefDAO {
 
+    private static final String UNIQUE_VIOLATION = "23505";
+
     public ChefDAO_Postgree() {}
 
     @Override
     public void addChef(Chef chef) throws DAOException{
+        String checkSql = "SELECT COUNT(*) FROM chef WHERE LOWER(username) = LOWER(?) OR LOWER(email) = LOWER(?)";
+        try(Connection con=DatabaseConnection.getConnection()) {
+            try(PreparedStatement checkPs = con.prepareStatement(checkSql)) {
+                checkPs.setString(1, chef.getUsername());
+                checkPs.setString(2, chef.getEmail());
+                ResultSet checkRs = checkPs.executeQuery();
 
-        String sql = "INSERT INTO chef (username,password,nome,cognome,email) VALUES (?,?,?,?,?)";
-        try(Connection con = DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1,chef.getUsername());
-            ps.setString(2,chef.getPassword());
-            ps.setString(3,chef.getName());
-            ps.setString(4,chef.getSurname());
-            ps.setString(5,chef.getEmail());
-            ResultSet rs = ps.getGeneratedKeys();
-            if(rs.next()) {
-                int id = rs.getInt(1);
-                chef.setId(id);
+                if(checkRs.next() && checkRs.getInt(1) > 0) {
+                    throw new DuplicateChefException("Account già esistente.");
+                }
             }
-            ps.executeUpdate();
+            String sql = "INSERT INTO chef (username,password,nome,cognome,email) VALUES (?,?,?,?,?)";
+            try(PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, chef.getUsername());
+                ps.setString(2, chef.getPassword());
+                ps.setString(3, chef.getName());
+                ps.setString(4, chef.getSurname());
+                ps.setString(5, chef.getEmail());
+                ps.executeUpdate();
+                ResultSet rs = ps.getGeneratedKeys();
+                if(rs.next()) {
+                    int id = rs.getInt(1);
+                    chef.setId(id);
+                }
+            }
         } catch(SQLException e) {
-            if ("23505".equals(e.getSQLState())){
+            if (UNIQUE_VIOLATION.equals(e.getSQLState())){
                 throw new DuplicateChefException("Account già esistente.");
             }
             else {
-                throw new DAOException("Impossibile aggiungere chef");
+                throw new DAOException("Impossibile aggiungere utente");
             }
         }
     }
