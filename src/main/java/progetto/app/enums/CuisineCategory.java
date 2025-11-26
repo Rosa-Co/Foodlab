@@ -3,7 +3,7 @@ package progetto.app.enums;
 public enum CuisineCategory {
     ITALIANA,
     FRANCESE,
-    GIAPPONESE,
+    ASIATICA,
     MESSICANA,
     PASTICCERIA,
     ALTRO

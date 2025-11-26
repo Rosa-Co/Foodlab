@@ -1,5 +1,5 @@
 module progetto.app {
-    requires javafx.controls;
+    requires transitive javafx.controls;
     requires javafx.fxml;
     requires transitive javafx.graphics;
 
@@ -24,8 +24,12 @@ module progetto.app {
     exports progetto.app.dao.Interface;
     exports progetto.app.exception;
     exports progetto.app.model;
+    exports progetto.app.dto;
+    exports progetto.app.enums;
 
     opens progetto.app.view to javafx.fxml;
+
     exports progetto.app.dialog;
+
     opens progetto.app.dialog to javafx.fxml;
 }

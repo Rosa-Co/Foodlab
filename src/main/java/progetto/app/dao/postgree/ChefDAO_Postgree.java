@@ -4,7 +4,6 @@ import progetto.app.dao.Interface.ChefDAO;
 import progetto.app.database.DatabaseConnection;
 import progetto.app.exception.*;
 import progetto.app.model.Chef;
-import progetto.app.model.User;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,29 +11,30 @@ import java.util.List;
 
 public class ChefDAO_Postgree implements ChefDAO {
 
-    public ChefDAO_Postgree() {}
+    public ChefDAO_Postgree() {
+    }
 
     @Override
-    public void addChef(Chef chef) throws DAOException{
+    public void addChef(Chef chef) throws DAOException {
 
         String sql = "INSERT INTO chef (username,password,nome,cognome,email) VALUES (?,?,?,?,?)";
-        try(Connection con = DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1,chef.getUsername());
-            ps.setString(2,chef.getPassword());
-            ps.setString(3,chef.getName());
-            ps.setString(4,chef.getSurname());
-            ps.setString(5,chef.getEmail());
+        try (Connection con = DatabaseConnection.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, chef.getUsername());
+            ps.setString(2, chef.getPassword());
+            ps.setString(3, chef.getName());
+            ps.setString(4, chef.getSurname());
+            ps.setString(5, chef.getEmail());
             ResultSet rs = ps.getGeneratedKeys();
-            if(rs.next()) {
+            if (rs.next()) {
                 int id = rs.getInt(1);
                 chef.setId(id);
             }
             ps.executeUpdate();
-        } catch(SQLException e) {
-            if ("23505".equals(e.getSQLState())){
+        } catch (SQLException e) {
+            if ("23505".equals(e.getSQLState())) {
                 throw new DuplicateChefException("Account già esistente.");
-            }
-            else {
+            } else {
                 throw new DAOException("Impossibile aggiungere chef");
             }
         }
@@ -44,14 +44,16 @@ public class ChefDAO_Postgree implements ChefDAO {
     public List<Chef> getallChefs() throws DAOException {
         List<Chef> chefs = new ArrayList<>();
         String sql = "SELECT * FROM chef";
-        try(Connection con = DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql); //provo a eseguire la query
-            ResultSet rs = ps.executeQuery()){ //e la metto in un resultset
-            while(rs.next()){ //leggo finchè posso
-                Chef ch= new Chef(rs.getString("username"),rs.getString("password"),rs.getString("nome"),rs.getString("cognome"),rs.getString("email"));
+        try (Connection con = DatabaseConnection.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql); // provo a eseguire la query
+                ResultSet rs = ps.executeQuery()) { // e la metto in un resultset
+            while (rs.next()) { // leggo finchè posso
+                Chef ch = new Chef(rs.getString("username"), rs.getString("password"), rs.getString("nome"),
+                        rs.getString("cognome"), rs.getString("email"));
                 chefs.add(ch);
             }
-        } catch(SQLException e) {
-            throw new DAOException("Impossibile ottenere gli chef",e);
+        } catch (SQLException e) {
+            throw new DAOException("Impossibile ottenere gli chef", e);
         }
         return chefs;
     }
@@ -59,82 +61,84 @@ public class ChefDAO_Postgree implements ChefDAO {
     public Chef getChefByUsername(String username) throws DAOException, UserNotFoundException {
         String sql = "SELECT * FROM chef WHERE LOWER(username)=LOWER(?)";
         Chef ch = null;
-        try(Connection con = DatabaseConnection.getConnection();PreparedStatement ps= con.prepareStatement(sql)){
-            ps.setString(1,username);
-            try(ResultSet rs=ps.executeQuery()){
-                if(rs.next()){
-                    ch= new Chef(rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
-                }else{
+        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, username);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    ch = new Chef(rs.getString("username"), rs.getString("password"), rs.getString("email"),
+                            rs.getString("nome"), rs.getString("cognome"));
+                } else {
                     throw new ChefNotFoundException("L'account non esiste");
                 }
             }
-        }catch(SQLException e){
-            throw new DAOException("Errore durante la ricerca per username dello chef",e);
+        } catch (SQLException e) {
+            throw new DAOException("Errore durante la ricerca per username dello chef", e);
         }
         return ch;
     }
 
     @Override
-    public Chef getChefByEmail(String email) throws DAOException,UserNotFoundException{
+    public Chef getChefByEmail(String email) throws DAOException, UserNotFoundException {
         String sql = "SELECT * FROM chef WHERE LOWER(email) = LOWER(?)";
         Chef ch = null;
-        try(Connection con = DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql)){
-            ps.setString(1,email);
-            try(ResultSet rs = ps.executeQuery()) {
+        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    ch = new Chef(rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("nome"), rs.getString("cognome"));
+                    ch = new Chef(rs.getString("username"), rs.getString("password"), rs.getString("email"),
+                            rs.getString("nome"), rs.getString("cognome"));
                 } else {
                     throw new ChefNotFoundException("Email non trovata");
                 }
             }
-        }catch(SQLException e) {
-            throw new DAOException("Errore durante la ricerca per email dello chef",e);
+        } catch (SQLException e) {
+            throw new DAOException("Errore durante la ricerca per email dello chef", e);
         }
         return ch;
     }
 
-
     @Override
     public Chef getChefById(int id) throws DAOException, UserNotFoundException {
-        String sql = "SELECT * FROM chef WHERE id = ?";//devo aggiungere la cond?
+        String sql = "SELECT * FROM chef WHERE id = ?";// devo aggiungere la cond?
         Chef ch = null;
-        try(Connection con = DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql)){
-            ps.setInt(1,id);
-            try(ResultSet rs = ps.executeQuery()) {
+        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    ch = new Chef(rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("nome"), rs.getString("cognome"));
+                    ch = new Chef(rs.getString("username"), rs.getString("password"), rs.getString("email"),
+                            rs.getString("nome"), rs.getString("cognome"));
                 } else {
                     throw new ChefNotFoundException("L'id non esiste");
                 }
             }
-        }catch(SQLException e) {
-            throw new DAOException("Errore durante la ricerca per id dello chef",e);
+        } catch (SQLException e) {
+            throw new DAOException("Errore durante la ricerca per id dello chef", e);
         }
         return ch;
     }
 
     @Override
     public void updateChef(Chef ch) throws DAOException {
-        String sql="UPDATE chef SET nome=?,cognome=?,email=?,username=? WHERE id=?";//devo aggiungere la cond?
-        try(Connection con = DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql)){
-            ps.setString(1,ch.getName());
-            ps.setString(2,ch.getSurname());
-            ps.setString(3,ch.getEmail());
-            ps.setString(4,ch.getUsername());
+        String sql = "UPDATE chef SET nome=?,cognome=?,email=?,username=? WHERE id=?";// devo aggiungere la cond?
+        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, ch.getName());
+            ps.setString(2, ch.getSurname());
+            ps.setString(3, ch.getEmail());
+            ps.setString(4, ch.getUsername());
             ps.executeUpdate();
-        } catch(SQLException e) {
-            throw new DAOException("Impossibile aggiornare utente",e);
+        } catch (SQLException e) {
+            throw new DAOException("Impossibile aggiornare utente", e);
         }
     }
 
     @Override
     public void deleteChef(Chef ch) throws DAOException {
-        String sql="DELETE FROM chef WHERE id=?";
-        try(Connection con = DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql)){
-            ps.setInt(1,ch.getId());
+        String sql = "DELETE FROM chef WHERE id=?";
+        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, ch.getId());
             ps.executeUpdate();
-        } catch(SQLException e) {
-            throw new DAOException("Impossibile eliminare utente",e);
+        } catch (SQLException e) {
+            throw new DAOException("Impossibile eliminare utente", e);
         }
     }
 }

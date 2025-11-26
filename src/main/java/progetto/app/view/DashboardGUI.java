@@ -1,6 +1,5 @@
 package progetto.app.view;
 
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -22,16 +21,23 @@ import java.util.ResourceBundle;
  */
 public class DashboardGUI implements Initializable {
 
-    @FXML private StackPane contentContainer;
-    @FXML private ImageView logoImage;
+    @FXML
+    private StackPane contentContainer;
+    @FXML
+    private ImageView logoImage;
     // Sidebar buttons
-    @FXML private Button homeButton;
-    @FXML private Button coursesButton;
-    @FXML private Button reportButton;
+    @FXML
+    private Button homeButton;
+    @FXML
+    private Button coursesButton;
+    @FXML
+    private Button reportButton;
 
     // Header
-    @FXML private Label chefNameLabel;
-    @FXML private MenuItem logoutMenuItem;
+    @FXML
+    private Label chefNameLabel;
+    @FXML
+    private MenuItem logoutMenuItem;
 
     private final AppController appController = AppController.getInstance();
 
@@ -105,7 +111,7 @@ public class DashboardGUI implements Initializable {
      */
     private void loadViewInContainer(String nameView) {
         Parent view = appController.getView(nameView);
-        try{
+        try {
             contentContainer.getChildren().clear();
             contentContainer.getChildren().add(view);
         } catch (Exception e) {

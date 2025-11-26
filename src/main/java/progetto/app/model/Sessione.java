@@ -7,8 +7,8 @@ public class Sessione {
     private int corsoId;
     private int numeroSessione;
     private LocalDate dataSessione;
-    private String modalita; // "Online" or "In Presenza"
-    private int durata; // in minutes
+    private String modalita;
+    private int durata;
     private String descrizione;
 
     public Sessione(int corsoId, int numeroSessione, LocalDate dataSessione, String modalita, int durata,

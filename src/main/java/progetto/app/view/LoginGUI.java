@@ -1,6 +1,5 @@
 package progetto.app.view;
 
-import atlantafx.base.controls.Notification;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -9,12 +8,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import progetto.app.controller.AppController;
 import progetto.app.dialog.ErrorDialog;
-import progetto.app.dialog.InfoDialog;
 import progetto.app.dialog.WarningDialog;
 
 import static progetto.app.controller.AppController.checkEmail;

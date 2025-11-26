@@ -12,6 +12,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.stage.Window;
 import javafx.util.Duration;
+import progetto.app.dto.CourseWithSessionsDTO;
 import progetto.app.model.*;
 import progetto.app.view.AddCourseDialogGUI;
 import progetto.app.dto.CourseDTO;
@@ -116,26 +117,22 @@ public class AppController {
     }
 
     public boolean showCreateCourseDialog(Window owner) {
+        Optional<CourseWithSessionsDTO> result;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/progetto/app/dialog/AddCourseDialog.fxml"));
-            DialogPane dialogPane = loader.load();
-            AddCourseDialogGUI controller = loader.getController();
-
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(dialogPane);
-            dialog.setTitle("Crea Nuovo Corso");
-            dialog.initOwner(owner);
-
-            Optional<ButtonType> result = dialog.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.FINISH) {
-                CourseDTO courseDTO = controller.getCourseDTO();
-                List<SessionDTO> sessionDTOs = controller.getSessionDTOs();
-                return createCourse(courseDTO, sessionDTOs);
-            }
+            result = AddCourseDialogGUI.showDialog(owner);
         } catch (IOException e) {
-            e.printStackTrace();
-            new ErrorDialog("Errore Interfaccia", "Impossibile aprire il dialogo creazione corso.").show();
+            new ErrorDialog("Errore grafico", "Impossibile caricare l'interfaccia.").show();
+            return false;
+        } catch (NullPointerException e) {
+            new ErrorDialog("Errore", "Si è verificato un errore nel caricamento dei dati.").show();
+            return false;
         }
+
+        if (result.isPresent()) {
+            CourseWithSessionsDTO data = result.get();
+            return createCourse(data.getCourse(), data.getSessions());
+        }
+
         return false;
     }
 
@@ -164,8 +161,17 @@ public class AppController {
                         sDto.getDescrizione());
                 getSessioneDAO().addSessione(sessione);
 
-                if ("In Presenza".equals(sDto.getModalita()) && sDto.getRicetta() != null) {
-                    getRicettaDAO().addRicettaSessione(sessione.getId(), sDto.getRicetta().getId());
+                if ("In Presenza".equals(sDto.getModalita()) && sDto.getRicette() != null) {
+                    for (RecipeDTO rDto : sDto.getRicette()) {
+                        int recipeId = rDto.getId();
+                        if (recipeId == 0) {
+                            // Create new recipe
+                            Ricetta newRicetta = new Ricetta(rDto.getNome(), rDto.getDescrizione(), "Personalizzata",
+                                    chefId);
+                            recipeId = getRicettaDAO().addRicetta(newRicetta);
+                        }
+                        getRicettaDAO().addRicettaSessione(sessione.getId(), recipeId);
+                    }
                 }
             }
             return true;
@@ -258,10 +264,6 @@ public class AppController {
 
     public void navigateToDashboard() {
         navigateTo("dashboard");
-    }
-
-    public void navigateToHome() {
-        navigateTo("home");
     }
 
     private void navigateTo(String name) {

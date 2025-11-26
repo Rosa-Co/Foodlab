@@ -9,5 +9,7 @@ public interface RicettaDAO {
 
     List<Ricetta> getRicetteByChef(int chefId) throws DAOException;
 
+    int addRicetta(Ricetta ricetta) throws DAOException;
+
     void addRicettaSessione(int sessioneId, int ricettaId) throws DAOException;
 }

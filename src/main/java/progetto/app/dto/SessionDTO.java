@@ -7,14 +7,15 @@ public class SessionDTO {
     private String modalita;
     private int durata;
     private String descrizione;
-    private RecipeDTO ricetta;
+    private java.util.List<RecipeDTO> ricette;
 
-    public SessionDTO(LocalDate data, String modalita, int durata, String descrizione, RecipeDTO ricetta) {
+    public SessionDTO(LocalDate data, String modalita, int durata, String descrizione,
+            java.util.List<RecipeDTO> ricette) {
         this.data = data;
         this.modalita = modalita;
         this.durata = durata;
         this.descrizione = descrizione;
-        this.ricetta = ricetta;
+        this.ricette = ricette;
     }
 
     public LocalDate getData() {
@@ -33,7 +34,7 @@ public class SessionDTO {
         return descrizione;
     }
 
-    public RecipeDTO getRicetta() {
-        return ricetta;
+    public java.util.List<RecipeDTO> getRicette() {
+        return ricette;
     }
 }

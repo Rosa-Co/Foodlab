@@ -5,7 +5,7 @@ public class Ricetta {
     private String nome;
     private String descrizione;
     private String categoria;
-    private int chefId;
+    private int chefId; // ? chef should create the recipe indipendently from the course.
 
     public Ricetta(String nome, String descrizione, String categoria, int chefId) {
         this.nome = nome;
