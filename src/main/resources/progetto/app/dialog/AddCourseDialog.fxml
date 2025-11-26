@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<DialogPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="progetto.app.view.AddCourseDialogGUI"
+            prefWidth="800" prefHeight="700"
+            style="-fx-background-color: -color-bg-default;">
+    
+    <header>
+        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 20 20 10 20; -fx-border-color: -color-border-muted; -fx-border-width: 0 0 1 0;">
+            <FontIcon iconLiteral="fas-plus-circle" iconSize="24" style="-fx-icon-color: -color-accent-fg;"/>
+            <Label text="Crea Nuovo Corso" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+        </HBox>
+    </header>
+
+    <content>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+            <VBox spacing="20" style="-fx-padding: 20;">
+                
+                <!-- Course Details Section -->
+                <VBox spacing="10" style="-fx-background-color: -color-bg-subtle; -fx-padding: 15; -fx-background-radius: 8;">
+                    <Label text="Informazioni Generali" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                    
+                    <GridPane hgap="15" vgap="15">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                        </columnConstraints>
+
+                        <!-- Title -->
+                        <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2">
+                            <Label text="Titolo Corso" style="-fx-font-weight: bold;"/>
+                            <TextField fx:id="titleField" promptText="Es. Cucina Italiana Base"/>
+                        </VBox>
+
+                        <!-- Category -->
+                        <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="Categoria" style="-fx-font-weight: bold;"/>
+                            <ComboBox fx:id="categoryComboBox" maxWidth="Infinity" promptText="Seleziona Categoria"/>
+                        </VBox>
+
+                        <!-- Start Date -->
+                        <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label text="Data Inizio" style="-fx-font-weight: bold;"/>
+                            <DatePicker fx:id="startDatePicker" maxWidth="Infinity"/>
+                        </VBox>
+
+                        <!-- Frequency -->
+                        <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                            <Label text="Frequenza" style="-fx-font-weight: bold;"/>
+                            <TextField fx:id="frequencyField" promptText="Es. Settimanale"/>
+                        </VBox>
+                    </GridPane>
+                </VBox>
+
+                <Separator/>
+
+                <!-- Dynamic Sessions Container -->
+                <VBox spacing="15">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="Programma del Corso" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="Aggiungi Sessione" onAction="#handleAddSession" style="-fx-background-color: -color-accent-emphasis; -fx-text-fill: -color-fg-emphasis;">
+                            <graphic>
+                                <FontIcon iconLiteral="fas-plus" style="-fx-icon-color: -color-fg-emphasis;"/>
+                            </graphic>
+                        </Button>
+                    </HBox>
+                    
+                    <VBox fx:id="sessionsContainer" spacing="15">
+                        <!-- Session items will be added here dynamically -->
+                    </VBox>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </content>
+
+    <buttonTypes>
+        <ButtonType fx:constant="CANCEL"/>
+        <ButtonType fx:constant="FINISH"/>
+    </buttonTypes>
+
+</DialogPane>

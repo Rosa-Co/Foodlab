@@ -1,6 +1,7 @@
 module progetto.app {
-    requires javafx.controls;
+    requires transitive javafx.controls;
     requires javafx.fxml;
+    requires transitive javafx.graphics;
 
     requires org.kordamp.bootstrapfx.core;
     requires atlantafx.base;
@@ -13,9 +14,22 @@ module progetto.app {
     requires jbcrypt;
 
     opens progetto.app to javafx.fxml;
+
     exports progetto.app;
     exports progetto.app.controller;
+
     opens progetto.app.controller to javafx.fxml;
+
     exports progetto.app.view;
+    exports progetto.app.dao.Interface;
+    exports progetto.app.exception;
+    exports progetto.app.model;
+    exports progetto.app.dto;
+    exports progetto.app.enums;
+
     opens progetto.app.view to javafx.fxml;
+
+    exports progetto.app.dialog;
+
+    opens progetto.app.dialog to javafx.fxml;
 }

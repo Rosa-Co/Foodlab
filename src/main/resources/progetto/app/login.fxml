@@ -72,7 +72,12 @@
                   </HBox>
                </VBox>
 
-               <CheckBox fx:id="acceptTermsCheck" text="Accetto i termini e condizioni" wrapText="true"/>
+               <HBox spacing="5" alignment="CENTER">
+                  <CheckBox fx:id="acceptTermsCheck"/>
+                  <Label text="Accetto i"/>
+                  <Hyperlink text="termini e condizioni" onAction="#showTerms"
+                             style="-fx-font-weight: bold; -fx-padding: 0;"/>
+               </HBox>
 
                <Button fx:id="registerButton" text="Registrati" onAction="#handleRegister" maxWidth="Infinity"
                        styleClass="accent"/>

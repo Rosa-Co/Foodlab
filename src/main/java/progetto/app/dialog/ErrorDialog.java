@@ -1,7 +1,7 @@
 package progetto.app.dialog;
 
+import atlantafx.base.theme.Styles;
 import javafx.scene.control.Alert;
-
 
 public class ErrorDialog extends BaseAlertDialog {
     public ErrorDialog(String header, String content) {
@@ -9,6 +9,8 @@ public class ErrorDialog extends BaseAlertDialog {
         getAlert().setAlertType(Alert.AlertType.ERROR);
         setTitleAndHeader("Errore", header);
         setContent(content);
+
+        getAlert().getDialogPane().getStyleClass().add(Styles.DANGER);
     }
 
     @Override

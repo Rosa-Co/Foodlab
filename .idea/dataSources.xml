@@ -14,5 +14,12 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="postgres@ep-spring-dust-adb2oyjm-pooler.c-2.us-east-1.aws.neon.tech" uuid="81841523-8514-421b-873e-34b5bcc6ae98">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ep-spring-dust-adb2oyjm-pooler.c-2.us-east-1.aws.neon.tech:5432/postgres</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

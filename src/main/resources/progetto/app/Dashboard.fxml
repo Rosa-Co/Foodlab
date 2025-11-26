@@ -4,70 +4,38 @@
 <?import javafx.geometry.*?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="progetto.app.view.DashboardGUI"
-            styleClass="dashboard-container">
+            prefWidth="1200" prefHeight="700"
+            style="-fx-background-color: -color-bg-default;">
 
-    <!-- Top Bar: Header con info chef -->
+    <!-- Top Bar: Header minimalista -->
     <top>
-        <HBox alignment="CENTER_LEFT"
-              spacing="20"
-              style="-fx-background-color: -color-bg-default; -fx-padding: 15 30; -fx-border-color: -color-border-default; -fx-border-width: 0 0 1 0;">
+        <HBox alignment="CENTER_LEFT" spacing="16"
+              style="-fx-background-color: -color-bg-default; -fx-padding: 12 20; -fx-border-color: -color-border-default; -fx-border-width: 0 0 1 0;">
 
-            <!-- Logo e titolo -->
-            <HBox alignment="CENTER_LEFT" spacing="15" HBox.hgrow="ALWAYS">
-                <FontIcon iconLiteral="fas-utensils" iconSize="28" style="-fx-icon-color: -color-accent-emphasis;"/>
-                <VBox spacing="2">
-                    <Label text="UninaFoodLab" styleClass="title-3"/>
-                    <Label text="Chef Dashboard" style="-fx-opacity: 0.7; -fx-font-size: 12px;"/>
-                </VBox>
+            <!-- Logo -->
+            <HBox alignment="CENTER_LEFT" spacing="10" HBox.hgrow="ALWAYS">
+                <ImageView fx:id="logoImage" fitHeight="32" fitWidth="32" preserveRatio="true">
+                    <HBox.margin>
+                        <Insets left="4"/>
+                    </HBox.margin>
+                </ImageView>
+                <Label text="UninaFoodLab" style="-fx-font-weight: bold; -fx-font-size: 15px;"/>
             </HBox>
-
-            <!-- Info chef e azioni -->
-            <HBox alignment="CENTER_RIGHT" spacing="15">
-                <!-- Notifiche -->
-                <Button styleClass="flat">
-                    <graphic>
-                        <StackPane>
-                            <FontIcon iconLiteral="fas-bell" iconSize="18"/>
-                            <Label text="3"
-                                   style="-fx-background-color: -color-danger-emphasis; -fx-text-fill: white; -fx-background-radius: 10px; -fx-padding: 2 5; -fx-font-size: 10px; -fx-font-weight: bold;"
-                                   translateX="8" translateY="-8"/>
-                        </StackPane>
-                    </graphic>
-                </Button>
-
-                <!-- Info chef -->
-                <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 5 15; -fx-background-color: -color-bg-subtle; -fx-background-radius: 20px;">
-                    <FontIcon iconLiteral="fas-user-circle" iconSize="24" style="-fx-icon-color: -color-accent-emphasis;"/>
-                    <VBox spacing="0">
-                        <Label fx:id="chefNameLabel" text="Chef Mario Rossi" style="-fx-font-weight: bold;"/>
-                        <Label text="Chef Professionista" style="-fx-opacity: 0.7; -fx-font-size: 11px;"/>
-                    </VBox>
-                </HBox>
-
-                <!-- Menu azioni -->
+            <!-- Info chef -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label fx:id="chefNameLabel" text="Chef Mario Rossi" style="-fx-font-size: 13px;"/>
                 <MenuButton styleClass="flat">
                     <graphic>
-                        <FontIcon iconLiteral="fas-ellipsis-v" iconSize="16"/>
+                        <FontIcon iconLiteral="fas-user-circle" iconSize="18"/>
                     </graphic>
                     <items>
-                        <MenuItem text="Profilo">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-user" iconSize="14"/>
-                            </graphic>
-                        </MenuItem>
-                        <MenuItem text="Impostazioni">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-cog" iconSize="14"/>
-                            </graphic>
-                        </MenuItem>
-                        <SeparatorMenuItem/>
                         <MenuItem fx:id="logoutMenuItem" text="Logout">
-                            <graphic>
-                                <FontIcon iconLiteral="fas-sign-out-alt" iconSize="14"/>
-                            </graphic>
+                            <graphic><FontIcon iconLiteral="fas-sign-out-alt" iconSize="12"/></graphic>
                         </MenuItem>
                     </items>
                 </MenuButton>
@@ -75,26 +43,19 @@
         </HBox>
     </top>
 
-    <!-- Left: Sidebar Navigation -->
+    <!-- Left: Sidebar compatta -->
     <left>
-        <VBox spacing="5"
-              prefWidth="250"
-              style="-fx-background-color: -color-bg-default; -fx-padding: 20 10; -fx-border-color: -color-border-default; -fx-border-width: 0 1 0 0;">
+        <VBox spacing="4" prefWidth="200"
+              style="-fx-background-color: -color-bg-default; -fx-padding: 16 8; -fx-border-color: -color-border-default; -fx-border-width: 0 1 0 0;">
 
-            <Label text="NAVIGAZIONE" style="-fx-opacity: 0.5; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 10 15;">
-                <padding>
-                    <Insets top="10" left="15" bottom="5"/>
-                </padding>
-            </Label>
-
-            <!-- Home -->
+            <!-- Dashboard -->
             <Button fx:id="homeButton" text="Dashboard" maxWidth="Infinity" alignment="CENTER_LEFT"
                     styleClass="accent">
                 <graphic>
-                    <FontIcon iconLiteral="fas-home" iconSize="16"/>
+                    <FontIcon iconLiteral="fas-home" iconSize="14"/>
                 </graphic>
                 <padding>
-                    <Insets top="12" right="15" bottom="12" left="15"/>
+                    <Insets top="10" right="12" bottom="10" left="12"/>
                 </padding>
             </Button>
 
@@ -102,10 +63,10 @@
             <Button fx:id="coursesButton" text="I Miei Corsi" maxWidth="Infinity" alignment="CENTER_LEFT"
                     styleClass="flat">
                 <graphic>
-                    <FontIcon iconLiteral="fas-book-open" iconSize="16"/>
+                    <FontIcon iconLiteral="fas-book-open" iconSize="14"/>
                 </graphic>
                 <padding>
-                    <Insets top="12" right="15" bottom="12" left="15"/>
+                    <Insets top="10" right="12" bottom="10" left="12"/>
                 </padding>
             </Button>
 
@@ -113,57 +74,39 @@
             <Button fx:id="reportButton" text="Report" maxWidth="Infinity" alignment="CENTER_LEFT"
                     styleClass="flat">
                 <graphic>
-                    <FontIcon iconLiteral="fas-chart-bar" iconSize="16"/>
+                    <FontIcon iconLiteral="fas-chart-bar" iconSize="14"/>
                 </graphic>
                 <padding>
-                    <Insets top="12" right="15" bottom="12" left="15"/>
+                    <Insets top="10" right="12" bottom="10" left="12"/>
                 </padding>
             </Button>
 
-            <Separator>
-                <VBox.margin>
-                    <Insets top="10" bottom="10"/>
-                </VBox.margin>
-            </Separator>
-
-            <Label text="RISORSE" style="-fx-opacity: 0.5; -fx-font-size: 11px; -fx-font-weight: bold;">
-                <padding>
-                    <Insets top="10" left="15" bottom="5"/>
-                </padding>
-            </Label>
+            <Separator style="-fx-padding: 8 0;"/>
 
             <!-- Ricette -->
             <Button text="Ricette" maxWidth="Infinity" alignment="CENTER_LEFT" styleClass="flat">
                 <graphic>
-                    <FontIcon iconLiteral="fas-clipboard-list" iconSize="16"/>
+                    <FontIcon iconLiteral="fas-clipboard-list" iconSize="14"/>
                 </graphic>
                 <padding>
-                    <Insets top="12" right="15" bottom="12" left="15"/>
+                    <Insets top="10" right="12" bottom="10" left="12"/>
                 </padding>
             </Button>
 
             <!-- Ingredienti -->
             <Button text="Ingredienti" maxWidth="Infinity" alignment="CENTER_LEFT" styleClass="flat">
                 <graphic>
-                    <FontIcon iconLiteral="fas-carrot" iconSize="16"/>
+                    <FontIcon iconLiteral="fas-carrot" iconSize="14"/>
                 </graphic>
                 <padding>
-                    <Insets top="12" right="15" bottom="12" left="15"/>
+                    <Insets top="10" right="12" bottom="10" left="12"/>
                 </padding>
             </Button>
 
-            <!-- Spacer per spingere info in basso -->
-            <Region VBox.vgrow="ALWAYS"/>
-
-            <!-- Info versione -->
-            <VBox spacing="5" style="-fx-padding: 15; -fx-background-color: -color-bg-subtle; -fx-background-radius: 8px;">
-                <Label text="Versione 1.0.0" style="-fx-opacity: 0.5; -fx-font-size: 10px;"/>
-                <Label text="© 2025 UninaFoodLab" style="-fx-opacity: 0.5; -fx-font-size: 10px;"/>
-            </VBox>
         </VBox>
     </left>
 
-    <!-- Center: Contenitore dinamico per le view -->
+    <!-- Center: Area contenuto -->
     <center>
         <StackPane fx:id="contentContainer" style="-fx-background-color: -color-bg-subtle;"/>
     </center>
