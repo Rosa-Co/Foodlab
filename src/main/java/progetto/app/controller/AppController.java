@@ -38,6 +38,9 @@ import progetto.app.dialog.ErrorDialog;
 import progetto.app.dialog.TermsOfServiceDialog;
 import progetto.app.dialog.WarningDialog;
 import progetto.app.exception.*;
+import progetto.app.model.Allievo;
+import progetto.app.model.Chef;
+import progetto.app.model.User;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -46,7 +49,8 @@ public class AppController {
     private static final Image APP_ICON = new Image(
             Objects.requireNonNull(Main.class.getResourceAsStream("/progetto/app/logo.png")));
 
-    private static AppController instance; // Singleton per accesso globale
+    private User userLogged;
+    private static AppController instance;  // Singleton per accesso globale
     private Stage primaryStage;
     private final Map<String, Parent> views = new HashMap<>();
     private final Map<String, Object> controllers = new HashMap<>();
@@ -294,18 +298,17 @@ public class AppController {
     }
 
     public boolean login(String username, String password) {
-        try {
-            if (allievoDAO.getAllievoByUsername(username) != null) {
-                return loginUser(username, password);
-            }
-        } catch (UserNotFoundException e) {
-            try {
-                if (chefDAO.getChefByUsername(username) != null) {
+        try{
+           if(allievoDAO.getAllievoByUsername(username) != null){
+               return loginUser(username, password);
+           }
+        }catch (UserNotFoundException e){
+            try{
+                if(chefDAO.getChefByUsername(username) != null){
                     return loginChef(username, password);
                 }
-            } catch (ChefNotFoundException e1) {
-                ErrorDialog errorDialog = new ErrorDialog(e.getMessage(), "Controlla i dati e riprova.");
-                errorDialog.show();
+            }catch (ChefNotFoundException e1){
+                showErrorDialog(e.getMessage(),"controlla i dati e riprova");
                 return false;
             }
         }
@@ -323,12 +326,10 @@ public class AppController {
             allievoDAO.addAllievo(allievo);
             return true;
         } catch (DuplicateUserException e) {
-            WarningDialog warn = new WarningDialog(e.getMessage(), "Passa alla schermata login.");
-            warn.show();
+            showWarningDialog(e.getMessage(),"Passa alla schermata login.");
             return false;
-        } catch (DAOException e) {
-            ErrorDialog errorDialog = new ErrorDialog("Errore durante la registrazione!", "Provare più tardi.");
-            errorDialog.show();
+        } catch (DAOException e){
+            showErrorDialog("Errore durante la registrazione!","Provare più tardi.");
             return false;
         }
     }
@@ -336,18 +337,16 @@ public class AppController {
     public boolean loginUser(String username, String password) {
         try {
             Allievo allievo = allievoDAO.getAllievoByUsername(username);
-            if (allievo == null)
-                return false;
+            if (allievo == null) return false;
+            this.userLogged = allievo;
             String hashedPassword = allievo.getPassword();
-            if (!BCrypt.checkpw(password, hashedPassword)) {
-                ErrorDialog errorDialog = new ErrorDialog("Password errata.", "Riprova.");
-                errorDialog.show();
+            if(!BCrypt.checkpw(password, hashedPassword)){
+                showErrorDialog("Password errata.","Riprova.");
                 return false;
             }
             return true;
         } catch (DAOException e) {
-            ErrorDialog errorDialog = new ErrorDialog("Errore in fase di login.", "Riprova.");
-            errorDialog.show();
+            showErrorDialog("Errore in fase di login.","Riprova.");
             return false;
         }
     }
@@ -362,53 +361,39 @@ public class AppController {
         try {
             chefDAO.addChef(chef);
             return true;
-        } catch (DuplicateChefException e) {
-            WarningDialog warn = new WarningDialog(e.getMessage(), "Passa alla schermata login.");
-            warn.show();
+        } catch(DuplicateChefException e){
+            showWarningDialog(e.getMessage(),"Passa alla schermata login.");
             return false;
         } catch (DAOException e1) {
-            ErrorDialog errorDialog = new ErrorDialog("Registrazione chef fallita!", "Provare più tardi.");
-            errorDialog.show();
+            showErrorDialog("Password errata","Riprova");
             return false;
         }
     }
 
-    public boolean loginChef(String username, String password) {
+    public boolean loginChef(String username, String password) throws UserNotFoundException{
         try {
             Chef chef = chefDAO.getChefByUsername(username);
-            if (chef == null)
-                return false;
+            if (chef == null) return false;
+            this.userLogged=chef;
             String hashedPassword = chef.getPassword();
-            if (!BCrypt.checkpw(password, hashedPassword)) {
-                ErrorDialog errorDialog = new ErrorDialog("Password errata", "Riprova");
-                errorDialog.show();
+            if(!BCrypt.checkpw(password, hashedPassword)){
+                showErrorDialog("Password errata","Riprova");
                 return false;
             }
             return true;
         } catch (DAOException e) {
-            ErrorDialog errorDialog = new ErrorDialog(e.getMessage(), "Riprova");
-            errorDialog.show();
+            showErrorDialog(e.getMessage(),"Riprova");
             return false;
         }
     }
 
     public boolean searchAllievo(String username, String email) {
         try {
-            if (allievoDAO.getAllievoByUsername(username) != null) {
-                WarningDialog warningDialog = new WarningDialog("Account già esistente.",
-                        "Proseguire sulla schermata di accesso.");
-                warningDialog.show();
-                return true;
-            }
-        } catch (UserNotFoundException e) {
-            try {
-                if (allievoDAO.getAllievoByEmail(email) != null) {
-                    WarningDialog warningDialog = new WarningDialog("Account già esistente.",
-                            "Proseguire sulla schermata di accesso.");
-                    warningDialog.show();
-                    return true;
-                }
-            } catch (UserNotFoundException e1) {
+            if(searchAllievoByUsername(username)) return true;
+        }catch (UserNotFoundException e) {
+            try{
+                if(searchAllievoByEmail(email)) return true;
+            }catch (UserNotFoundException e1) {
                 return false;
             }
         }
@@ -417,21 +402,11 @@ public class AppController {
 
     public boolean searchChef(String username, String email) {
         try {
-            if (chefDAO.getChefByUsername(username) != null) {
-                WarningDialog warningDialog = new WarningDialog("Account già esistente.",
-                        "Proseguire sulla schermata di accesso.");
-                warningDialog.show();
-                return true;
-            }
-        } catch (ChefNotFoundException e) {
-            try {
-                if (chefDAO.getChefByEmail(email) != null) {
-                    WarningDialog warningDialog = new WarningDialog("Account già esistente.",
-                            "Proseguire sulla schermata di accesso.");
-                    warningDialog.show();
-                    return true;
-                }
-            } catch (ChefNotFoundException e1) {
+            if(searchChefByUsername(username)) return true;
+        }catch (ChefNotFoundException e) {
+            try{
+                if(searchChefByEmail(email)) return true;
+            }catch (ChefNotFoundException e1) {
                 return false;
             }
         }
@@ -446,18 +421,47 @@ public class AppController {
         return matcher.matches();
     }
 
-    public boolean isLogged(String username) {
-        try {
-            return allievoDAO.getAllievoByUsername(username) != null;
-        } catch (UserNotFoundException e) {
-            try {
-                return chefDAO.getChefByUsername(username) != null;
-            } catch (ChefNotFoundException e1) {
-                ErrorDialog errorDialog = new ErrorDialog(e.getMessage(), "Riprova.");
-                errorDialog.show();
-                return false;
-            }
+    public static boolean doPasswordsMatch(String password, String confirmPassword) {
+        return password.equals(confirmPassword);
+    }
+
+    public boolean searchAllievoByUsername(String username) throws UserNotFoundException {
+        if (allievoDAO.getAllievoByUsername(username) != null) {
+            showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
+            return true;
         }
+        return false;
+    }
+    public boolean searchAllievoByEmail(String email) throws UserNotFoundException {
+        if (allievoDAO.getAllievoByEmail(email) != null) {
+            showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
+            return true;
+        }
+        return false;
+    }
+    public boolean searchChefByUsername(String username) throws UserNotFoundException {
+        if (chefDAO.getChefByUsername(username) != null) {
+            showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
+            return true;
+        }
+        return false;
+    }
+    public boolean searchChefByEmail(String email)throws UserNotFoundException {
+        if (chefDAO.getChefByEmail(email) != null) {
+            showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
+            return true;
+        }
+        return false;
+    }
+
+    public void showErrorDialog(String title, String message) {
+        ErrorDialog errorDialog = new ErrorDialog(title, message);
+        errorDialog.show();
+    }
+
+    public void showWarningDialog(String title, String message) {
+        WarningDialog warningDialog = new WarningDialog(title, message);
+        warningDialog.show();
     }
 
     public void showTermsOfService() {
