@@ -183,7 +183,7 @@ public class LoginGUI {
 
     @FXML
     private void handleRegister() {//crea metodi nell'app controller per gestire le dialog e qui limitati a chiamare quei metodi
-        if(!checkEmail(registerEmailField.getText().strip())){
+        if(!AppController.checkEmail(registerEmailField.getText().strip())){
             mainController.showErrorDialog("Registrazione Fallita","Formato email non valido");
             return;
         }
@@ -192,7 +192,7 @@ public class LoginGUI {
             return;
         }
 
-        if (!doPasswordsMatch(registerPasswordField.getText(),registerConfirmPasswordField.getText())) {
+        if (!AppController.doPasswordsMatch(registerPasswordField.getText(),registerConfirmPasswordField.getText())) {
             mainController.showWarningDialog("Attenzione!","Le password non coincidono.");
             return;
         }

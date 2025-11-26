@@ -432,6 +432,7 @@ public class AppController {
         }
         return false;
     }
+    
     public boolean searchAllievoByEmail(String email) throws UserNotFoundException {
         if (allievoDAO.getAllievoByEmail(email) != null) {
             showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
@@ -439,6 +440,7 @@ public class AppController {
         }
         return false;
     }
+
     public boolean searchChefByUsername(String username) throws ChefNotFoundException {
         if (chefDAO.getChefByUsername(username) != null) {
             showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
@@ -446,7 +448,8 @@ public class AppController {
         }
         return false;
     }
-    public boolean searchChefByEmail(String email)throws ChefNotFoundException {
+
+    public boolean searchChefByEmail(String email) throws ChefNotFoundException {
         if (chefDAO.getChefByEmail(email) != null) {
             showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
             return true;
