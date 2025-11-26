@@ -31,6 +31,7 @@ public class CorsoDAO_Postgree implements CorsoDAO {
                 }
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new DAOException("Impossibile aggiungere il corso", e);
         }
     }

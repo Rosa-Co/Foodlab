@@ -134,6 +134,7 @@ public class AddCourseDialogGUI implements Initializable {
         VBox recipesContainer = new VBox(10);
         Label recipesLabel = new Label("Ricette:");
         Button addRecipeBtn = new Button("Aggiungi Ricetta");
+
         addRecipeBtn.setOnAction(e -> addRecipeRow(components));
 
         VBox recipesWrapper = new VBox(5, recipesLabel, recipesContainer, addRecipeBtn);
@@ -142,10 +143,11 @@ public class AddCourseDialogGUI implements Initializable {
 
         components.recipesContainer = recipesContainer; // Link to components
 
+
         modeCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
-            boolean isPerson = "In Presenza".equals(newVal);
-            recipesWrapper.setVisible(isPerson);
-            recipesWrapper.setManaged(isPerson);
+            boolean isOnSite = "In Presenza".equals(newVal);
+            recipesWrapper.setVisible(isOnSite);
+            recipesWrapper.setManaged(isOnSite);
         });
 
         // Layout
@@ -211,6 +213,7 @@ public class AddCourseDialogGUI implements Initializable {
                     components.durationSpinner.getValue(),
                     components.descriptionArea.getText(),
                     sessionRecipes);
+
             results.add(sessionDTO);
         }
         return results;
@@ -254,8 +257,9 @@ public class AddCourseDialogGUI implements Initializable {
                 contentPane.getChildren().add(newRecipeBox);
             }
         };
+
         typeCombo.setOnAction(e -> updateView.run());
-        updateView.run();
+        updateView.run(); // ! ...
 
         Button removeBtn = new Button();
         removeBtn.setGraphic(new FontIcon("fas-trash"));
@@ -287,7 +291,7 @@ public class AddCourseDialogGUI implements Initializable {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setDialogPane(dialogPane);
         dialog.setTitle("Crea Nuovo Corso");
-        dialog.initOwner(owner);
+        dialog.initOwner(owner);  //split methods getResult
 
         Optional<ButtonType> result = dialog.showAndWait();
 

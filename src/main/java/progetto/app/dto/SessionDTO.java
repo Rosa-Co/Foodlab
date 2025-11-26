@@ -1,13 +1,14 @@
 package progetto.app.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class SessionDTO {
     private LocalDate data;
     private String modalita;
     private int durata;
     private String descrizione;
-    private java.util.List<RecipeDTO> ricette;
+    private List<RecipeDTO> ricette;
 
     public SessionDTO(LocalDate data, String modalita, int durata, String descrizione,
             java.util.List<RecipeDTO> ricette) {

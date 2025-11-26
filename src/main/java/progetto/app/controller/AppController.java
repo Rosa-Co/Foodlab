@@ -143,6 +143,7 @@ public class AppController {
     public boolean createCourse(CourseDTO courseDTO, List<SessionDTO> sessionDTOs) {
         try {
             int chefId = getCurrentChefId();
+            System.out.println("[DEBUG : ] Creating course for chef ID: " + chefId + " " + this.userLogged.getName());
 
             Corso corso = new Corso(
                     courseDTO.getTitolo(),
@@ -152,7 +153,7 @@ public class AppController {
                     sessionDTOs.size(),
                     chefId);
 
-            getCorsoDAO().addCorso(corso); // Sets ID in corso object
+            corsoDAO.addCorso(corso); // Sets ID in corso object
 
             int sessionNum = 1;
             for (SessionDTO sDto : sessionDTOs) {
@@ -163,18 +164,18 @@ public class AppController {
                         sDto.getModalita(),
                         sDto.getDurata(),
                         sDto.getDescrizione());
-                getSessioneDAO().addSessione(sessione);
+                sessioneDAO.addSessione(sessione);
 
                 if ("In Presenza".equals(sDto.getModalita()) && sDto.getRicette() != null) {
                     for (RecipeDTO rDto : sDto.getRicette()) {
                         int recipeId = rDto.getId();
                         if (recipeId == 0) {
                             // Create new recipe
-                            Ricetta newRicetta = new Ricetta(rDto.getNome(), rDto.getDescrizione(), "Personalizzata",
+                            Ricetta newRicetta = new Ricetta(rDto.getNome(), rDto.getDescrizione(), rDto.getCategoria(),
                                     chefId);
-                            recipeId = getRicettaDAO().addRicetta(newRicetta);
+                            recipeId = ricettaDAO.addRicetta(newRicetta); //returns id
                         }
-                        getRicettaDAO().addRicettaSessione(sessione.getId(), recipeId);
+                        ricettaDAO.addRicettaSessione(sessione.getId(), recipeId);
                     }
                 }
             }
@@ -189,8 +190,7 @@ public class AppController {
     }
 
     public int getCurrentChefId() {
-        // TODO: Implementare ancora
-        return 1;
+        return ((Chef) userLogged).getId();
     }
 
     /**
