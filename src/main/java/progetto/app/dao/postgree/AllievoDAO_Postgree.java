@@ -62,7 +62,7 @@ public class AllievoDAO_Postgree implements AllievoDAO {
         try(Connection con=DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql); //provo a eseguire la query
         ResultSet rs = ps.executeQuery()){ //e la metto in un resultset
             while(rs.next()){ //leggo finchè posso
-                Allievo usr= new Allievo(rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
+                Allievo usr= new Allievo(rs.getInt("id"),rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
                 allievos.add(usr);
             }
         } catch(SQLException e) {
@@ -79,10 +79,10 @@ public class AllievoDAO_Postgree implements AllievoDAO {
             ps.setString(1,email);
             try(ResultSet rs = ps.executeQuery()) {
                 if(rs.next()) {
-                    allievo = new Allievo(rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
+                    allievo = new Allievo(rs.getInt("id"),rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
                 }
                 else{
-                    throw new UserNotFoundException("L'email non è corretta.");
+                    throw new UserNotFoundException("L'email non esiste.");
                 }
             }
         }catch(SQLException e) {
@@ -99,10 +99,10 @@ public class AllievoDAO_Postgree implements AllievoDAO {
             ps.setInt(1,id);
             try(ResultSet rs = ps.executeQuery()) {
                 if(rs.next()) {
-                    allievo = new Allievo(rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
+                    allievo = new Allievo(rs.getInt("id"),rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
                 }
                 else {
-                    throw new UserNotFoundException("L'id non è corretto.");
+                    throw new UserNotFoundException("L'id non esiste.");
                 }
             }
             }catch(SQLException e) {
@@ -118,10 +118,10 @@ public class AllievoDAO_Postgree implements AllievoDAO {
             ps.setString(1,username);
             try(ResultSet rs = ps.executeQuery()) {
                 if(rs.next()) {
-                    allievo = new Allievo(rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
+                    allievo = new Allievo(rs.getInt("id"),rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
                 }
                 else{
-                    throw new UserNotFoundException("L'username non è corretto.");
+                    throw new UserNotFoundException("L'username non esiste.");
                 }
             }
         }catch(SQLException e) {

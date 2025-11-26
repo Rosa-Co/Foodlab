@@ -16,6 +16,15 @@ public abstract class User {
         this.password = password;
     }
 
+    public User(int id,String username, String password, String email, String name, String surname) {
+        this.id = id;
+        this.email = email;
+        this.username = username;
+        this.surname = surname;
+        this.name = name;
+        this.password = password;
+    }
+
     public int getId() {
         return id;
     }

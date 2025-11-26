@@ -60,7 +60,7 @@ public class ChefDAO_Postgree implements ChefDAO {
         try(Connection con = DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql); //provo a eseguire la query
             ResultSet rs = ps.executeQuery()){ //e la metto in un resultset
             while(rs.next()){ //leggo finchè posso
-                Chef ch= new Chef(rs.getString("username"),rs.getString("password"),rs.getString("nome"),rs.getString("cognome"),rs.getString("email"));
+                Chef ch= new Chef(rs.getInt("id"),rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
                 chefs.add(ch);
             }
         } catch(SQLException e) {
@@ -69,16 +69,16 @@ public class ChefDAO_Postgree implements ChefDAO {
         return chefs;
     }
 
-    public Chef getChefByUsername(String username) throws DAOException, UserNotFoundException {
+    public Chef getChefByUsername(String username) throws DAOException, ChefNotFoundException {
         String sql = "SELECT * FROM chef WHERE LOWER(username)=LOWER(?)";
         Chef ch = null;
         try(Connection con = DatabaseConnection.getConnection();PreparedStatement ps= con.prepareStatement(sql)){
             ps.setString(1,username);
             try(ResultSet rs=ps.executeQuery()){
                 if(rs.next()){
-                    ch= new Chef(rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
+                    ch= new Chef(rs.getInt("id"),rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
                 }else{
-                    throw new ChefNotFoundException("L'account non esiste");
+                    throw new ChefNotFoundException("L'username non esiste");
                 }
             }
         }catch(SQLException e){
@@ -88,16 +88,16 @@ public class ChefDAO_Postgree implements ChefDAO {
     }
 
     @Override
-    public Chef getChefByEmail(String email) throws DAOException,UserNotFoundException{
+    public Chef getChefByEmail(String email) throws DAOException,ChefNotFoundException{
         String sql = "SELECT * FROM chef WHERE LOWER(email) = LOWER(?)";
         Chef ch = null;
         try(Connection con = DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql)){
             ps.setString(1,email);
             try(ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    ch = new Chef(rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("nome"), rs.getString("cognome"));
+                    ch= new Chef(rs.getInt("id"),rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
                 } else {
-                    throw new ChefNotFoundException("Email non trovata");
+                    throw new ChefNotFoundException("L'email non esiste");
                 }
             }
         }catch(SQLException e) {
@@ -108,14 +108,14 @@ public class ChefDAO_Postgree implements ChefDAO {
 
 
     @Override
-    public Chef getChefById(int id) throws DAOException, UserNotFoundException {
+    public Chef getChefById(int id) throws DAOException, ChefNotFoundException {
         String sql = "SELECT * FROM chef WHERE id = ?";//devo aggiungere la cond?
         Chef ch = null;
         try(Connection con = DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql)){
             ps.setInt(1,id);
             try(ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    ch = new Chef(rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("nome"), rs.getString("cognome"));
+                    ch= new Chef(rs.getInt("id"),rs.getString("username"),rs.getString("password"),rs.getString("email"),rs.getString("nome"),rs.getString("cognome"));
                 } else {
                     throw new ChefNotFoundException("L'id non esiste");
                 }

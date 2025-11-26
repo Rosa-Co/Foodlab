@@ -197,7 +197,7 @@ public class AppController {
         }
     }
 
-    public boolean loginUser(String username, String password) {
+    public boolean loginUser(String username, String password) throws UserNotFoundException{
         try {
             Allievo allievo = allievoDAO.getAllievoByUsername(username);
             if (allievo == null) return false;
@@ -232,7 +232,7 @@ public class AppController {
         }
     }
 
-    public boolean loginChef(String username, String password) throws UserNotFoundException{
+    public boolean loginChef(String username, String password) throws ChefNotFoundException{
         try {
             Chef chef = chefDAO.getChefByUsername(username);
             if (chef == null) return false;
@@ -300,14 +300,14 @@ public class AppController {
         }
         return false;
     }
-    public boolean searchChefByUsername(String username) throws UserNotFoundException {
+    public boolean searchChefByUsername(String username) throws ChefNotFoundException {
         if (chefDAO.getChefByUsername(username) != null) {
             showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
             return true;
         }
         return false;
     }
-    public boolean searchChefByEmail(String email)throws UserNotFoundException {
+    public boolean searchChefByEmail(String email)throws ChefNotFoundException {
         if (chefDAO.getChefByEmail(email) != null) {
             showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
             return true;
