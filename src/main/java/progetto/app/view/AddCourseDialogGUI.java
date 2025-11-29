@@ -20,6 +20,7 @@ import progetto.app.controller.AppController;
 import progetto.app.dto.CourseDTO;
 import progetto.app.dto.RecipeDTO;
 import progetto.app.dto.SessionDTO;
+import progetto.app.enums.Frequency;
 
 import java.io.IOException;
 import java.net.URL;
@@ -35,7 +36,7 @@ public class AddCourseDialogGUI implements Initializable {
     @FXML
     private DatePicker startDatePicker;
     @FXML
-    private TextField frequencyField;
+    private ComboBox<String> frequencyComboBox;
     @FXML
     private VBox sessionsContainer;
 
@@ -47,6 +48,7 @@ public class AddCourseDialogGUI implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setupCategoryComboBox();
+        setupFrequencyComboBox();
         loadRecipes();
         // Add one initial session
         handleAddSession();
@@ -55,6 +57,12 @@ public class AddCourseDialogGUI implements Initializable {
     private void setupCategoryComboBox() {
         for (CuisineCategory category : CuisineCategory.values()) {
             categoryComboBox.getItems().add(category.name());
+        }
+    }
+
+    private void setupFrequencyComboBox() {
+        for (Frequency frequency : Frequency.values()) {
+            frequencyComboBox.getItems().add(frequency.name()); //? capisci perchè da warning nonostante questo metodo
         }
     }
 
@@ -181,7 +189,7 @@ public class AddCourseDialogGUI implements Initializable {
                     titleField.getText(),
                     categoryComboBox.getValue(),
                     startDatePicker.getValue(),
-                    frequencyField.getText());
+                    frequencyComboBox.getValue());
         }
         return null;
     }
@@ -201,7 +209,7 @@ public class AddCourseDialogGUI implements Initializable {
         return !titleField.getText().isBlank()
                 && categoryComboBox.getValue() != null
                 && startDatePicker.getValue() != null
-                && frequencyField.getText() != null;
+                && frequencyComboBox.getValue() != null;
     }
 
     public boolean isStartDateValid(){

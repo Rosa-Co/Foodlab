@@ -52,7 +52,7 @@
                         <!-- Frequency -->
                         <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="2">
                             <Label text="Frequenza" style="-fx-font-weight: bold;"/>
-                            <TextField fx:id="frequencyField" promptText="Es. Settimanale"/>
+                            <ComboBox fx:id="frequencyComboBox" />
                         </VBox>
                     </GridPane>
                 </VBox>
