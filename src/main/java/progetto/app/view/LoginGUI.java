@@ -224,7 +224,7 @@ public class LoginGUI {
 
     private boolean performRegistration() {
         if (userTypeRadio.isSelected()) {
-            return mainController.registerUser(
+            return mainController.registerAllievo(
                     registerUsernameField.getText(),
                     registerPasswordField.getText(),
                     registerNameField.getText(),

@@ -7,9 +7,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
 import javafx.stage.Window;
 import javafx.util.Duration;
 import progetto.app.dto.CourseWithSessionsDTO;
@@ -300,9 +297,9 @@ public class AppController {
     public boolean login(String username, String password) {
         try{
            if(allievoDAO.getAllievoByUsername(username) != null){
-               return loginUser(username, password);
+               return loginAllievo(username, password);
            }
-        }catch (UserNotFoundException e){
+        }catch (AllievoNotFoundException e){
             try{
                 if(chefDAO.getChefByUsername(username) != null){
                     return loginChef(username, password);
@@ -315,7 +312,7 @@ public class AppController {
         return false;
     }
 
-    public boolean registerUser(String username, String password, String name, String surname, String email) {
+    public boolean registerAllievo(String username, String password, String name, String surname, String email) {
         if (searchChef(username, email))
             return false;
 
@@ -325,7 +322,7 @@ public class AppController {
         try {
             allievoDAO.addAllievo(allievo);
             return true;
-        } catch (DuplicateUserException e) {
+        } catch (DuplicateAllievoException e) {
             showWarningDialog(e.getMessage(),"Passa alla schermata login.");
             return false;
         } catch (DAOException e){
@@ -334,7 +331,7 @@ public class AppController {
         }
     }
 
-    public boolean loginUser(String username, String password) throws UserNotFoundException{
+    public boolean loginAllievo(String username, String password) throws AllievoNotFoundException {
         try {
             Allievo allievo = allievoDAO.getAllievoByUsername(username);
             if (allievo == null) return false;
@@ -390,10 +387,10 @@ public class AppController {
     public boolean searchAllievo(String username, String email) {
         try {
             if(searchAllievoByUsername(username)) return true;
-        }catch (UserNotFoundException e) {
+        }catch (AllievoNotFoundException e) {
             try{
                 if(searchAllievoByEmail(email)) return true;
-            }catch (UserNotFoundException e1) {
+            }catch (AllievoNotFoundException e1) {
                 return false;
             }
         }
@@ -425,7 +422,7 @@ public class AppController {
         return password.equals(confirmPassword);
     }
 
-    public boolean searchAllievoByUsername(String username) throws UserNotFoundException {
+    public boolean searchAllievoByUsername(String username) throws AllievoNotFoundException {
         if (allievoDAO.getAllievoByUsername(username) != null) {
             showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
             return true;
@@ -433,7 +430,7 @@ public class AppController {
         return false;
     }
     
-    public boolean searchAllievoByEmail(String email) throws UserNotFoundException {
+    public boolean searchAllievoByEmail(String email) throws AllievoNotFoundException {
         if (allievoDAO.getAllievoByEmail(email) != null) {
             showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
             return true;

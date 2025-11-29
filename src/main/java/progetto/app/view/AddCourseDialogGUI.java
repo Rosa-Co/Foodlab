@@ -199,6 +199,9 @@ public class AddCourseDialogGUI implements Initializable {
                         // New Recipe
                         String name = rc.nameField.getText();
                         String desc = rc.descArea.getText();
+                        if(name.isBlank() || desc.isBlank()){
+                            appController.showWarningDialog("Attenzione!","Riempire tutti i campi.");
+                        }
                         if (name != null && !name.trim().isEmpty()) {
                             // ID 0 indicates new recipe
                             sessionRecipes.add(new RecipeDTO(0, name, desc, "Personalizzata"));
