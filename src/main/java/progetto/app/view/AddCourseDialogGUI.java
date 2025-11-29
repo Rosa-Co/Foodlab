@@ -23,10 +23,8 @@ import progetto.app.dto.SessionDTO;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.time.LocalDate;
+import java.util.*;
 
 public class AddCourseDialogGUI implements Initializable {
 
@@ -178,11 +176,36 @@ public class AddCourseDialogGUI implements Initializable {
     }
 
     public CourseDTO getCourseDTO() {
-        return new CourseDTO(
-                titleField.getText(),
-                categoryComboBox.getValue(),
-                startDatePicker.getValue(),
-                frequencyField.getText());
+        if(isCourseDTOValid()) {
+            return new CourseDTO(
+                    titleField.getText(),
+                    categoryComboBox.getValue(),
+                    startDatePicker.getValue(),
+                    frequencyField.getText());
+        }
+        return null;
+    }
+
+    public boolean isCourseDTOValid() {
+        if(!areCourseFieldsFilled()){
+            appController.showWarningDialog("Attenzione!","Riempire tutti i campi del corso.");
+            return false;
+        }
+        if(!isStartDateValid()){
+            appController.showWarningDialog("Attenzione!","Il corso non può iniziare nel passato!");
+            return false;
+        }
+        return true;
+    }
+    public boolean areCourseFieldsFilled() {
+        return !titleField.getText().isBlank()
+                && categoryComboBox.getValue() != null
+                && startDatePicker.getValue() != null
+                && frequencyField.getText() != null;
+    }
+
+    public boolean isStartDateValid(){
+        return startDatePicker.getValue().isAfter(LocalDate.now());
     }
 
     public List<SessionDTO> getSessionDTOs() {
@@ -201,13 +224,22 @@ public class AddCourseDialogGUI implements Initializable {
                         String desc = rc.descArea.getText();
                         if(name.isBlank() || desc.isBlank()){
                             appController.showWarningDialog("Attenzione!","Riempire tutti i campi.");
-                        }
-                        if (name != null && !name.trim().isEmpty()) {
+                            return null;
+                        } else{
                             // ID 0 indicates new recipe
                             sessionRecipes.add(new RecipeDTO(0, name, desc, "Personalizzata"));
                         }
                     }
                 }
+            }
+            if (!components.isSessionValid(components)) {
+                appController.showWarningDialog("Attenzione!", "Riempire tutti i campi delle sessioni.");
+                return null;
+            }
+
+            if(!components.isDateValid(components, startDatePicker)) {
+                appController.showWarningDialog("Attenzione!","La data delle sessioni deve essere conseguente a quella di inizio del corso.");
+                return null;
             }
 
             SessionDTO sessionDTO = new SessionDTO(
@@ -219,6 +251,7 @@ public class AddCourseDialogGUI implements Initializable {
 
             results.add(sessionDTO);
         }
+
         return results;
     }
 
@@ -329,6 +362,15 @@ public class AddCourseDialogGUI implements Initializable {
             this.modeCombo = m;
             this.durationSpinner = du;
             this.descriptionArea = de;
+        }
+
+        public boolean isSessionValid(SessionUIComponents components) {
+            return components.datePicker.getValue() != null
+                    && components.modeCombo.getValue() != null
+                    && !components.descriptionArea.getText().isBlank();
+        }
+        public boolean isDateValid(SessionUIComponents components, DatePicker date) {
+            return components.datePicker.getValue().isAfter(date.getValue());
         }
     }
 
