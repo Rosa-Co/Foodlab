@@ -49,9 +49,21 @@ public class AddCourseDialogGUI implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         setupCategoryComboBox();
         setupFrequencyComboBox();
+        setupStartDatePicker();
         loadRecipes();
         // Add one initial session
         handleAddSession();
+    }
+
+    private void setupStartDatePicker() {
+        startDatePicker.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                LocalDate oggi = LocalDate.now();
+                setDisable(empty || date.isBefore(oggi));
+            }
+        });
     }
 
     private void setupCategoryComboBox() {
@@ -121,6 +133,14 @@ public class AddCourseDialogGUI implements Initializable {
         // Date
         datePicker.setPromptText("Data Sessione");
         datePicker.setMaxWidth(Double.MAX_VALUE);
+        datePicker.setDayCellFactory(picker -> new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate date, boolean empty) {
+                        super.updateItem(date, empty);
+                        LocalDate dataInizio = startDatePicker.getValue();
+                        setDisable(empty || date.isBefore(Objects.requireNonNullElseGet(dataInizio, LocalDate::now)));
+                    }
+                });
 
         // Mode
         modeCombo.getItems().addAll("Online", "In Presenza");
