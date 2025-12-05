@@ -280,7 +280,88 @@ public class AddCourseDialogGUI implements Initializable {
             results.add(sessionDTO);
         }
 
+        if(!validateFrequency(results)){
+            return null;
+        }
+
         return results;
+    }
+
+    private boolean validateFrequency(List<SessionDTO> sessions) {
+        if (frequencyComboBox.getValue() == null || sessions.isEmpty()) {
+            return true;
+        }
+
+        String frequency = frequencyComboBox.getValue();
+        List<LocalDate> dates = new ArrayList<>();
+        for (SessionDTO session : sessions) {
+            dates.add(session.getData());
+        }
+        dates.sort(LocalDate::compareTo);
+
+        switch (frequency) {
+            case "Settimanale": // 1 volta a settimana
+                return validateWeeklyFrequency(dates, 1);
+
+            case "Bisettimanale": // 2 volte a settimana
+                return validateWeeklyFrequency(dates, 2);
+
+            case "Trisettimanale": // 3 volte a settimana
+                return validateWeeklyFrequency(dates, 3);
+
+            case "Mensile": // 1 volta al mese
+                return validateMonthlyFrequency(dates);
+
+            default:
+                return true;
+        }
+    }
+
+    
+    private boolean validateWeeklyFrequency(List<LocalDate> dates, int maxSessionsPerWeek) {
+        Map<String, Integer> sessionsPerWeek = new HashMap<>();
+
+        for (LocalDate date : dates) {
+            // Calcola l'anno e il numero della settimana
+            int year = date.getYear();
+            int weekOfYear = date.get(java.time.temporal.WeekFields.ISO.weekOfWeekBasedYear());
+            String weekKey = year + "-W" + weekOfYear;
+
+            sessionsPerWeek.put(weekKey, sessionsPerWeek.getOrDefault(weekKey, 0) + 1);
+
+            if (sessionsPerWeek.get(weekKey) > maxSessionsPerWeek) {
+                String message = String.format(
+                        "Attenzione! Hai inserito %d sessioni nella settimana %d del %d.\n" +
+                                "La frequenza selezionata permette massimo %d sessione/i a settimana.",
+                        sessionsPerWeek.get(weekKey), weekOfYear, year, maxSessionsPerWeek
+                );
+                appController.showWarningDialog("Frequenza Non Rispettata", message);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean validateMonthlyFrequency(List<LocalDate> dates) {
+        Map<String, Integer> sessionsPerMonth = new HashMap<>();
+
+        for (LocalDate date : dates) {
+            String monthKey = date.getYear() + "-" + date.getMonthValue();
+            sessionsPerMonth.put(monthKey, sessionsPerMonth.getOrDefault(monthKey, 0) + 1);
+
+            if (sessionsPerMonth.get(monthKey) > 1) {
+                String message = String.format(
+                        "Attenzione! Hai inserito %d sessioni nel mese di %s %d.\n" +
+                                "La frequenza mensile permette massimo 1 sessione al mese.",
+                        sessionsPerMonth.get(monthKey), date.getMonth(), date.getYear()
+                );
+                appController.showWarningDialog("Frequenza Non Rispettata", message);
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void addRecipeRow(SessionUIComponents sessionComponents) {
