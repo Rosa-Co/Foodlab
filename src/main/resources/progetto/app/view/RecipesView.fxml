@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="progetto.app.view.RecipesViewGUI"
+      spacing="20"
+      style="-fx-padding: 30;">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <VBox>
+            <Label text="Le Mie Ricette" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: -color-fg-default;"/>
+            <Label text="Gestisci il tuo ricettario personale" style="-fx-font-size: 14px; -fx-text-fill: -color-fg-muted;"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="createRecipeButton" text="Nuova Ricetta" styleClass="accent">
+            <graphic>
+                <FontIcon iconLiteral="fas-plus" iconSize="14"/>
+            </graphic>
+        </Button>
+    </HBox>
+
+    <!-- Grid Container for Cards -->
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+        <VBox fx:id="recipesContainer" spacing="15" style="-fx-padding: 5;">
+             <!-- Cards will be added here dynamically -->
+        </VBox>
+    </ScrollPane>
+
+</VBox>

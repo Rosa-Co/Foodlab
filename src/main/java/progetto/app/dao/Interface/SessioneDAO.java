@@ -8,4 +8,8 @@ public interface SessioneDAO {
     void addSessione(Sessione sessione) throws DAOException;
 
     List<Sessione> getSessioniByCorso(int corsoId) throws DAOException;
+
+    void deleteSessione(int id) throws DAOException;
+
+    void updateSessione(Sessione sessione) throws DAOException;
 }

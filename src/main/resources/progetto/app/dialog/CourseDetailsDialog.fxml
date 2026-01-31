@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="progetto.app.view.CourseDetailsDialogGUI"
+      spacing="20" style="-fx-padding: 20; -fx-background-color: white; -fx-pref-width: 600; -fx-pref-height: 500;">
+
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label fx:id="courseTitleLabel" text="Dettagli Corso" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+    </HBox>
+
+    <Label text="Sessioni del corso:" style="-fx-font-size: 14px; -fx-text-fill: #555;"/>
+
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+        <VBox fx:id="sessionsContainer" spacing="10" style="-fx-background-color: #f9f9f9; -fx-padding: 10;">
+            <!-- Session cards will be added here dynamically -->
+        </VBox>
+    </ScrollPane>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Button fx:id="closeButton" text="Chiudi" style="-fx-background-color: #bdc3c7; -fx-text-fill: white; -fx-cursor: hand;"/>
+    </HBox>
+
+</VBox>

@@ -70,21 +70,9 @@
                 </padding>
             </Button>
 
-            <!-- Report -->
-            <Button fx:id="reportButton" text="Report" maxWidth="Infinity" alignment="CENTER_LEFT"
-                    styleClass="flat">
-                <graphic>
-                    <FontIcon iconLiteral="fas-chart-bar" iconSize="14"/>
-                </graphic>
-                <padding>
-                    <Insets top="10" right="12" bottom="10" left="12"/>
-                </padding>
-            </Button>
-
-            <Separator style="-fx-padding: 8 0;"/>
 
             <!-- Ricette -->
-            <Button text="Ricette" maxWidth="Infinity" alignment="CENTER_LEFT" styleClass="flat">
+            <Button fx:id="recipesButton" text="Ricette" maxWidth="Infinity" alignment="CENTER_LEFT" styleClass="flat">
                 <graphic>
                     <FontIcon iconLiteral="fas-clipboard-list" iconSize="14"/>
                 </graphic>
@@ -93,10 +81,10 @@
                 </padding>
             </Button>
 
-            <!-- Ingredienti -->
-            <Button text="Ingredienti" maxWidth="Infinity" alignment="CENTER_LEFT" styleClass="flat">
+            <!-- Notifiche -->
+            <Button fx:id="notificationsButton" text="Notifiche" maxWidth="Infinity" alignment="CENTER_LEFT" styleClass="flat">
                 <graphic>
-                    <FontIcon iconLiteral="fas-carrot" iconSize="14"/>
+                    <FontIcon iconLiteral="fas-bell" iconSize="14"/>
                 </graphic>
                 <padding>
                     <Insets top="10" right="12" bottom="10" left="12"/>

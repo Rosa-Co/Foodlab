@@ -22,7 +22,7 @@
         <Region HBox.hgrow="ALWAYS"/>
         <Button fx:id="createCourseButton" text="Nuovo Corso" styleClass="accent">
             <graphic>
-                <FontIcon iconLiteral="fas-plus" iconSize="14"/>
+                <FontIcon iconLiteral="fas-plus" iconSize="12"/>
             </graphic>
         </Button>
     </HBox>

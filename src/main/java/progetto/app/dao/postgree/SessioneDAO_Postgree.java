@@ -59,4 +59,32 @@ public class SessioneDAO_Postgree implements SessioneDAO {
         }
         return sessioni;
     }
+
+    @Override
+    public void deleteSessione(int id) throws DAOException {
+        String sql = "DELETE FROM sessione WHERE id = ?";
+        try (Connection con = DatabaseConnection.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Impossibile eliminare la sessione: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void updateSessione(Sessione sessione) throws DAOException {
+        String sql = "UPDATE sessione SET data_sessione=?, modalita=?, durata=?, descrizione=? WHERE id=?";
+        try (Connection con = DatabaseConnection.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setDate(1, Date.valueOf(sessione.getDataSessione()));
+            ps.setString(2, sessione.getModalita());
+            ps.setInt(3, sessione.getDurata());
+            ps.setString(4, sessione.getDescrizione());
+            ps.setInt(5, sessione.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("Impossibile aggiornare la sessione: " + e.getMessage(), e);
+        }
+    }
 }

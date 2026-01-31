@@ -47,13 +47,12 @@ public class RicettaDAO_Postgree implements RicettaDAO {
 
     @Override
     public int addRicetta(Ricetta ricetta) throws DAOException {
-        String sql = "INSERT INTO ricetta (nome, descrizione, categoria, chef_id) VALUES (?, ?, ?, ?) RETURNING id";
+        String sql = "INSERT INTO ricetta (nome, descrizione, chef_id) VALUES (?, ?, ?) RETURNING id";
         try (Connection con = DatabaseConnection.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, ricetta.getNome());
             ps.setString(2, ricetta.getDescrizione());
-            ps.setString(3, ricetta.getCategoria());
-            ps.setInt(4, ricetta.getChefId());
+            ps.setInt(3, ricetta.getChefId());
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     int id = rs.getInt(1);
@@ -86,7 +85,6 @@ public class RicettaDAO_Postgree implements RicettaDAO {
                 rs.getInt("id"),
                 rs.getString("nome"),
                 rs.getString("descrizione"),
-                rs.getString("categoria"),
                 rs.getInt("chef_id"));
     }
 }

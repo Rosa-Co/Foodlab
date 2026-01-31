@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<DialogPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="progetto.app.view.AddNotificationDialogGUI"
+            prefWidth="500">
+    <content>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            
+            <Label text="Nuova Notifica" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+            
+            <Label text="Titolo:" />
+            <TextField fx:id="titleField" promptText="Inserisci il titolo della notifica" />
+            
+            <Label text="Messaggio:" />
+            <TextArea fx:id="messageArea" promptText="Scrivi il messaggio della notifica..." prefRowCount="5" wrapText="true"/>
+            
+            <Separator />
+            
+            <Label text="Destinatari:" />
+            <RadioButton fx:id="allCoursesRadio" text="Tutti i corsi" selected="true" />
+            <RadioButton fx:id="specificCourseRadio" text="Corso specifico" />
+            
+            <VBox fx:id="courseSelectionBox" visible="false" managed="false" spacing="5" >
+                 <Label text="Seleziona Corso:" />
+                 <ComboBox fx:id="courseComboBox" promptText="Scegli un corso..." maxWidth="Infinity"/>
+            </VBox>
+            
+            <Label fx:id="errorLabel" textFill="red" visible="false" />
+        </VBox>
+    </content>
+    
+    <buttonTypes>
+        <ButtonType fx:constant="CANCEL" />
+        <ButtonType fx:constant="OK" />
+    </buttonTypes>
+</DialogPane>

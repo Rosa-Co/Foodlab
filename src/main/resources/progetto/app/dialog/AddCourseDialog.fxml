@@ -12,7 +12,6 @@
     
     <header>
         <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 20 20 10 20; -fx-border-color: -color-border-muted; -fx-border-width: 0 0 1 0;">
-            <FontIcon iconLiteral="fas-plus-circle" iconSize="24" style="-fx-icon-color: -color-accent-fg;"/>
             <Label text="Crea Nuovo Corso" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
         </HBox>
     </header>
@@ -64,9 +63,9 @@
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <Label text="Programma del Corso" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
                         <Region HBox.hgrow="ALWAYS"/>
-                        <Button text="Aggiungi Sessione" onAction="#handleAddSession" style="-fx-background-color: -color-accent-emphasis; -fx-text-fill: -color-fg-emphasis;">
+                        <Button text="Aggiungi Sessione" onAction="#handleAddSession" styleClass="accent">
                             <graphic>
-                                <FontIcon iconLiteral="fas-plus" style="-fx-icon-color: -color-fg-emphasis;"/>
+                                <FontIcon iconLiteral="fas-plus" iconSize="12"/>
                             </graphic>
                         </Button>
                     </HBox>

@@ -16,7 +16,7 @@ public abstract class User {
         this.password = password;
     }
 
-    public User(int id,String username, String password, String email, String name, String surname) {
+    public User(int id, String username, String password, String email, String name, String surname) {
         this.id = id;
         this.email = email;
         this.username = username;
@@ -72,4 +72,6 @@ public abstract class User {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public abstract boolean isChef();
 }

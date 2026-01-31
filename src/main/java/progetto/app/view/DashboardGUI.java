@@ -3,6 +3,7 @@ package progetto.app.view;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -31,7 +32,9 @@ public class DashboardGUI implements Initializable {
     @FXML
     private Button coursesButton;
     @FXML
-    private Button reportButton;
+    private Button recipesButton;
+    @FXML
+    private Button notificationsButton;
 
     // Header
     @FXML
@@ -56,6 +59,7 @@ public class DashboardGUI implements Initializable {
         Platform.runLater(() -> {
             setupEventHandlers();
             loadInitialView();
+            setChefName();
         });
     }
 
@@ -67,8 +71,11 @@ public class DashboardGUI implements Initializable {
         if (coursesButton != null) {
             coursesButton.setOnAction(e -> loadCoursesView());
         }
-        if (reportButton != null) {
-            reportButton.setOnAction(e -> loadReportView());
+        if (recipesButton != null) {
+            recipesButton.setOnAction(e -> loadRecipesView());
+        }
+        if (notificationsButton != null) {
+            notificationsButton.setOnAction(e -> loadNotificationsView());
         }
 
         // Logout
@@ -86,7 +93,21 @@ public class DashboardGUI implements Initializable {
      * Carica la vista Home nel container centrale
      */
     private void loadHomeView() {
-        loadViewInContainer("home");
+        // Display welcome message instead of loading a view
+        contentContainer.getChildren().clear();
+
+        VBox welcomeBox = new VBox(20);
+        welcomeBox.setAlignment(Pos.CENTER);
+
+        Label welcomeLabel = new Label("Benvenuto Chef!");
+        welcomeLabel.setStyle("-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+
+        Label subLabel = new Label("Seleziona una voce dal menu laterale per iniziare.");
+        subLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #7f8c8d;");
+
+        welcomeBox.getChildren().addAll(welcomeLabel, subLabel);
+        contentContainer.getChildren().add(welcomeBox);
+
         updateSidebarSelection(homeButton);
     }
 
@@ -96,14 +117,22 @@ public class DashboardGUI implements Initializable {
     private void loadCoursesView() {
         loadViewInContainer("courses");
         updateSidebarSelection(coursesButton);
+
+        CoursesViewGUI controller = (CoursesViewGUI) appController.getController("courses");
+        controller.loadCourses();
     }
 
     /**
-     * Carica la vista Report nel container centrale
+     * Carica la vista Ricette nel container centrale
      */
-    private void loadReportView() {
-        loadViewInContainer("report");
-        updateSidebarSelection(reportButton);
+    private void loadRecipesView() {
+        loadViewInContainer("recipes"); // We will create this
+        updateSidebarSelection(recipesButton);
+
+        RecipesViewGUI controller = (RecipesViewGUI) appController.getController("recipes");
+        if (controller != null) {
+            controller.loadRecipes();
+        }
     }
 
     /**
@@ -111,11 +140,26 @@ public class DashboardGUI implements Initializable {
      */
     private void loadViewInContainer(String nameView) {
         Parent view = appController.getView(nameView);
+        if (view == null)
+            return;
         try {
             contentContainer.getChildren().clear();
             contentContainer.getChildren().add(view);
         } catch (Exception e) {
             System.err.println("Errore nel caricamento della view: " + nameView);
+        }
+    }
+
+    // NOTIFICHE
+
+    private void loadNotificationsView() {
+        loadViewInContainer("notifications");
+        updateSidebarSelection(notificationsButton);
+
+        NotificationsViewGUI controller = (NotificationsViewGUI) appController
+                .getController("notifications");
+        if (controller != null) {
+            controller.loadNotifications();
         }
     }
 
@@ -136,10 +180,16 @@ public class DashboardGUI implements Initializable {
                 coursesButton.getStyleClass().add("flat");
             }
         }
-        if (reportButton != null) {
-            reportButton.getStyleClass().removeAll("accent");
-            if (!reportButton.getStyleClass().contains("flat")) {
-                reportButton.getStyleClass().add("flat");
+        if (recipesButton != null) {
+            recipesButton.getStyleClass().removeAll("accent");
+            if (!recipesButton.getStyleClass().contains("flat")) {
+                recipesButton.getStyleClass().add("flat");
+            }
+        }
+        if (notificationsButton != null) {
+            notificationsButton.getStyleClass().removeAll("accent");
+            if (!notificationsButton.getStyleClass().contains("flat")) {
+                notificationsButton.getStyleClass().add("flat");
             }
         }
 
@@ -155,7 +205,7 @@ public class DashboardGUI implements Initializable {
      */
     private void handleLogout() {
         System.out.println("Logout...");
-        appController.navigateToLogin();
+        appController.logout();
     }
 
     /**

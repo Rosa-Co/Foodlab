@@ -55,7 +55,7 @@ public class CorsoDAO_Postgree implements CorsoDAO {
     @Override
     public List<Corso> getCorsiByChef(int chefId) throws DAOException {
         List<Corso> corsi = new ArrayList<>();
-        String sql = "SELECT * FROM corso WHERE chef_id = ?";
+        String sql = "SELECT id, titolo, categoria, data_inizio, frequenza, (SELECT COUNT(*) FROM sessione WHERE corso_id = corso.id) as numero_sessioni, chef_id FROM corso WHERE chef_id = ?";
         try (Connection con = DatabaseConnection.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, chefId);

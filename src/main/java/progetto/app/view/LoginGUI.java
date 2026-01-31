@@ -8,14 +8,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import progetto.app.controller.AppController;
-import progetto.app.dialog.ErrorDialog;
-import progetto.app.dialog.WarningDialog;
-
-import static progetto.app.controller.AppController.checkEmail;
-import static progetto.app.controller.AppController.doPasswordsMatch;
 
 public class LoginGUI {
 
@@ -148,7 +144,7 @@ public class LoginGUI {
 
         FontIcon icon = new FontIcon((FontAwesomeSolid) iconEnum);
         icon.setIconSize(28);
-        icon.setIconColor(javafx.scene.paint.Color.valueOf(accentColor));
+        icon.setIconColor(Color.valueOf(accentColor));
         iconContainer.getChildren().add(icon);
 
         // Text content

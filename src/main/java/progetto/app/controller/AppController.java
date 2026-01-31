@@ -9,45 +9,37 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
-import progetto.app.dto.CourseWithSessionsDTO;
-import progetto.app.model.*;
-import progetto.app.view.AddCourseDialogGUI;
-import progetto.app.dto.CourseDTO;
-import progetto.app.dto.RecipeDTO;
-import progetto.app.dto.SessionDTO;
-
-import java.util.*;
-import java.io.IOException;
-
-import progetto.app.Main;
 import org.mindrot.jbcrypt.BCrypt;
-import progetto.app.dao.Interface.ChefDAO;
-import progetto.app.dao.Interface.AllievoDAO;
-import progetto.app.dao.postgree.AllievoDAO_Postgree;
-import progetto.app.dao.postgree.ChefDAO_Postgree;
-import progetto.app.dao.Interface.CorsoDAO;
-import progetto.app.dao.Interface.SessioneDAO;
-import progetto.app.dao.Interface.RicettaDAO;
-import progetto.app.dao.postgree.CorsoDAO_Postgree;
-import progetto.app.dao.postgree.SessioneDAO_Postgree;
-import progetto.app.dao.postgree.RicettaDAO_Postgree;
+import progetto.app.Main;
+import progetto.app.dao.Interface.*;
+import progetto.app.dao.postgree.*;
 import progetto.app.dialog.ErrorDialog;
 import progetto.app.dialog.TermsOfServiceDialog;
 import progetto.app.dialog.WarningDialog;
+import progetto.app.dto.CourseDTO;
+import progetto.app.dto.CourseWithSessionsDTO;
+import progetto.app.dto.RecipeDTO;
+import progetto.app.dto.SessionDTO;
 import progetto.app.exception.*;
-import progetto.app.model.Allievo;
-import progetto.app.model.Chef;
-import progetto.app.model.User;
+import progetto.app.model.*;
+import progetto.app.view.AddCourseDialogGUI;
+import progetto.app.view.AddNotificationDialogGUI;
+import progetto.app.view.AddRecipeDialogGUI;
+import progetto.app.view.CourseDetailsDialogGUI;
+import progetto.app.view.CoursesViewGUI;
 
-import java.util.regex.Pattern;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AppController {
     private static final Image APP_ICON = new Image(
             Objects.requireNonNull(Main.class.getResourceAsStream("/progetto/app/logo.png")));
 
     private User userLogged;
-    private static AppController instance;  // Singleton per accesso globale
+    private static AppController instance; // Singleton per accesso globale
     private Stage primaryStage;
     private final Map<String, Parent> views = new HashMap<>();
     private final Map<String, Object> controllers = new HashMap<>();
@@ -56,6 +48,7 @@ public class AppController {
     private CorsoDAO corsoDAO = getCorsoDAO();
     private SessioneDAO sessioneDAO = getSessioneDAO();
     private RicettaDAO ricettaDAO = getRicettaDAO();
+    private NotificaDAO notificaDAO = getNotificaDAO();
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
 
     private static final Pattern pattern = Pattern.compile(EMAIL_REGEX);
@@ -103,6 +96,12 @@ public class AppController {
         return this.ricettaDAO;
     }
 
+    public NotificaDAO getNotificaDAO() {
+        if (this.notificaDAO == null)
+            this.notificaDAO = new NotificaDAO_Postgree();
+        return this.notificaDAO;
+    }
+
     public List<RecipeDTO> getAllRecipesDTO() {
         List<RecipeDTO> dtos = new ArrayList<>();
         try {
@@ -115,6 +114,68 @@ public class AppController {
             new ErrorDialog("Errore Database", "Impossibile caricare le ricette.").show();
         }
         return dtos;
+    }
+
+    public List<Map<String, Object>> getCoursesData() {
+        if (userLogged != null && userLogged.isChef()) {
+            try {
+                List<Corso> courses = corsoDAO.getCorsiByChef(getCurrentChefId());
+                List<Map<String, Object>> coursesData = new ArrayList<>();
+                for (Corso c : courses) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", c.getId());
+                    map.put("titolo", c.getTitolo());
+                    map.put("categoria", c.getCategoria());
+                    map.put("dataInizio", c.getDataInizio());
+                    map.put("frequenza", c.getFrequenza());
+                    map.put("numeroSessioni", c.getNumeroSessioni());
+                    coursesData.add(map);
+                }
+                return coursesData;
+            } catch (DAOException e) {
+                new ErrorDialog("Errore di Caricamento", "Impossibile caricare i corsi: " + e.getMessage()).show();
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    /* ------------------- RECIPES ------------------- */
+
+    public List<Map<String, Object>> getRecipesData() {
+        if (userLogged != null && userLogged.isChef()) {
+            try {
+                List<Ricetta> recipes = ricettaDAO.getRicetteByChef(getCurrentChefId());
+                List<Map<String, Object>> recipesData = new ArrayList<>();
+                for (Ricetta r : recipes) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", r.getId());
+                    map.put("nome", r.getNome());
+                    map.put("descrizione", r.getDescrizione());
+                    recipesData.add(map);
+                }
+                return recipesData;
+            } catch (DAOException e) {
+                new ErrorDialog("Errore di Caricamento", "Impossibile caricare le ricette: " + e.getMessage()).show();
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    public boolean createRecipe(Map<String, Object> recipeData) {
+        if (userLogged != null && userLogged.isChef()) {
+            try {
+                String nome = (String) recipeData.get("nome");
+                String descrizione = (String) recipeData.get("descrizione");
+
+                Ricetta newRecipe = new Ricetta(nome, descrizione, getCurrentChefId());
+                ricettaDAO.addRicetta(newRecipe);
+                return true;
+            } catch (DAOException e) {
+                new ErrorDialog("Errore di Creazione", "Impossibile creare la ricetta: " + e.getMessage()).show();
+                return false;
+            }
+        }
+        return false;
     }
 
     public boolean showCreateCourseDialog(Window owner) {
@@ -137,6 +198,22 @@ public class AppController {
         return false;
     }
 
+    public boolean showCreateRecipeDialog(Window owner) {
+        try {
+            Optional<Map<String, Object>> result = AddRecipeDialogGUI.showDialog(owner);
+            if (result.isPresent()) {
+                return createRecipe(result.get());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            new ErrorDialog("Errore grafico", "Impossibile caricare l'interfaccia.").show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            new ErrorDialog("Errore", "Si è verificato un errore: " + e.getMessage()).show();
+        }
+        return false;
+    }
+
     public boolean createCourse(CourseDTO courseDTO, List<SessionDTO> sessionDTOs) {
         try {
             int chefId = getCurrentChefId();
@@ -150,7 +227,7 @@ public class AppController {
                     sessionDTOs.size(),
                     chefId);
 
-            corsoDAO.addCorso(corso); // Sets ID in corso object
+            corsoDAO.addCorso(corso);
 
             int sessionNum = 1;
             for (SessionDTO sDto : sessionDTOs) {
@@ -168,9 +245,9 @@ public class AppController {
                         int recipeId = rDto.getId();
                         if (recipeId == 0) {
                             // Create new recipe
-                            Ricetta newRicetta = new Ricetta(rDto.getNome(), rDto.getDescrizione(), rDto.getCategoria(),
+                            Ricetta newRicetta = new Ricetta(rDto.getNome(), rDto.getDescrizione(),
                                     chefId);
-                            recipeId = ricettaDAO.addRicetta(newRicetta); //returns id
+                            recipeId = ricettaDAO.addRicetta(newRicetta); // returns id
                         }
                         ricettaDAO.addRicettaSessione(sessione.getId(), recipeId);
                     }
@@ -187,12 +264,12 @@ public class AppController {
     }
 
     public int getCurrentChefId() {
-        return ((Chef) userLogged).getId();
+        return userLogged.getId();
     }
 
     /**
      * Formatta il percorso FXML per assicurarsi che sia corretto.
-     * 
+     *
      * @param fxmlPath Il percorso FXML da formattare
      * @return Il percorso FXML formattato correttamente.
      */
@@ -215,9 +292,171 @@ public class AppController {
         return fxmlPath;
     }
 
+    // --- GESTIONE SESSIONI ---
+
+    public List<Map<String, Object>> getSessioniByCorso(int corsoId) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        try {
+            List<Sessione> sessioni = sessioneDAO.getSessioniByCorso(corsoId);
+            for (Sessione s : sessioni) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", s.getId());
+                map.put("numeroSessione", s.getNumeroSessione());
+                map.put("dataSessione", s.getDataSessione());
+                map.put("modalita", s.getModalita());
+                map.put("durata", s.getDurata());
+                map.put("descrizione", s.getDescrizione());
+                result.add(map);
+            }
+        } catch (DAOException e) {
+            new ErrorDialog("Errore", "Impossibile recuperare le sessioni: " + e.getMessage()).show();
+        }
+        return result;
+    }
+
+    public boolean deleteSession(int sessionId) {
+        try {
+            sessioneDAO.deleteSessione(sessionId);
+            return true;
+        } catch (DAOException e) {
+            new ErrorDialog("Errore Eliminazione", "Impossibile eliminare la sessione: " + e.getMessage()).show();
+            return false;
+        }
+    }
+
+    public boolean updateSession(int sessionId, Map<String, Object> data) {
+        try {
+            SessioneDAO dao = getSessioneDAO();
+
+            int dummyCorsoId = 0;
+            int dummyNumSessione = 0;
+            LocalDate dataSessione = (LocalDate) data.get("dataSessione");
+            String modalita = (String) data.get("modalita");
+            Integer durata = (Integer) data.get("durata");
+            String descrizione = (String) data.get("descrizione");
+
+            Sessione s = new Sessione(sessionId, dummyCorsoId, dummyNumSessione, dataSessione, modalita, durata,
+                    descrizione);
+            dao.updateSessione(s);
+            return true;
+        } catch (DAOException e) {
+            new ErrorDialog("Errore Aggiornamento", "Impossibile aggiornare la sessione: " + e.getMessage()).show();
+            return false;
+        }
+    }
+
+    public void showCourseDetailsDialog(Window owner, int corsoId, String corsoTitolo) {
+        try {
+            boolean changed = CourseDetailsDialogGUI.showDialog(owner, corsoId, corsoTitolo);
+            if (changed) {
+                CoursesViewGUI coursesController = (CoursesViewGUI) controllers.get("courses");
+                if (coursesController != null) {
+                    coursesController.loadCourses();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            new ErrorDialog("Errore", "Impossibile aprire i dettagli del corso.").show();
+        }
+    }
+
+    // --- NOTIFICHE ---
+
+    // --- NOTIFICHE ---
+
+    public List<Map<String, Object>> getNotificationsData() {
+        if (userLogged == null || !userLogged.isChef())
+            return new ArrayList<>();
+
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        try {
+            // Load all courses for the chef to map ID -> Title
+            List<Corso> corsi = corsoDAO.getCorsiByChef(userLogged.getId());
+            Map<Integer, String> corsiMap = new HashMap<>();
+            for (Corso c : corsi) {
+                corsiMap.put(c.getId(), c.getTitolo());
+            }
+
+            List<Notifica> notifiche = notificaDAO.getNotificheByChef(userLogged.getId());
+            for (Notifica n : notifiche) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("titolo", n.getTitolo());
+                map.put("contenuto", n.getContenuto());
+
+                String target = "Tutti i corsi";
+                if (n.getIdCorso() != null && n.getIdCorso() != 0) {
+                    // Check if map contains the ID, otherwise fallback to ID
+                    if (corsiMap.containsKey(n.getIdCorso())) {
+                        target = "Corso: " + corsiMap.get(n.getIdCorso());
+                    } else {
+                        target = "Corso ID: " + n.getIdCorso();
+                    }
+                }
+                map.put("target", target);
+                result.add(map);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public boolean createNotification(Map<String, Object> data) {
+        if (userLogged == null)
+            return false;
+
+        String titolo = (String) data.get("titolo");
+        String contenuto = (String) data.get("contenuto");
+        Integer corsoId = (Integer) data.get("corsoId");
+
+        Notifica notifica = new Notifica(titolo, contenuto, userLogged.getId(),
+                corsoId);
+
+        try {
+            notificaDAO.addNotifica(notifica);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<Map<String, Object>> getSimpleCoursesData() {
+        if (userLogged == null || !userLogged.isChef())
+            return new ArrayList<>();
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        try {
+            List<Corso> corsi = corsoDAO.getCorsiByChef(userLogged.getId());
+
+            for (Corso c : corsi) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", c.getId());
+                map.put("titolo", c.getTitolo());
+                result.add(map);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public void showCreateNotificationDialog(Window owner) {
+        try {
+            Optional<Map<String, Object>> result = AddNotificationDialogGUI.showDialog(owner);
+            if (result.isPresent()) {
+                createNotification(result.get());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            new ErrorDialog("Errore", "Impossibile aprire il dialogo notifica.").show();
+        }
+    }
+
     /**
      * Carica una vista FXML e il suo controller in cache.
-     * 
+     *
      * @param name     Nome identificativo della vista
      * @param fxmlPath Percorso del file FXML
      */
@@ -259,6 +498,11 @@ public class AppController {
         return newScene;
     }
 
+    public void logout() {
+        this.userLogged = null;
+        navigateToLogin();
+    }
+
     public void navigateToLogin() {
         navigateTo("login");
     }
@@ -270,7 +514,11 @@ public class AppController {
     private void navigateTo(String name) {
         Parent view = views.get(name);
         if (view != null && primaryStage != null) {
-            primaryStage.setScene(new Scene(view));
+            if (view.getScene() != null) {
+                primaryStage.setScene(view.getScene());
+            } else {
+                primaryStage.setScene(new Scene(view));
+            }
             primaryStage.show();
         } else {
             System.err.println("View not found: " + name);
@@ -295,17 +543,17 @@ public class AppController {
     }
 
     public boolean login(String username, String password) {
-        try{
-           if(allievoDAO.getAllievoByUsername(username) != null){
-               return loginAllievo(username, password);
-           }
-        }catch (AllievoNotFoundException e){
-            try{
-                if(chefDAO.getChefByUsername(username) != null){
+        try {
+            if (allievoDAO.getAllievoByUsername(username) != null) {
+                return loginAllievo(username, password);
+            }
+        } catch (AllievoNotFoundException e) {
+            try {
+                if (chefDAO.getChefByUsername(username) != null) {
                     return loginChef(username, password);
                 }
-            }catch (ChefNotFoundException e1){
-                showErrorDialog(e.getMessage(),"controlla i dati e riprova");
+            } catch (ChefNotFoundException e1) {
+                showErrorDialog(e.getMessage(), "controlla i dati e riprova");
                 return false;
             }
         }
@@ -323,10 +571,10 @@ public class AppController {
             allievoDAO.addAllievo(allievo);
             return true;
         } catch (DuplicateAllievoException e) {
-            showWarningDialog(e.getMessage(),"Passa alla schermata login.");
+            showWarningDialog(e.getMessage(), "Passa alla schermata login.");
             return false;
-        } catch (DAOException e){
-            showErrorDialog("Errore durante la registrazione!","Provare più tardi.");
+        } catch (DAOException e) {
+            showErrorDialog("Errore durante la registrazione!", "Provare più tardi.");
             return false;
         }
     }
@@ -334,16 +582,17 @@ public class AppController {
     public boolean loginAllievo(String username, String password) throws AllievoNotFoundException {
         try {
             Allievo allievo = allievoDAO.getAllievoByUsername(username);
-            if (allievo == null) return false;
+            if (allievo == null)
+                return false;
             this.userLogged = allievo;
             String hashedPassword = allievo.getPassword();
-            if(!BCrypt.checkpw(password, hashedPassword)){
-                showErrorDialog("Password errata.","Riprova.");
+            if (!BCrypt.checkpw(password, hashedPassword)) {
+                showErrorDialog("Password errata.", "Riprova.");
                 return false;
             }
             return true;
         } catch (DAOException e) {
-            showErrorDialog("Errore in fase di login.","Riprova.");
+            showErrorDialog("Errore in fase di login.", "Riprova.");
             return false;
         }
     }
@@ -358,39 +607,42 @@ public class AppController {
         try {
             chefDAO.addChef(chef);
             return true;
-        } catch(DuplicateChefException e){
-            showWarningDialog(e.getMessage(),"Passa alla schermata login.");
+        } catch (DuplicateChefException e) {
+            showWarningDialog(e.getMessage(), "Passa alla schermata login.");
             return false;
         } catch (DAOException e1) {
-            showErrorDialog("Password errata","Riprova");
+            showErrorDialog("Password errata", "Riprova");
             return false;
         }
     }
 
-    public boolean loginChef(String username, String password) throws ChefNotFoundException{
+    public boolean loginChef(String username, String password) throws ChefNotFoundException {
         try {
             Chef chef = chefDAO.getChefByUsername(username);
-            if (chef == null) return false;
-            this.userLogged=chef;
+            if (chef == null)
+                return false;
+            this.userLogged = chef;
             String hashedPassword = chef.getPassword();
-            if(!BCrypt.checkpw(password, hashedPassword)){
-                showErrorDialog("Password errata","Riprova");
+            if (!BCrypt.checkpw(password, hashedPassword)) {
+                showErrorDialog("Password errata", "Riprova");
                 return false;
             }
             return true;
         } catch (DAOException e) {
-            showErrorDialog(e.getMessage(),"Riprova");
+            showErrorDialog(e.getMessage(), "Riprova");
             return false;
         }
     }
 
     public boolean searchAllievo(String username, String email) {
         try {
-            if(searchAllievoByUsername(username)) return true;
-        }catch (AllievoNotFoundException e) {
-            try{
-                if(searchAllievoByEmail(email)) return true;
-            }catch (AllievoNotFoundException e1) {
+            if (searchAllievoByUsername(username))
+                return true;
+        } catch (AllievoNotFoundException e) {
+            try {
+                if (searchAllievoByEmail(email))
+                    return true;
+            } catch (AllievoNotFoundException e1) {
                 return false;
             }
         }
@@ -399,11 +651,13 @@ public class AppController {
 
     public boolean searchChef(String username, String email) {
         try {
-            if(searchChefByUsername(username)) return true;
-        }catch (ChefNotFoundException e) {
-            try{
-                if(searchChefByEmail(email)) return true;
-            }catch (ChefNotFoundException e1) {
+            if (searchChefByUsername(username))
+                return true;
+        } catch (ChefNotFoundException e) {
+            try {
+                if (searchChefByEmail(email))
+                    return true;
+            } catch (ChefNotFoundException e1) {
                 return false;
             }
         }
@@ -429,7 +683,7 @@ public class AppController {
         }
         return false;
     }
-    
+
     public boolean searchAllievoByEmail(String email) throws AllievoNotFoundException {
         if (allievoDAO.getAllievoByEmail(email) != null) {
             showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
@@ -456,11 +710,13 @@ public class AppController {
 
     public void showErrorDialog(String title, String message) {
         ErrorDialog errorDialog = new ErrorDialog(title, message);
+        shakeWindow();
         errorDialog.show();
     }
 
     public void showWarningDialog(String title, String message) {
         WarningDialog warningDialog = new WarningDialog(title, message);
+        shakeWindow();
         warningDialog.show();
     }
 
@@ -471,7 +727,7 @@ public class AppController {
 
     /**
      * Imposta l'icona dell'applicazione per lo stage.
-     * 
+     *
      * @param stage
      */
     public static void setAppIcon(Stage stage) {

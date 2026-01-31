@@ -72,7 +72,7 @@ public class AllievoDAO_Postgree implements AllievoDAO {
     @Override
     public Allievo getAllievoByEmail(String email) throws DAOException, AllievoNotFoundException {
         String sql = "SELECT * FROM allievo WHERE LOWER(email) = LOWER(?)";
-        Allievo allievo = null;
+        Allievo allievo;
         try(Connection con=DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql)){
             ps.setString(1,email);
             try(ResultSet rs = ps.executeQuery()) {
@@ -92,7 +92,7 @@ public class AllievoDAO_Postgree implements AllievoDAO {
     @Override
     public Allievo getAllievoById(int id) throws DAOException, AllievoNotFoundException {
         String sql = "SELECT * FROM allievo WHERE id = ?";
-        Allievo allievo = null;
+        Allievo allievo;
         try(Connection con=DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql)){
             ps.setInt(1,id);
             try(ResultSet rs = ps.executeQuery()) {
@@ -111,7 +111,7 @@ public class AllievoDAO_Postgree implements AllievoDAO {
 
     public Allievo getAllievoByUsername(String username) throws AllievoNotFoundException {
         String sql = "SELECT * FROM allievo WHERE LOWER(username) = LOWER(?)";
-        Allievo allievo = null;
+        Allievo allievo;
         try(Connection con=DatabaseConnection.getConnection();PreparedStatement ps = con.prepareStatement(sql)){
             ps.setString(1,username);
             try(ResultSet rs = ps.executeQuery()) {
