@@ -32,6 +32,7 @@ public class Main extends Application {
         appController.loadView("recipes", "/progetto/app/view/RecipesView.fxml");
         appController.loadView("notifications", "/progetto/app/view/NotificationsView.fxml");
         appController.loadView("report", "/progetto/app/view/ReportView.fxml");
+        appController.loadView("notImplemented", "/progetto/app/view/NotImplementedView.fxml");
 
         Stage splashStage = new Stage();
         AppController.setAppIcon(splashStage);

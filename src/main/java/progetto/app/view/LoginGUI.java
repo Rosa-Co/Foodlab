@@ -168,17 +168,14 @@ public class LoginGUI {
     @FXML
     private void handleLogin() {
         if (!usernameField.getText().isBlank() && !passwordField.getText().isBlank()) {
-            if (mainController.login(usernameField.getText().strip(), passwordField.getText())) {
-                mainController.navigateToDashboard();
-            }
+            mainController.login(usernameField.getText().strip(), passwordField.getText());
         } else {
             mainController.showWarningDialog("Attenzione!", "Riempire tutti i campi.");
         }
     }
 
     @FXML
-    private void handleRegister() {// crea metodi nell'app controller per gestire le dialog e qui limitati a
-                                   // chiamare quei metodi
+    private void handleRegister() {
         if (!AppController.checkEmail(registerEmailField.getText().strip())) {
             mainController.showErrorDialog("Registrazione Fallita", "Formato email non valido");
             return;
@@ -198,11 +195,8 @@ public class LoginGUI {
             return;
         }
 
-        boolean registrationSuccessful = performRegistration();
+        boolean success = performRegistration();
 
-        if (registrationSuccessful) {
-            mainController.navigateToDashboard();
-        }
     }
 
     private boolean areAllFieldsFilled() {

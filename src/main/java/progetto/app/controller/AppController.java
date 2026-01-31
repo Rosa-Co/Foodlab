@@ -540,6 +540,10 @@ public class AppController {
         }
     }
 
+    public void navigateToNotImplemented() {
+        navigateTo("notImplemented");
+    }
+
     // ! fare il check!
     public Parent getView(String name) {
         return views.get(name);
@@ -584,6 +588,7 @@ public class AppController {
 
         try {
             allievoDAO.addAllievo(allievo);
+            navigateToNotImplemented();
             return true;
         } catch (DuplicateAllievoException e) {
             showWarningDialog(e.getMessage(), "Passa alla schermata login.");
@@ -605,6 +610,7 @@ public class AppController {
                 showErrorDialog("Password errata.", "Riprova.");
                 return false;
             }
+            navigateToNotImplemented();
             return true;
         } catch (DAOException e) {
             showErrorDialog("Errore in fase di login.", "Riprova.");
@@ -621,6 +627,7 @@ public class AppController {
 
         try {
             chefDAO.addChef(chef);
+            navigateToDashboard();
             return true;
         } catch (DuplicateChefException e) {
             showWarningDialog(e.getMessage(), "Passa alla schermata login.");
@@ -642,6 +649,7 @@ public class AppController {
                 showErrorDialog("Password errata", "Riprova");
                 return false;
             }
+            navigateToDashboard();
             return true;
         } catch (DAOException e) {
             showErrorDialog(e.getMessage(), "Riprova");
