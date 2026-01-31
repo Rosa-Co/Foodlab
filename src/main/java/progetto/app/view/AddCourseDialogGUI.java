@@ -27,6 +27,8 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 
+import static java.time.temporal.WeekFields.ISO;
+
 public class AddCourseDialogGUI implements Initializable {
 
     @FXML
@@ -300,16 +302,16 @@ public class AddCourseDialogGUI implements Initializable {
         dates.sort(LocalDate::compareTo);
 
         switch (frequency) {
-            case "Settimanale": // 1 volta a settimana
+            case "Settimanale":
                 return validateWeeklyFrequency(dates, 1);
 
-            case "Bisettimanale": // 2 volte a settimana
+            case "Bisettimanale":
                 return validateWeeklyFrequency(dates, 2);
 
-            case "Trisettimanale": // 3 volte a settimana
+            case "Trisettimanale":
                 return validateWeeklyFrequency(dates, 3);
 
-            case "Mensile": // 1 volta al mese
+            case "Mensile":
                 return validateMonthlyFrequency(dates);
 
             default:
@@ -322,9 +324,8 @@ public class AddCourseDialogGUI implements Initializable {
         Map<String, Integer> sessionsPerWeek = new HashMap<>();
 
         for (LocalDate date : dates) {
-            // Calcola l'anno e il numero della settimana
             int year = date.getYear();
-            int weekOfYear = date.get(java.time.temporal.WeekFields.ISO.weekOfWeekBasedYear());
+            int weekOfYear = date.get(ISO.weekOfWeekBasedYear());
             String weekKey = year + "-W" + weekOfYear;
 
             sessionsPerWeek.put(weekKey, sessionsPerWeek.getOrDefault(weekKey, 0) + 1);
