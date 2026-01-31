@@ -13,7 +13,7 @@ import javafx.scene.layout.VBox;
 import progetto.app.controller.AppController;
 
 import java.util.List;
-import java.util.Map;
+import progetto.app.dto.RecipeDTO;
 
 public class RecipesViewGUI {
 
@@ -38,8 +38,8 @@ public class RecipesViewGUI {
         recipesContainer.getChildren().add(loadingLabel);
 
         new Thread(() -> {
-            List<Map<String, Object>> recipes = appController.getRecipesData(); // Assuming this method exists or will
-                                                                                // exist
+            List<RecipeDTO> recipes = appController.getRecipesData();
+
             Platform.runLater(() -> {
                 recipesContainer.getChildren().clear();
                 if (recipes.isEmpty()) {
@@ -47,7 +47,7 @@ public class RecipesViewGUI {
                     placeholder.setStyle("-fx-font-size: 16px; -fx-text-fill: -color-fg-muted;");
                     recipesContainer.getChildren().add(placeholder);
                 } else {
-                    for (Map<String, Object> recipe : recipes) {
+                    for (RecipeDTO recipe : recipes) {
                         recipesContainer.getChildren().add(createRecipeCard(recipe));
                     }
                 }
@@ -55,7 +55,7 @@ public class RecipesViewGUI {
         }).start();
     }
 
-    private Node createRecipeCard(Map<String, Object> recipe) {
+    private Node createRecipeCard(RecipeDTO recipe) {
         VBox card = new VBox(5);
         card.setStyle(
                 "-fx-background-color: white; -fx-padding: 12; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 5, 0, 0, 2);");
@@ -64,7 +64,7 @@ public class RecipesViewGUI {
         HBox header = new HBox(10);
         header.setAlignment(Pos.CENTER_LEFT);
 
-        Label name = new Label((String) recipe.get("nome"));
+        Label name = new Label(recipe.getNome());
         name.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #2c3e50;");
 
         Region spacer = new Region();
@@ -73,7 +73,7 @@ public class RecipesViewGUI {
         header.getChildren().addAll(name, spacer);
 
         // Description
-        Label desc = new Label((String) recipe.get("descrizione"));
+        Label desc = new Label(recipe.getDescrizione());
         desc.setWrapText(true);
         desc.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 12px;");
 

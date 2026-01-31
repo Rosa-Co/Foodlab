@@ -74,7 +74,7 @@ public class AddCourseDialogGUI implements Initializable {
 
     private void setupFrequencyComboBox() {
         for (Frequency frequency : Frequency.values()) {
-            frequencyComboBox.getItems().add(frequency.name()); //? capisci perchè da warning nonostante questo metodo
+            frequencyComboBox.getItems().add(frequency.name()); // ? capisci perchè da warning nonostante questo metodo
         }
     }
 
@@ -134,13 +134,13 @@ public class AddCourseDialogGUI implements Initializable {
         datePicker.setPromptText("Data Sessione");
         datePicker.setMaxWidth(Double.MAX_VALUE);
         datePicker.setDayCellFactory(picker -> new DateCell() {
-                    @Override
-                    public void updateItem(LocalDate date, boolean empty) {
-                        super.updateItem(date, empty);
-                        LocalDate dataInizio = startDatePicker.getValue();
-                        setDisable(empty || date.isBefore(Objects.requireNonNullElseGet(dataInizio, LocalDate::now)));
-                    }
-                });
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                LocalDate dataInizio = startDatePicker.getValue();
+                setDisable(empty || date.isBefore(Objects.requireNonNullElseGet(dataInizio, LocalDate::now)));
+            }
+        });
 
         // Mode
         modeCombo.getItems().addAll("Online", "In Presenza");
@@ -168,7 +168,6 @@ public class AddCourseDialogGUI implements Initializable {
         recipesWrapper.setManaged(false);
 
         components.recipesContainer = recipesContainer; // Link to components
-
 
         modeCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
             boolean isOnSite = "In Presenza".equals(newVal);
@@ -204,7 +203,7 @@ public class AddCourseDialogGUI implements Initializable {
     }
 
     public CourseDTO getCourseDTO() {
-        if(isCourseDTOValid()) {
+        if (isCourseDTOValid()) {
             return new CourseDTO(
                     titleField.getText(),
                     categoryComboBox.getValue(),
@@ -215,16 +214,17 @@ public class AddCourseDialogGUI implements Initializable {
     }
 
     public boolean isCourseDTOValid() {
-        if(!areCourseFieldsFilled()){
-            appController.showWarningDialog("Attenzione!","Riempire tutti i campi del corso.");
+        if (!areCourseFieldsFilled()) {
+            appController.showWarningDialog("Attenzione!", "Riempire tutti i campi del corso.");
             return false;
         }
-        if(!isStartDateValid()){
-            appController.showWarningDialog("Attenzione!","Il corso non può iniziare nel passato!");
+        if (!isStartDateValid()) {
+            appController.showWarningDialog("Attenzione!", "Il corso non può iniziare nel passato!");
             return false;
         }
         return true;
     }
+
     public boolean areCourseFieldsFilled() {
         return !titleField.getText().isBlank()
                 && categoryComboBox.getValue() != null
@@ -232,7 +232,7 @@ public class AddCourseDialogGUI implements Initializable {
                 && frequencyComboBox.getValue() != null;
     }
 
-    public boolean isStartDateValid(){
+    public boolean isStartDateValid() {
         return startDatePicker.getValue().isAfter(LocalDate.now());
     }
 
@@ -250,12 +250,12 @@ public class AddCourseDialogGUI implements Initializable {
                         // New Recipe
                         String name = rc.nameField.getText();
                         String desc = rc.descArea.getText();
-                        if(name.isBlank() || desc.isBlank()){
-                            appController.showWarningDialog("Attenzione!","Riempire tutti i campi.");
+                        if (name.isBlank() || desc.isBlank()) {
+                            appController.showWarningDialog("Attenzione!", "Riempire tutti i campi.");
                             return null;
-                        } else{
+                        } else {
                             // ID 0 indicates new recipe
-                            sessionRecipes.add(new RecipeDTO(0, name, desc, "Personalizzata"));
+                            sessionRecipes.add(new RecipeDTO(0, name, desc));
                         }
                     }
                 }
@@ -265,8 +265,9 @@ public class AddCourseDialogGUI implements Initializable {
                 return null;
             }
 
-            if(!components.isDateValid(components, startDatePicker)) {
-                appController.showWarningDialog("Attenzione!","La data delle sessioni deve essere conseguente a quella di inizio del corso.");
+            if (!components.isDateValid(components, startDatePicker)) {
+                appController.showWarningDialog("Attenzione!",
+                        "La data delle sessioni deve essere conseguente a quella di inizio del corso.");
                 return null;
             }
 
@@ -345,17 +346,16 @@ public class AddCourseDialogGUI implements Initializable {
         sessionComponents.recipesContainer.getChildren().add(row);
     }
 
-    public static Optional<CourseWithSessionsDTO> showDialog(Window owner) throws IOException,NullPointerException {
+    public static Optional<CourseWithSessionsDTO> showDialog(Window owner) throws IOException, NullPointerException {
         FXMLLoader loader = new FXMLLoader(
-                AddCourseDialogGUI.class.getResource("/progetto/app/dialog/AddCourseDialog.fxml")
-        );
+                AddCourseDialogGUI.class.getResource("/progetto/app/dialog/AddCourseDialog.fxml"));
         DialogPane dialogPane = loader.load();
         AddCourseDialogGUI GUI = loader.getController();
 
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setDialogPane(dialogPane);
         dialog.setTitle("Crea Nuovo Corso");
-        dialog.initOwner(owner);  //split methods getResult
+        dialog.initOwner(owner); // split methods getResult
 
         Optional<ButtonType> result = dialog.showAndWait();
 
@@ -366,7 +366,6 @@ public class AddCourseDialogGUI implements Initializable {
         }
         return Optional.empty();
     }
-
 
     /**
      * Helper class to hold UI components for a session
@@ -397,6 +396,7 @@ public class AddCourseDialogGUI implements Initializable {
                     && components.modeCombo.getValue() != null
                     && !components.descriptionArea.getText().isBlank();
         }
+
         public boolean isDateValid(SessionUIComponents components, DatePicker date) {
             return components.datePicker.getValue().isAfter(date.getValue());
         }

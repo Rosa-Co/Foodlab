@@ -18,11 +18,10 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import progetto.app.controller.AppController;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import progetto.app.dto.SessionDTO;
 
 public class CourseDetailsDialogGUI {
 
@@ -64,19 +63,19 @@ public class CourseDetailsDialogGUI {
 
     private void loadSessions() {
         sessionsContainer.getChildren().clear();
-        List<Map<String, Object>> sessions = appController.getSessioniByCorso(corsoId);
+        List<SessionDTO> sessions = appController.getSessioniByCorso(corsoId);
 
         if (sessions.isEmpty()) {
             sessionsContainer.getChildren().add(new Label("Nessuna sessione trovata."));
             return;
         }
 
-        for (Map<String, Object> session : sessions) {
+        for (SessionDTO session : sessions) {
             sessionsContainer.getChildren().add(createSessionCard(session));
         }
     }
 
-    private VBox createSessionCard(Map<String, Object> session) {
+    private VBox createSessionCard(SessionDTO session) {
         VBox card = new VBox(5);
         card.setStyle(
                 "-fx-background-color: white; -fx-padding: 10; -fx-background-radius: 5; -fx-border-color: #ddd; -fx-border-radius: 5;");
@@ -84,7 +83,7 @@ public class CourseDetailsDialogGUI {
         HBox header = new HBox(10);
         header.setAlignment(Pos.CENTER_LEFT);
 
-        Label sessionNumLabel = new Label("Sessione " + session.get("numeroSessione"));
+        Label sessionNumLabel = new Label("Sessione " + session.getNumeroSessione());
         sessionNumLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 
         Region spacer = new Region();
@@ -103,17 +102,17 @@ public class CourseDetailsDialogGUI {
 
         header.getChildren().addAll(sessionNumLabel, spacer, editBtn, deleteBtn);
 
-        Label dateLabel = new Label("Data: " + session.get("dataSessione"));
-        Label durationLabel = new Label("Durata: " + session.get("durata") + " min (" + session.get("modalita") + ")");
-        Label descLabel = new Label("Descrizione: " + session.get("descrizione"));
+        Label dateLabel = new Label("Data: " + session.getDataSessione());
+        Label durationLabel = new Label("Durata: " + session.getDurata() + " min (" + session.getModalita() + ")");
+        Label descLabel = new Label("Descrizione: " + session.getDescrizione());
         descLabel.setWrapText(true);
 
         card.getChildren().addAll(header, dateLabel, durationLabel, descLabel);
         return card;
     }
 
-    private void handleDeleteSession(Map<String, Object> session) {
-        int sessionId = (int) session.get("id");
+    private void handleDeleteSession(SessionDTO session) {
+        int sessionId = session.getId();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Conferma Eliminazione");
         alert.setHeaderText("Eliminare la sessione?");
@@ -128,9 +127,9 @@ public class CourseDetailsDialogGUI {
         }
     }
 
-    private void handleEditSession(Map<String, Object> session) {
+    private void handleEditSession(SessionDTO session) {
         // Simple dialog to edit date, modality, duration, description
-        Dialog<Map<String, Object>> dialog = new Dialog<>();
+        Dialog<SessionDTO> dialog = new Dialog<>();
         dialog.setTitle("Modifica Sessione");
         dialog.setHeaderText("Modifica i dettagli della sessione");
 
@@ -140,16 +139,16 @@ public class CourseDetailsDialogGUI {
         VBox content = new VBox(10);
         content.setPadding(new Insets(20));
 
-        DatePicker datePicker = new DatePicker((LocalDate) session.get("dataSessione"));
+        DatePicker datePicker = new DatePicker(session.getDataSessione());
 
         ComboBox<String> modalitaBox = new ComboBox<>();
         modalitaBox.getItems().addAll("Online", "In Presenza");
-        modalitaBox.setValue((String) session.get("modalita"));
+        modalitaBox.setValue(session.getModalita());
 
-        TextField durationField = new TextField(String.valueOf(session.get("durata")));
+        TextField durationField = new TextField(String.valueOf(session.getDurata()));
         durationField.setPromptText("Durata (min)");
 
-        TextArea descArea = new TextArea((String) session.get("descrizione"));
+        TextArea descArea = new TextArea(session.getDescrizione());
         descArea.setPromptText("Descrizione");
         descArea.setPrefRowCount(3);
 
@@ -162,23 +161,27 @@ public class CourseDetailsDialogGUI {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
-                Map<String, Object> newData = new HashMap<>();
-                newData.put("dataSessione", datePicker.getValue());
-                newData.put("modalita", modalitaBox.getValue());
+                SessionDTO newData = new SessionDTO();
+                // Preserve ID and session number, update others
+                newData.setId(session.getId());
+                newData.setNumeroSessione(session.getNumeroSessione());
+
+                newData.setDataSessione(datePicker.getValue());
+                newData.setModalita(modalitaBox.getValue());
                 try {
-                    newData.put("durata", Integer.parseInt(durationField.getText()));
+                    newData.setDurata(Integer.parseInt(durationField.getText()));
                 } catch (NumberFormatException e) {
-                    newData.put("durata", 0); // Handle error better or default
+                    newData.setDurata(0); // Handle error better or default
                 }
-                newData.put("descrizione", descArea.getText());
+                newData.setDescrizione(descArea.getText());
                 return newData;
             }
             return null;
         });
 
-        Optional<Map<String, Object>> result = dialog.showAndWait();
+        Optional<SessionDTO> result = dialog.showAndWait();
         result.ifPresent(newData -> {
-            if (appController.updateSession((int) session.get("id"), newData)) {
+            if (appController.updateSession(session.getId(), newData)) {
                 dataChanged = true;
                 loadSessions(); // Refresh
             }

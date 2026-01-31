@@ -171,30 +171,30 @@ public class LoginGUI {
             if (mainController.login(usernameField.getText().strip(), passwordField.getText())) {
                 mainController.navigateToDashboard();
             }
-        }
-        else{
-            mainController.showWarningDialog("Attenzione!","Riempire tutti i campi.");
+        } else {
+            mainController.showWarningDialog("Attenzione!", "Riempire tutti i campi.");
         }
     }
 
     @FXML
-    private void handleRegister() {//crea metodi nell'app controller per gestire le dialog e qui limitati a chiamare quei metodi
-        if(!AppController.checkEmail(registerEmailField.getText().strip())){
-            mainController.showErrorDialog("Registrazione Fallita","Formato email non valido");
+    private void handleRegister() {// crea metodi nell'app controller per gestire le dialog e qui limitati a
+                                   // chiamare quei metodi
+        if (!AppController.checkEmail(registerEmailField.getText().strip())) {
+            mainController.showErrorDialog("Registrazione Fallita", "Formato email non valido");
             return;
         }
         if (!areAllFieldsFilled()) {
-            mainController.showWarningDialog("Attenzione!","Riempire tutti i campi.");
+            mainController.showWarningDialog("Attenzione!", "Riempire tutti i campi.");
             return;
         }
 
-        if (!AppController.doPasswordsMatch(registerPasswordField.getText(),registerConfirmPasswordField.getText())) {
-            mainController.showWarningDialog("Attenzione!","Le password non coincidono.");
+        if (!AppController.doPasswordsMatch(registerPasswordField.getText(), registerConfirmPasswordField.getText())) {
+            mainController.showWarningDialog("Attenzione!", "Le password non coincidono.");
             return;
         }
 
         if (!areTermsAccepted()) {
-            mainController.showWarningDialog("Attenzione!","Per proseguire, accettare termini e condizioni.");
+            mainController.showWarningDialog("Attenzione!", "Per proseguire, accettare termini e condizioni.");
             return;
         }
 
@@ -252,4 +252,18 @@ public class LoginGUI {
         loginPane.setManaged(true);
     }
 
+    public void clearRegisterFields() {
+        registerNameField.clear();
+        registerSurnameField.clear();
+        registerUsernameField.clear();
+        registerEmailField.clear();
+        registerPasswordField.clear();
+        registerConfirmPasswordField.clear();
+        acceptTermsCheck.setSelected(false);
+    }
+
+    public void clearLoginFields() {
+        usernameField.clear();
+        passwordField.clear();
+    }
 }

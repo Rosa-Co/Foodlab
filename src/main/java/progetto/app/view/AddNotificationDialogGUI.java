@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import progetto.app.dto.CourseDTO;
+import progetto.app.dto.NotificationDTO;
 import java.util.Optional;
 
 public class AddNotificationDialogGUI {
@@ -50,17 +52,16 @@ public class AddNotificationDialogGUI {
     }
 
     private void loadCourses() {
-        List<Map<String, Object>> courses = AppController.getInstance().getSimpleCoursesData();
-        for (Map<String, Object> c : courses) {
-            String name = (String) c.get("titolo");
-            int id = (Integer) c.get("id");
+        List<CourseDTO> courses = AppController.getInstance().getSimpleCoursesData();
+        for (CourseDTO c : courses) {
+            String name = c.getTitolo();
+            int id = c.getId();
             courseComboBox.getItems().add(name);
             courseMap.put(name, id);
         }
     }
 
-    public Map<String, Object> getNotificationData() {
-        Map<String, Object> data = new HashMap<>();
+    public NotificationDTO getNotificationData() {
         String title = titleField.getText();
         String message = messageArea.getText();
 
@@ -68,27 +69,27 @@ public class AddNotificationDialogGUI {
             return null; // Validation handled in showDialog
         }
 
-        data.put("titolo", title);
-        data.put("contenuto", message);
+        Integer corsoId = null;
 
         if (specificCourseRadio.isSelected()) {
             String selectedCourse = courseComboBox.getValue();
             if (selectedCourse != null) {
-                data.put("corsoId", courseMap.get(selectedCourse));
+                corsoId = courseMap.get(selectedCourse);
             } else {
-                return null; // Invalid state
+                return null;
             }
         } else {
-            data.put("corsoId", null);
+            corsoId = null;
         }
 
-        return data;
+        return new NotificationDTO(title, message, corsoId);
     }
 
-    public static Optional<Map<String, Object>> showDialog(Window owner) throws IOException {
+    public static Optional<NotificationDTO> showDialog(Window owner) throws IOException {
         FXMLLoader loader = new FXMLLoader(
                 AddNotificationDialogGUI.class.getResource("/progetto/app/dialog/AddNotificationDialog.fxml"));
         DialogPane dialogPane = loader.load();
+        //Poiché il metodo è statico.
         AddNotificationDialogGUI controller = loader.getController();
 
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -98,7 +99,7 @@ public class AddNotificationDialogGUI {
 
         final Button btOk = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
         btOk.addEventFilter(ActionEvent.ACTION, event -> {
-            Map<String, Object> data = controller.getNotificationData();
+            NotificationDTO data = controller.getNotificationData();
             if (data == null) {
                 controller.errorLabel.setText("Compila tutti i campi obbligatori.");
                 controller.errorLabel.setVisible(true);

@@ -91,6 +91,16 @@
                 </padding>
             </Button>
 
+            <!-- Report -->
+            <Button fx:id="reportButton" text="Report" maxWidth="Infinity" alignment="CENTER_LEFT" styleClass="flat">
+                <graphic>
+                    <FontIcon iconLiteral="fas-chart-pie" iconSize="14"/>
+                </graphic>
+                <padding>
+                    <Insets top="10" right="12" bottom="10" left="12"/>
+                </padding>
+            </Button>
+
         </VBox>
     </left>
 

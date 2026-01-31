@@ -12,6 +12,9 @@ module progetto.app {
     requires org.postgresql.jdbc;
     requires org.controlsfx.controls;
     requires jbcrypt;
+    requires org.jfree.jfreechart;
+    requires java.desktop;
+    requires jfreechart.fx;
 
     opens progetto.app to javafx.fxml;
 

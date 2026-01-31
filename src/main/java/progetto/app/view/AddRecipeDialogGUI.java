@@ -9,10 +9,9 @@ import progetto.app.controller.AppController;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import progetto.app.dto.RecipeDTO;
 
 public class AddRecipeDialogGUI implements Initializable {
 
@@ -27,12 +26,10 @@ public class AddRecipeDialogGUI implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
     }
 
-    public Map<String, Object> getRecipeData() {
+    public RecipeDTO getRecipeData() {
         if (isInputValid()) {
-            Map<String, Object> data = new HashMap<>();
-            data.put("nome", nameField.getText());
-            data.put("descrizione", descriptionArea.getText());
-            return data;
+            // ID 0 for new recipe
+            return new RecipeDTO(0, nameField.getText(), descriptionArea.getText());
         }
         return null;
     }
@@ -45,7 +42,7 @@ public class AddRecipeDialogGUI implements Initializable {
         return true;
     }
 
-    public static Optional<Map<String, Object>> showDialog(Window owner) throws IOException {
+    public static Optional<RecipeDTO> showDialog(Window owner) throws IOException {
         FXMLLoader loader = new FXMLLoader(
                 AddRecipeDialogGUI.class.getResource("/progetto/app/dialog/AddRecipeDialog.fxml"));
         DialogPane dialogPane = loader.load();

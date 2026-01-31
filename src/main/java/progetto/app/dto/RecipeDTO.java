@@ -5,33 +5,42 @@ public class RecipeDTO {
     private String nome;
 
     private String descrizione;
-    private String categoria;
 
-    public RecipeDTO(int id, String nome) {
-        this(id, nome, "", "");
+    public RecipeDTO() {
     }
 
-    public RecipeDTO(int id, String nome, String descrizione, String categoria) {
+    public RecipeDTO(int id, String nome) {
+        this(id, nome, "");
+    }
+
+    public RecipeDTO(int id, String nome, String descrizione) {
         this.id = id;
         this.nome = nome;
         this.descrizione = descrizione;
-        this.categoria = categoria;
     }
 
     public int getId() {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getNome() {
         return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public String getDescrizione() {
         return descrizione;
     }
 
-    public String getCategoria() {
-        return categoria;
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
     }
 
     @Override

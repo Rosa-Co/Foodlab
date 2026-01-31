@@ -16,8 +16,10 @@ import progetto.app.dao.postgree.*;
 import progetto.app.dialog.ErrorDialog;
 import progetto.app.dialog.TermsOfServiceDialog;
 import progetto.app.dialog.WarningDialog;
+import progetto.app.dto.ChefStatsDTO;
 import progetto.app.dto.CourseDTO;
 import progetto.app.dto.CourseWithSessionsDTO;
+import progetto.app.dto.NotificationDTO;
 import progetto.app.dto.RecipeDTO;
 import progetto.app.dto.SessionDTO;
 import progetto.app.exception.*;
@@ -27,9 +29,10 @@ import progetto.app.view.AddNotificationDialogGUI;
 import progetto.app.view.AddRecipeDialogGUI;
 import progetto.app.view.CourseDetailsDialogGUI;
 import progetto.app.view.CoursesViewGUI;
+import progetto.app.view.LoginGUI;
 
 import java.io.IOException;
-import java.time.LocalDate;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,6 +52,7 @@ public class AppController {
     private SessioneDAO sessioneDAO = getSessioneDAO();
     private RicettaDAO ricettaDAO = getRicettaDAO();
     private NotificaDAO notificaDAO = getNotificaDAO();
+    private StatsDAO statsDAO = getStatsDAO();
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
 
     private static final Pattern pattern = Pattern.compile(EMAIL_REGEX);
@@ -102,6 +106,23 @@ public class AppController {
         return this.notificaDAO;
     }
 
+    public StatsDAO getStatsDAO() {
+        if (this.statsDAO == null)
+            this.statsDAO = new StatsDAO_Postgree();
+        return this.statsDAO;
+    }
+
+    public ChefStatsDTO getChefReportData() {
+        if (userLogged != null && userLogged.isChef()) {
+            try {
+                return statsDAO.getChefStats(getCurrentChefId());
+            } catch (DAOException e) {
+                new ErrorDialog("Errore Report", "Impossibile recuperare i dati del report: " + e.getMessage()).show();
+            }
+        }
+        return new ChefStatsDTO();
+    }
+
     public List<RecipeDTO> getAllRecipesDTO() {
         List<RecipeDTO> dtos = new ArrayList<>();
         try {
@@ -116,20 +137,19 @@ public class AppController {
         return dtos;
     }
 
-    public List<Map<String, Object>> getCoursesData() {
+    public List<CourseDTO> getCoursesData() {
         if (userLogged != null && userLogged.isChef()) {
             try {
                 List<Corso> courses = corsoDAO.getCorsiByChef(getCurrentChefId());
-                List<Map<String, Object>> coursesData = new ArrayList<>();
+                List<CourseDTO> coursesData = new ArrayList<>();
                 for (Corso c : courses) {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("id", c.getId());
-                    map.put("titolo", c.getTitolo());
-                    map.put("categoria", c.getCategoria());
-                    map.put("dataInizio", c.getDataInizio());
-                    map.put("frequenza", c.getFrequenza());
-                    map.put("numeroSessioni", c.getNumeroSessioni());
-                    coursesData.add(map);
+                    coursesData.add(new CourseDTO(
+                            c.getId(),
+                            c.getTitolo(),
+                            c.getCategoria(),
+                            c.getDataInizio(),
+                            c.getFrequenza(),
+                            c.getNumeroSessioni()));
                 }
                 return coursesData;
             } catch (DAOException e) {
@@ -141,17 +161,16 @@ public class AppController {
 
     /* ------------------- RECIPES ------------------- */
 
-    public List<Map<String, Object>> getRecipesData() {
+    public List<RecipeDTO> getRecipesData() {
         if (userLogged != null && userLogged.isChef()) {
             try {
                 List<Ricetta> recipes = ricettaDAO.getRicetteByChef(getCurrentChefId());
-                List<Map<String, Object>> recipesData = new ArrayList<>();
+                List<RecipeDTO> recipesData = new ArrayList<>();
                 for (Ricetta r : recipes) {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("id", r.getId());
-                    map.put("nome", r.getNome());
-                    map.put("descrizione", r.getDescrizione());
-                    recipesData.add(map);
+                    recipesData.add(new RecipeDTO(
+                            r.getId(),
+                            r.getNome(),
+                            r.getDescrizione()));
                 }
                 return recipesData;
             } catch (DAOException e) {
@@ -161,13 +180,10 @@ public class AppController {
         return new ArrayList<>();
     }
 
-    public boolean createRecipe(Map<String, Object> recipeData) {
+    public boolean createRecipe(RecipeDTO recipeDTO) {
         if (userLogged != null && userLogged.isChef()) {
             try {
-                String nome = (String) recipeData.get("nome");
-                String descrizione = (String) recipeData.get("descrizione");
-
-                Ricetta newRecipe = new Ricetta(nome, descrizione, getCurrentChefId());
+                Ricetta newRecipe = new Ricetta(recipeDTO.getNome(), recipeDTO.getDescrizione(), getCurrentChefId());
                 ricettaDAO.addRicetta(newRecipe);
                 return true;
             } catch (DAOException e) {
@@ -200,7 +216,7 @@ public class AppController {
 
     public boolean showCreateRecipeDialog(Window owner) {
         try {
-            Optional<Map<String, Object>> result = AddRecipeDialogGUI.showDialog(owner);
+            Optional<RecipeDTO> result = AddRecipeDialogGUI.showDialog(owner);
             if (result.isPresent()) {
                 return createRecipe(result.get());
             }
@@ -234,7 +250,7 @@ public class AppController {
                 Sessione sessione = new Sessione(
                         corso.getId(),
                         sessionNum++,
-                        sDto.getData(),
+                        sDto.getDataSessione(),
                         sDto.getModalita(),
                         sDto.getDurata(),
                         sDto.getDescrizione());
@@ -294,19 +310,18 @@ public class AppController {
 
     // --- GESTIONE SESSIONI ---
 
-    public List<Map<String, Object>> getSessioniByCorso(int corsoId) {
-        List<Map<String, Object>> result = new ArrayList<>();
+    public List<SessionDTO> getSessioniByCorso(int corsoId) {
+        List<SessionDTO> result = new ArrayList<>();
         try {
             List<Sessione> sessioni = sessioneDAO.getSessioniByCorso(corsoId);
             for (Sessione s : sessioni) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("id", s.getId());
-                map.put("numeroSessione", s.getNumeroSessione());
-                map.put("dataSessione", s.getDataSessione());
-                map.put("modalita", s.getModalita());
-                map.put("durata", s.getDurata());
-                map.put("descrizione", s.getDescrizione());
-                result.add(map);
+                result.add(new SessionDTO(
+                        s.getId(),
+                        s.getNumeroSessione(),
+                        s.getDataSessione(),
+                        s.getModalita(),
+                        s.getDurata(),
+                        s.getDescrizione()));
             }
         } catch (DAOException e) {
             new ErrorDialog("Errore", "Impossibile recuperare le sessioni: " + e.getMessage()).show();
@@ -324,19 +339,18 @@ public class AppController {
         }
     }
 
-    public boolean updateSession(int sessionId, Map<String, Object> data) {
+    public boolean updateSession(int sessionId, SessionDTO sessionDTO) {
         try {
             SessioneDAO dao = getSessioneDAO();
 
             int dummyCorsoId = 0;
             int dummyNumSessione = 0;
-            LocalDate dataSessione = (LocalDate) data.get("dataSessione");
-            String modalita = (String) data.get("modalita");
-            Integer durata = (Integer) data.get("durata");
-            String descrizione = (String) data.get("descrizione");
 
-            Sessione s = new Sessione(sessionId, dummyCorsoId, dummyNumSessione, dataSessione, modalita, durata,
-                    descrizione);
+            Sessione s = new Sessione(sessionId, dummyCorsoId, dummyNumSessione,
+                    sessionDTO.getDataSessione(),
+                    sessionDTO.getModalita(),
+                    sessionDTO.getDurata(),
+                    sessionDTO.getDescrizione());
             dao.updateSessione(s);
             return true;
         } catch (DAOException e) {
@@ -364,11 +378,13 @@ public class AppController {
 
     // --- NOTIFICHE ---
 
-    public List<Map<String, Object>> getNotificationsData() {
+    // --- NOTIFICHE ---
+
+    public List<NotificationDTO> getNotificationsData() {
         if (userLogged == null || !userLogged.isChef())
             return new ArrayList<>();
 
-        List<Map<String, Object>> result = new ArrayList<>();
+        List<NotificationDTO> result = new ArrayList<>();
 
         try {
             // Load all courses for the chef to map ID -> Title
@@ -380,10 +396,6 @@ public class AppController {
 
             List<Notifica> notifiche = notificaDAO.getNotificheByChef(userLogged.getId());
             for (Notifica n : notifiche) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("titolo", n.getTitolo());
-                map.put("contenuto", n.getContenuto());
-
                 String target = "Tutti i corsi";
                 if (n.getIdCorso() != null && n.getIdCorso() != 0) {
                     // Check if map contains the ID, otherwise fallback to ID
@@ -393,8 +405,7 @@ public class AppController {
                         target = "Corso ID: " + n.getIdCorso();
                     }
                 }
-                map.put("target", target);
-                result.add(map);
+                result.add(new NotificationDTO(n.getTitolo(), n.getContenuto(), target));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -402,13 +413,13 @@ public class AppController {
         return result;
     }
 
-    public boolean createNotification(Map<String, Object> data) {
+    public boolean createNotification(NotificationDTO notificationDTO) {
         if (userLogged == null)
             return false;
 
-        String titolo = (String) data.get("titolo");
-        String contenuto = (String) data.get("contenuto");
-        Integer corsoId = (Integer) data.get("corsoId");
+        String titolo = notificationDTO.getTitolo();
+        String contenuto = notificationDTO.getContenuto();
+        Integer corsoId = notificationDTO.getCorsoId();
 
         Notifica notifica = new Notifica(titolo, contenuto, userLogged.getId(),
                 corsoId);
@@ -422,19 +433,20 @@ public class AppController {
         }
     }
 
-    public List<Map<String, Object>> getSimpleCoursesData() {
+    public List<CourseDTO> getSimpleCoursesData() {
         if (userLogged == null || !userLogged.isChef())
             return new ArrayList<>();
 
-        List<Map<String, Object>> result = new ArrayList<>();
+        List<CourseDTO> result = new ArrayList<>();
         try {
             List<Corso> corsi = corsoDAO.getCorsiByChef(userLogged.getId());
 
             for (Corso c : corsi) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("id", c.getId());
-                map.put("titolo", c.getTitolo());
-                result.add(map);
+                // Populate minimal info
+                CourseDTO dto = new CourseDTO();
+                dto.setId(c.getId());
+                dto.setTitolo(c.getTitolo());
+                result.add(dto);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -444,7 +456,7 @@ public class AppController {
 
     public void showCreateNotificationDialog(Window owner) {
         try {
-            Optional<Map<String, Object>> result = AddNotificationDialogGUI.showDialog(owner);
+            Optional<NotificationDTO> result = AddNotificationDialogGUI.showDialog(owner);
             if (result.isPresent()) {
                 createNotification(result.get());
             }
@@ -500,6 +512,9 @@ public class AppController {
 
     public void logout() {
         this.userLogged = null;
+        LoginGUI loginGUI = (LoginGUI) getController("login");
+        loginGUI.clearLoginFields();
+        loginGUI.clearRegisterFields();
         navigateToLogin();
     }
 

@@ -16,8 +16,8 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import progetto.app.controller.AppController;
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
+import progetto.app.dto.CourseDTO;
 
 public class CoursesViewGUI implements Initializable {
 
@@ -42,7 +42,7 @@ public class CoursesViewGUI implements Initializable {
         coursesContainer.getChildren().add(loadingLabel);
 
         new Thread(() -> {
-            List<Map<String, Object>> courses = appController.getCoursesData();
+            List<CourseDTO> courses = appController.getCoursesData();
             Platform.runLater(() -> {
                 coursesContainer.getChildren().clear();
                 if (courses.isEmpty()) {
@@ -50,7 +50,7 @@ public class CoursesViewGUI implements Initializable {
                     placeholder.setStyle("-fx-font-size: 16px; -fx-text-fill: -color-fg-muted;");
                     coursesContainer.getChildren().add(placeholder);
                 } else {
-                    for (Map<String, Object> course : courses) {
+                    for (CourseDTO course : courses) {
                         coursesContainer.getChildren().add(createCourseCard(course));
                     }
                 }
@@ -58,16 +58,15 @@ public class CoursesViewGUI implements Initializable {
         }).start();
     }
 
-    private Node createCourseCard(Map<String, Object> course) {
+    private Node createCourseCard(CourseDTO course) {
         VBox card = new VBox(5);
         card.setStyle(
                 "-fx-background-color: white; -fx-padding: 12; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 5, 0, 0, 2); -fx-cursor: hand;");
 
         // Add click listener to open details
-        // Add click listener to open details
         card.setOnMouseClicked(e -> {
-            int corsoId = (int) course.get("id");
-            String titolo = (String) course.get("titolo");
+            int corsoId = course.getId();
+            String titolo = course.getTitolo();
             appController.showCourseDetailsDialog(card.getScene().getWindow(), corsoId, titolo);
         });
 
@@ -75,13 +74,13 @@ public class CoursesViewGUI implements Initializable {
         HBox header = new HBox(10);
         header.setAlignment(Pos.CENTER_LEFT);
 
-        Label title = new Label((String) course.get("titolo"));
+        Label title = new Label(course.getTitolo());
         title.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #2c3e50;");
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Label category = new Label(((String) course.get("categoria")).toUpperCase());
+        Label category = new Label(course.getCategoria().toUpperCase());
         category.setStyle(
                 "-fx-background-color: #e8f6f3; -fx-text-fill: #16a085; -fx-padding: 3 8; -fx-background-radius: 4; -fx-font-size: 10px; -fx-font-weight: bold;");
 
@@ -91,8 +90,8 @@ public class CoursesViewGUI implements Initializable {
         HBox details1 = new HBox(15);
         details1.setAlignment(Pos.CENTER_LEFT);
 
-        Label dateLabel = createIconLabel("fas-calendar-alt", course.get("dataInizio").toString());
-        Label sessionsLabel = createIconLabel("fas-layer-group", course.get("numeroSessioni") + " Sessioni");
+        Label dateLabel = createIconLabel("fas-calendar-alt", course.getDataInizio().toString());
+        Label sessionsLabel = createIconLabel("fas-layer-group", course.getNumeroSessioni() + " Sessioni");
 
         details1.getChildren().addAll(dateLabel, sessionsLabel);
 
@@ -100,7 +99,7 @@ public class CoursesViewGUI implements Initializable {
         HBox details2 = new HBox(15);
         details2.setAlignment(Pos.CENTER_LEFT);
 
-        Label freqLabel = createIconLabel("fas-clock", (String) course.get("frequenza"));
+        Label freqLabel = createIconLabel("fas-clock", course.getFrequenza());
 
         details2.getChildren().addAll(freqLabel);
 

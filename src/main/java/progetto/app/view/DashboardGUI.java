@@ -35,6 +35,8 @@ public class DashboardGUI implements Initializable {
     private Button recipesButton;
     @FXML
     private Button notificationsButton;
+    @FXML
+    private Button reportButton;
 
     // Header
     @FXML
@@ -76,6 +78,9 @@ public class DashboardGUI implements Initializable {
         }
         if (notificationsButton != null) {
             notificationsButton.setOnAction(e -> loadNotificationsView());
+        }
+        if (reportButton != null) {
+            reportButton.setOnAction(e -> loadReportView());
         }
 
         // Logout
@@ -126,7 +131,7 @@ public class DashboardGUI implements Initializable {
      * Carica la vista Ricette nel container centrale
      */
     private void loadRecipesView() {
-        loadViewInContainer("recipes"); // We will create this
+        loadViewInContainer("recipes");
         updateSidebarSelection(recipesButton);
 
         RecipesViewGUI controller = (RecipesViewGUI) appController.getController("recipes");
@@ -163,6 +168,16 @@ public class DashboardGUI implements Initializable {
         }
     }
 
+    private void loadReportView() {
+        loadViewInContainer("report");
+        updateSidebarSelection(reportButton);
+
+        ReportViewGUI controller = (ReportViewGUI) appController.getController("report");
+        if (controller != null) {
+            controller.loadData();
+        }
+    }
+
     /**
      * Aggiorna lo stile della sidebar per evidenziare la sezione attiva
      */
@@ -192,6 +207,12 @@ public class DashboardGUI implements Initializable {
                 notificationsButton.getStyleClass().add("flat");
             }
         }
+        if (reportButton != null) {
+            reportButton.getStyleClass().removeAll("accent");
+            if (!reportButton.getStyleClass().contains("flat")) {
+                reportButton.getStyleClass().add("flat");
+            }
+        }
 
         // Aggiungi accent al selezionato
         if (selectedButton != null) {
@@ -204,7 +225,6 @@ public class DashboardGUI implements Initializable {
      * Gestisce il logout
      */
     private void handleLogout() {
-        System.out.println("Logout...");
         appController.logout();
     }
 

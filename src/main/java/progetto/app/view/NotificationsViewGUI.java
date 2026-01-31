@@ -10,8 +10,8 @@ import progetto.app.controller.AppController;
 
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
+import progetto.app.dto.NotificationDTO;
 
 public class NotificationsViewGUI implements Initializable {
 
@@ -36,12 +36,12 @@ public class NotificationsViewGUI implements Initializable {
         notificationsContainer.getChildren().add(loadingLabel);
 
         new Thread(() -> {
-            List<Map<String, Object>> notifications = appController.getNotificationsData();
+            List<NotificationDTO> notifications = appController.getNotificationsData();
             Platform.runLater(() -> populateNotifications(notifications));
         }).start();
     }
 
-    private void populateNotifications(List<Map<String, Object>> notifications) {
+    private void populateNotifications(List<NotificationDTO> notifications) {
         notificationsContainer.getChildren().clear();
 
         if (notifications.isEmpty()) {
@@ -51,20 +51,20 @@ public class NotificationsViewGUI implements Initializable {
             return;
         }
 
-        for (Map<String, Object> notifica : notifications) {
+        for (NotificationDTO notifica : notifications) {
             VBox card = createNotificationCard(notifica);
             notificationsContainer.getChildren().add(card);
         }
     }
 
-    private VBox createNotificationCard(Map<String, Object> notifica) {
+    private VBox createNotificationCard(NotificationDTO notifica) {
         VBox card = new VBox(5);
         card.setStyle(
                 "-fx-background-color: -color-bg-default; -fx-padding: 15; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);");
 
-        String titolo = (String) notifica.get("titolo");
-        String contenuto = (String) notifica.get("contenuto");
-        String target = (String) notifica.get("target");
+        String titolo = notifica.getTitolo();
+        String contenuto = notifica.getContenuto();
+        String target = notifica.getTarget();
 
         Label titleLabel = new Label(titolo);
         titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
