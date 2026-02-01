@@ -33,9 +33,13 @@ import progetto.app.view.LoginGUI;
 
 import java.io.IOException;
 
+import java.time.LocalDate;
+import java.time.temporal.WeekFields;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.time.temporal.WeekFields.ISO;
 
 public class AppController {
     private static final Image APP_ICON = new Image(
@@ -183,9 +187,15 @@ public class AppController {
     public boolean createRecipe(RecipeDTO recipeDTO) {
         if (userLogged != null && userLogged.isChef()) {
             try {
+                if(recipeDTO.getDescrizione().length() < 5 || recipeDTO.getNome().length() < 5){
+                    throw new LengthException("La descrizione o il nome della ricetta non possono essere inferiori a 5 caratteri.");
+                }
                 Ricetta newRecipe = new Ricetta(recipeDTO.getNome(), recipeDTO.getDescrizione(), getCurrentChefId());
                 ricettaDAO.addRicetta(newRecipe);
                 return true;
+            } catch (LengthException e) {
+                new ErrorDialog("Errore di Creazione", "Il nome e la descrizione della ricetta devono essere lunghe almeno 5 caratteri.").show();
+                return false;
             } catch (DAOException e) {
                 new ErrorDialog("Errore di Creazione", "Impossibile creare la ricetta: " + e.getMessage()).show();
                 return false;
@@ -233,8 +243,9 @@ public class AppController {
     public boolean createCourse(CourseDTO courseDTO, List<SessionDTO> sessionDTOs) {
         try {
             int chefId = getCurrentChefId();
-            System.out.println("[DEBUG : ] Creating course for chef ID: " + chefId + " " + this.userLogged.getName());
-
+            checkDtos(courseDTO, sessionDTOs);
+            checkDates(courseDTO, sessionDTOs);
+            checkFrequency(courseDTO, sessionDTOs);
             Corso corso = new Corso(
                     courseDTO.getTitolo(),
                     courseDTO.getCategoria(),
@@ -242,9 +253,7 @@ public class AppController {
                     courseDTO.getFrequenza(),
                     sessionDTOs.size(),
                     chefId);
-
             corsoDAO.addCorso(corso);
-
             int sessionNum = 1;
             for (SessionDTO sDto : sessionDTOs) {
                 Sessione sessione = new Sessione(
@@ -255,12 +264,10 @@ public class AppController {
                         sDto.getDurata(),
                         sDto.getDescrizione());
                 sessioneDAO.addSessione(sessione);
-
                 if ("In Presenza".equals(sDto.getModalita()) && sDto.getRicette() != null) {
                     for (RecipeDTO rDto : sDto.getRicette()) {
                         int recipeId = rDto.getId();
                         if (recipeId == 0) {
-                            // Create new recipe
                             Ricetta newRicetta = new Ricetta(rDto.getNome(), rDto.getDescrizione(),
                                     chefId);
                             recipeId = ricettaDAO.addRicetta(newRicetta); // returns id
@@ -270,15 +277,92 @@ public class AppController {
                 }
             }
             return true;
+        } catch (IllegalArgumentException e){
+            new ErrorDialog("Errore Campi Vuoti", e.getMessage()).show();
+            return false;
+        } catch (DuplicateCorsoException e){
+            new ErrorDialog("Errore Creazione Corso", e.getMessage()).show();
+            return false;
         } catch (DAOException e) {
             new ErrorDialog("Errore Creazione Corso", "Impossibile creare il corso: " + e.getMessage()).show();
+            return false;
+        } catch (CourseCreationException e){
+            new ErrorDialog("Errore Creazione Corso", e.getMessage()).show();
+            return false;
+        } catch (FrequencyException e){
+            new ErrorDialog("Errore Frequenza", e.getMessage()).show();
             return false;
         } catch (Exception e) {
             new ErrorDialog("Errore Inatteso", "Si è verificato un errore imprevisto: " + e.getMessage()).show();
             return false;
         }
     }
+    public void checkDates(CourseDTO courseDTO, List<SessionDTO> sessionDTOs) throws CourseCreationException {
+        for(int i = 0; i < sessionDTOs.size(); i++){
+            if (courseDTO.getDataInizio().isAfter(sessionDTOs.get(i).getDataSessione())) {
+                throw new CourseCreationException("La data di una sessione è antecedente all'inizio del corso");
+            }
+        }
+    }
 
+    public void checkDtos(CourseDTO courseDTO, List<SessionDTO> sessionDTOs) throws IllegalArgumentException {
+        if (courseDTO == null) {
+            throw new IllegalArgumentException("Riempire tutti i campi");
+        }
+        if (sessionDTOs == null || sessionDTOs.isEmpty()) {
+            throw new IllegalArgumentException("Riempire almeno una sessione o riempirne tutti i campi");
+        }
+        if (courseDTO.getTitolo() == null || courseDTO.getTitolo().isBlank()
+                || courseDTO.getCategoria() == null || courseDTO.getCategoria().isBlank()
+                || courseDTO.getDataInizio() == null
+                || courseDTO.getFrequenza() == null || courseDTO.getFrequenza().isBlank()) {
+            throw new IllegalArgumentException("Riempire tutti i campi del corso");
+        }
+    }
+
+    public void checkFrequency(CourseDTO courseDTO, List<SessionDTO> sessionDTOs) throws FrequencyException {
+        String frequenza = courseDTO.getFrequenza();
+
+        switch (frequenza) {
+            case "Mensile":
+                checkMonthlyFrequency(sessionDTOs);
+                break;
+            case "Settimanale":
+                checkWeeklyFrequency(sessionDTOs, 1);
+                break;
+            case "Bisettimanale":
+                checkWeeklyFrequency(sessionDTOs, 2);
+                break;
+            case "Trisettimanale":
+                checkWeeklyFrequency(sessionDTOs, 3);
+                break;
+        }
+    }
+
+    private void checkMonthlyFrequency(List<SessionDTO> sessionDTOs) throws FrequencyException {
+        Map<String, Integer> sessioniPerMese = new HashMap<>();
+        for (int i = 0; i < sessionDTOs.size(); i++) {
+            LocalDate data = sessionDTOs.get(i).getDataSessione();
+            String chiave = data.getYear() + "-" + data.getMonthValue();
+            sessioniPerMese.put(chiave, sessioniPerMese.getOrDefault(chiave, 0) + 1);
+            if (sessioniPerMese.get(chiave) > 1) {
+                throw new FrequencyException("Sessione " + (i + 1) + ": la frequenza mensile permette solo 1 sessione al mese (" + data.getMonth() + " " + data.getYear() + ")");
+            }
+        }
+    }
+
+    private void checkWeeklyFrequency(List<SessionDTO> sessionDTOs, int maxPerSettimana) throws FrequencyException {
+        Map<String, Integer> sessioniPerSettimana = new HashMap<>();
+        for (int i = 0; i < sessionDTOs.size(); i++) {
+            LocalDate data = sessionDTOs.get(i).getDataSessione();
+            int settimana = data.get(ISO.weekOfWeekBasedYear());
+            String chiave = data.getYear() + "-W" + settimana;
+            sessioniPerSettimana.put(chiave, sessioniPerSettimana.getOrDefault(chiave, 0) + 1);
+            if (sessioniPerSettimana.get(chiave) > maxPerSettimana) {
+                throw new FrequencyException("Sessione " + (i + 1) + ": la frequenza permette massimo " + maxPerSettimana + " sessione/i a settimana (settimana " + settimana + ")");
+            }
+        }
+    }
     public int getCurrentChefId() {
         return userLogged.getId();
     }

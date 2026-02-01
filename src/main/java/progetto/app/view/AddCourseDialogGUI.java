@@ -27,6 +27,8 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 
+import static java.time.temporal.WeekFields.ISO;
+
 public class AddCourseDialogGUI implements Initializable {
 
     @FXML
@@ -56,6 +58,7 @@ public class AddCourseDialogGUI implements Initializable {
     }
 
     private void setupStartDatePicker() {
+        startDatePicker.setEditable(false);
         startDatePicker.setDayCellFactory(picker -> new DateCell() {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
@@ -215,14 +218,9 @@ public class AddCourseDialogGUI implements Initializable {
 
     public boolean isCourseDTOValid() {
         if (!areCourseFieldsFilled()) {
-            appController.showWarningDialog("Attenzione!", "Riempire tutti i campi del corso.");
             return false;
         }
-        if (!isStartDateValid()) {
-            appController.showWarningDialog("Attenzione!", "Il corso non può iniziare nel passato!");
-            return false;
-        }
-        return true;
+        return isStartDateValid();
     }
 
     public boolean areCourseFieldsFilled() {
@@ -260,27 +258,15 @@ public class AddCourseDialogGUI implements Initializable {
                     }
                 }
             }
-            if (!components.isSessionValid(components)) {
-                appController.showWarningDialog("Attenzione!", "Riempire tutti i campi delle sessioni.");
-                return null;
-            }
-
-            if (!components.isDateValid(components, startDatePicker)) {
-                appController.showWarningDialog("Attenzione!",
-                        "La data delle sessioni deve essere conseguente a quella di inizio del corso.");
-                return null;
-            }
-
+            if (components.isDateNull(components)) return null;
             SessionDTO sessionDTO = new SessionDTO(
                     components.datePicker.getValue(),
                     components.modeCombo.getValue(),
                     components.durationSpinner.getValue(),
                     components.descriptionArea.getText(),
                     sessionRecipes);
-
             results.add(sessionDTO);
         }
-
         return results;
     }
 
@@ -389,16 +375,10 @@ public class AddCourseDialogGUI implements Initializable {
             this.modeCombo = m;
             this.durationSpinner = du;
             this.descriptionArea = de;
+            this.datePicker.setEditable(false);
         }
-
-        public boolean isSessionValid(SessionUIComponents components) {
-            return components.datePicker.getValue() != null
-                    && components.modeCombo.getValue() != null
-                    && !components.descriptionArea.getText().isBlank();
-        }
-
-        public boolean isDateValid(SessionUIComponents components, DatePicker date) {
-            return components.datePicker.getValue().isAfter(date.getValue());
+        public boolean isDateNull(SessionUIComponents components) {
+            return components.datePicker.getValue() == null;
         }
     }
 

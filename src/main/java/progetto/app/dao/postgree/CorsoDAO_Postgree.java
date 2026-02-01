@@ -3,6 +3,7 @@ package progetto.app.dao.postgree;
 import progetto.app.dao.Interface.CorsoDAO;
 import progetto.app.database.DatabaseConnection;
 import progetto.app.exception.DAOException;
+import progetto.app.exception.DuplicateCorsoException;
 import progetto.app.model.Corso;
 
 import java.sql.*;
@@ -31,6 +32,9 @@ public class CorsoDAO_Postgree implements CorsoDAO {
                 }
             }
         } catch (SQLException e) {
+            if (e.getSQLState().equals("23505")) {
+                throw new DuplicateCorsoException("Il corso \""+ corso.getTitolo()+ "\" esiste già.");
+            }
             e.printStackTrace();
             throw new DAOException("Impossibile aggiungere il corso", e);
         }
