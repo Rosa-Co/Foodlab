@@ -33,6 +33,7 @@ import progetto.app.view.LoginGUI;
 
 import java.io.IOException;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.*;
@@ -195,6 +196,9 @@ public class AppController {
                 return true;
             } catch (LengthException e) {
                 new ErrorDialog("Errore di Creazione", "Il nome e la descrizione della ricetta devono essere lunghe almeno 5 caratteri.").show();
+                return false;
+            } catch (SQLException e) {
+                new ErrorDialog("Errore di Creazione","Non sono ammesse ricette con lo stesso nome.").show();
                 return false;
             } catch (DAOException e) {
                 new ErrorDialog("Errore di Creazione", "Impossibile creare la ricetta: " + e.getMessage()).show();

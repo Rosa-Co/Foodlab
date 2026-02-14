@@ -46,10 +46,10 @@ public class RicettaDAO_Postgree implements RicettaDAO {
     }
 
     @Override
-    public int addRicetta(Ricetta ricetta) throws DAOException {
+    public int addRicetta(Ricetta ricetta) throws DAOException, SQLException {
         String sql = "INSERT INTO ricetta (nome, descrizione, chef_id) VALUES (?, ?, ?) RETURNING id";
         try (Connection con = DatabaseConnection.getConnection();
-                PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, ricetta.getNome());
             ps.setString(2, ricetta.getDescrizione());
             ps.setInt(3, ricetta.getChefId());
@@ -63,6 +63,9 @@ public class RicettaDAO_Postgree implements RicettaDAO {
                 }
             }
         } catch (SQLException e) {
+            if ("23505".equals(e.getSQLState()) || e.getErrorCode() == 23505) {
+                throw e;
+            }
             throw new DAOException("Impossibile aggiungere la ricetta", e);
         }
     }
