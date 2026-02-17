@@ -197,11 +197,14 @@ public class AppController {
             } catch (LengthException e) {
                 new ErrorDialog("Errore di Creazione", "Il nome e la descrizione della ricetta devono essere lunghe almeno 5 caratteri.").show();
                 return false;
-            } catch (SQLException e) {
+            } catch (DuplicateRecipeException e) {
                 new ErrorDialog("Errore di Creazione","Non sono ammesse ricette con lo stesso nome.").show();
                 return false;
             } catch (DAOException e) {
                 new ErrorDialog("Errore di Creazione", "Impossibile creare la ricetta: " + e.getMessage()).show();
+                return false;
+            } catch (SQLException e) {
+                new ErrorDialog("Errore di Creazione", "Errore imprevisto: " + e.getMessage()).show();
                 return false;
             }
         }

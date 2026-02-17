@@ -3,6 +3,8 @@ package progetto.app.dao.postgree;
 import progetto.app.dao.Interface.RicettaDAO;
 import progetto.app.database.DatabaseConnection;
 import progetto.app.exception.DAOException;
+import progetto.app.exception.DuplicateCorsoException;
+import progetto.app.exception.DuplicateRecipeException;
 import progetto.app.model.Ricetta;
 
 import java.sql.*;
@@ -46,7 +48,7 @@ public class RicettaDAO_Postgree implements RicettaDAO {
     }
 
     @Override
-    public int addRicetta(Ricetta ricetta) throws DAOException, SQLException {
+    public int addRicetta(Ricetta ricetta) throws DAOException, DuplicateRecipeException {
         String sql = "INSERT INTO ricetta (nome, descrizione, chef_id) VALUES (?, ?, ?) RETURNING id";
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -64,7 +66,7 @@ public class RicettaDAO_Postgree implements RicettaDAO {
             }
         } catch (SQLException e) {
             if ("23505".equals(e.getSQLState()) || e.getErrorCode() == 23505) {
-                throw e;
+                throw new DuplicateRecipeException(e.getMessage());
             }
             throw new DAOException("Impossibile aggiungere la ricetta", e);
         }
