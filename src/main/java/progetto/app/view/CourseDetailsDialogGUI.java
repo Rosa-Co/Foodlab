@@ -18,10 +18,14 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import progetto.app.controller.AppController;
 
 import java.io.IOException;
+import java.time.LocalDate;
+
 
 import java.util.List;
 import java.util.Optional;
 import progetto.app.dto.SessionDTO;
+import javafx.scene.control.DateCell;
+
 
 public class CourseDetailsDialogGUI {
 
@@ -140,9 +144,17 @@ public class CourseDetailsDialogGUI {
         content.setPadding(new Insets(20));
 
         DatePicker datePicker = new DatePicker(session.getDataSessione());
+        datePicker.setEditable(false);
+        datePicker.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                setDisable(empty || date.isBefore(LocalDate.now()));
+            }
+        });
 
-        TextField durationField = new TextField(String.valueOf(session.getDurata()));
-        durationField.setPromptText("Durata (min)");
+        Spinner<Integer> durationSpinner = new Spinner<>(30, 480, session.getDurata());
+        durationSpinner.setEditable(true);
 
         TextArea descArea = new TextArea(session.getDescrizione());
         descArea.setPromptText("Descrizione");
@@ -150,7 +162,7 @@ public class CourseDetailsDialogGUI {
 
         content.getChildren().addAll(
                 new Label("Data:"), datePicker,
-                new Label("Durata (min):"), durationField,
+                new Label("Durata (min):"), durationSpinner,
                 new Label("Descrizione:"), descArea);
         dialog.getDialogPane().setContent(content);
 
@@ -163,11 +175,7 @@ public class CourseDetailsDialogGUI {
 
                 newData.setDataSessione(datePicker.getValue());
                 newData.setModalita(session.getModalita());
-                try {
-                    newData.setDurata(Integer.parseInt(durationField.getText()));
-                } catch (NumberFormatException e) {
-                    newData.setDurata(0); // Handle error better or default
-                }
+                newData.setDurata(durationSpinner.getValue());
                 newData.setDescrizione(descArea.getText());
                 return newData;
             }
