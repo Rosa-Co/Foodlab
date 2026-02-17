@@ -231,7 +231,7 @@ public class AddCourseDialogGUI implements Initializable {
     }
 
     public boolean isStartDateValid() {
-        return startDatePicker.getValue().isAfter(LocalDate.now());
+        return !startDatePicker.getValue().isBefore(LocalDate.now());
     }
 
     public List<SessionDTO> getSessionDTOs() {
@@ -258,7 +258,8 @@ public class AddCourseDialogGUI implements Initializable {
                     }
                 }
             }
-            if (components.isDateNull(components)) return null;
+            if (components.isDateNull(components))
+                return null;
             SessionDTO sessionDTO = new SessionDTO(
                     components.datePicker.getValue(),
                     components.modeCombo.getValue(),
@@ -377,6 +378,7 @@ public class AddCourseDialogGUI implements Initializable {
             this.descriptionArea = de;
             this.datePicker.setEditable(false);
         }
+
         public boolean isDateNull(SessionUIComponents components) {
             return components.datePicker.getValue() == null;
         }

@@ -141,10 +141,6 @@ public class CourseDetailsDialogGUI {
 
         DatePicker datePicker = new DatePicker(session.getDataSessione());
 
-        ComboBox<String> modalitaBox = new ComboBox<>();
-        modalitaBox.getItems().addAll("Online", "In Presenza");
-        modalitaBox.setValue(session.getModalita());
-
         TextField durationField = new TextField(String.valueOf(session.getDurata()));
         durationField.setPromptText("Durata (min)");
 
@@ -154,7 +150,6 @@ public class CourseDetailsDialogGUI {
 
         content.getChildren().addAll(
                 new Label("Data:"), datePicker,
-                new Label("Modalità:"), modalitaBox,
                 new Label("Durata (min):"), durationField,
                 new Label("Descrizione:"), descArea);
         dialog.getDialogPane().setContent(content);
@@ -167,7 +162,7 @@ public class CourseDetailsDialogGUI {
                 newData.setNumeroSessione(session.getNumeroSessione());
 
                 newData.setDataSessione(datePicker.getValue());
-                newData.setModalita(modalitaBox.getValue());
+                newData.setModalita(session.getModalita());
                 try {
                     newData.setDurata(Integer.parseInt(durationField.getText()));
                 } catch (NumberFormatException e) {
