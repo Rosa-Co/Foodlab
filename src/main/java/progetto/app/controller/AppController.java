@@ -24,12 +24,7 @@ import progetto.app.dto.RecipeDTO;
 import progetto.app.dto.SessionDTO;
 import progetto.app.exception.*;
 import progetto.app.model.*;
-import progetto.app.view.AddCourseDialogGUI;
-import progetto.app.view.AddNotificationDialogGUI;
-import progetto.app.view.AddRecipeDialogGUI;
-import progetto.app.view.CourseDetailsDialogGUI;
-import progetto.app.view.CoursesViewGUI;
-import progetto.app.view.LoginGUI;
+import progetto.app.view.*;
 
 import java.io.IOException;
 
@@ -317,7 +312,7 @@ public class AppController {
             throw new IllegalArgumentException("Riempire tutti i campi");
         }
         if (sessionDTOs == null || sessionDTOs.isEmpty()) {
-            throw new IllegalArgumentException("Riempire almeno una sessione o riempirne tutti i campi");
+            throw new IllegalArgumentException("Riempire ALMENO una sessione o riempirne tutti i campi");
         }
         if (courseDTO.getTitolo() == null || courseDTO.getTitolo().isBlank()
                 || courseDTO.getCategoria() == null || courseDTO.getCategoria().isBlank()
@@ -655,11 +650,15 @@ public class AppController {
     public boolean login(String username, String password) {
         try {
             if (allievoDAO.getAllievoByUsername(username) != null) {
+                DashboardGUI controller = (DashboardGUI) controllers.get("dashboard");
+                controller.updateUsername(username);
                 return loginAllievo(username, password);
             }
         } catch (AllievoNotFoundException e) {
             try {
                 if (chefDAO.getChefByUsername(username) != null) {
+                    DashboardGUI controller = (DashboardGUI) controllers.get("dashboard");
+                    controller.updateUsername(username);
                     return loginChef(username, password);
                 }
             } catch (ChefNotFoundException e1) {
@@ -864,5 +863,9 @@ public class AppController {
 
             timeline.play();
         }
+    }
+
+    public String getLoggedUsername() {
+        return userLogged != null ? userLogged.getUsername() : null;
     }
 }

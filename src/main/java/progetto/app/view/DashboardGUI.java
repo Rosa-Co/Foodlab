@@ -61,7 +61,6 @@ public class DashboardGUI implements Initializable {
         Platform.runLater(() -> {
             setupEventHandlers();
             loadInitialView();
-            setChefName();
         });
     }
 
@@ -231,9 +230,9 @@ public class DashboardGUI implements Initializable {
     /**
      * Imposta il nome dello chef nell'header
      */
-    public void setChefName() {
+    public void updateUsername(String username) {
         if (chefNameLabel != null) {
-            chefNameLabel.setText("Chef " + "PierLuigi");
+            chefNameLabel.setText("Ciao, " + username);
         }
     }
 }
