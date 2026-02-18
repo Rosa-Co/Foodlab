@@ -13,7 +13,7 @@ import java.util.List;
 public class CorsoDAO_Postgree implements CorsoDAO {
 
     @Override
-    public void addCorso(Corso corso) throws DAOException {
+    public void addCorso(Corso corso) throws DAOException, DuplicateCorsoException {
         String sql = "INSERT INTO corso (titolo, categoria, data_inizio, frequenza, numero_sessioni, chef_id) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection con = DatabaseConnection.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -36,7 +36,7 @@ public class CorsoDAO_Postgree implements CorsoDAO {
                 throw new DuplicateCorsoException("Il corso \""+ corso.getTitolo()+ "\" esiste già.");
             }
             e.printStackTrace();
-            throw new DAOException("Impossibile aggiungere il corso", e);
+            throw new DAOException("Impossibile aggiungere il corso, riprova più tardi.", e);
         }
     }
 

@@ -282,17 +282,14 @@ public class AppController {
         } catch (IllegalArgumentException e){
             new ErrorDialog("Errore Campi Vuoti", e.getMessage()).show();
             return false;
-        } catch (DuplicateCorsoException e){
-            new ErrorDialog("Errore Creazione Corso", e.getMessage()).show();
-            return false;
-        } catch (DAOException e) {
-            new ErrorDialog("Errore Creazione Corso", "Impossibile creare il corso: " + e.getMessage()).show();
+        } catch (FrequencyException e){
+            new ErrorDialog("Errore Frequenza", e.getMessage()).show();
             return false;
         } catch (CourseCreationException e){
             new ErrorDialog("Errore Creazione Corso", e.getMessage()).show();
             return false;
-        } catch (FrequencyException e){
-            new ErrorDialog("Errore Frequenza", e.getMessage()).show();
+        } catch (DAOException e) {
+            new ErrorDialog("Errore", e.getMessage()).show();
             return false;
         } catch (Exception e) {
             new ErrorDialog("Errore Inatteso", "Si è verificato un errore imprevisto: " + e.getMessage()).show();
