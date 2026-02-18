@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.converter.IntegerStringConverter;
 import org.kordamp.ikonli.javafx.FontIcon;
 import progetto.app.controller.AppController;
 
@@ -156,6 +157,14 @@ public class CourseDetailsDialogGUI {
         Spinner<Integer> durationSpinner = new Spinner<>(30, 480, session.getDurata());
         durationSpinner.setEditable(true);
 
+        durationSpinner.getEditor().setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), durationSpinner.getValue(), change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("\\d*")) {
+                return change;
+            }
+            return null;
+        }));
+
         TextArea descArea = new TextArea(session.getDescrizione());
         descArea.setPromptText("Descrizione");
         descArea.setPrefRowCount(3);
@@ -186,7 +195,7 @@ public class CourseDetailsDialogGUI {
         result.ifPresent(newData -> {
             if (appController.updateSession(session.getId(), newData)) {
                 dataChanged = true;
-                loadSessions(); // Refresh
+                loadSessions();
             }
         });
     }

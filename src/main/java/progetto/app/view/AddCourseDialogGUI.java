@@ -2,6 +2,7 @@ package progetto.app.view;
 
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Window;
+import javafx.util.converter.IntegerStringConverter;
 import progetto.app.dto.CourseWithSessionsDTO;
 import progetto.app.enums.CuisineCategory;
 import javafx.fxml.FXML;
@@ -116,6 +117,15 @@ public class AddCourseDialogGUI implements Initializable {
         DatePicker datePicker = new DatePicker();
         ComboBox<String> modeCombo = new ComboBox<>();
         Spinner<Integer> durationSpinner = new Spinner<>(30, 480, 60);
+
+        durationSpinner.getEditor().setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), durationSpinner.getValue(), change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("\\d*")) {
+                return change;
+            }
+            return null;
+        }));
+
         TextArea descriptionArea = new TextArea();
 
         SessionUIComponents components = new SessionUIComponents(sessionBox, sessionLabel, datePicker, modeCombo,

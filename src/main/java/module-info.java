@@ -15,6 +15,7 @@ module progetto.app {
     requires org.jfree.jfreechart;
     requires java.desktop;
     requires jfreechart.fx;
+    requires javafx.base;
 
     opens progetto.app to javafx.fxml;
 
