@@ -15,7 +15,6 @@ public class SessionDTO {
     public SessionDTO() {
     }
 
-    // Constructor for creation (without ID)
     public SessionDTO(LocalDate dataSessione, String modalita, int durata, String descrizione,
             List<RecipeDTO> ricette) {
         this.dataSessione = dataSessione;
@@ -25,20 +24,6 @@ public class SessionDTO {
         this.ricette = ricette;
     }
 
-    // Constructor for view (with ID)
-    public SessionDTO(int id, int numeroSessione, LocalDate dataSessione, String modalita, int durata,
-            String descrizione,
-            List<RecipeDTO> ricette) {
-        this.id = id;
-        this.numeroSessione = numeroSessione;
-        this.dataSessione = dataSessione;
-        this.modalita = modalita;
-        this.durata = durata;
-        this.descrizione = descrizione;
-        this.ricette = ricette;
-    }
-
-    // Minimal constructor for list view if needed, or stick to full constructor
     public SessionDTO(int id, int numeroSessione, LocalDate dataSessione, String modalita, int durata,
             String descrizione) {
         this.id = id;

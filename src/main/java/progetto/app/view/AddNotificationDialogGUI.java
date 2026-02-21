@@ -34,7 +34,7 @@ public class AddNotificationDialogGUI {
     private Label errorLabel;
 
     private ToggleGroup toggleGroup;
-    private final Map<String, Integer> courseMap = new HashMap<>(); // Name -> ID
+    private final Map<String, Integer> courseMap = new HashMap<>(); // Nome -> ID
 
     @FXML
     public void initialize() {
@@ -66,7 +66,7 @@ public class AddNotificationDialogGUI {
         String message = messageArea.getText();
 
         if (title == null || title.trim().isEmpty() || message == null || message.trim().isEmpty()) {
-            return null; // Validation handled in showDialog
+            return null; 
         }
 
         Integer corsoId = null;

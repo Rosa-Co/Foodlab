@@ -15,6 +15,8 @@ import java.util.List;
 
 public class RicettaDAO_Postgree implements RicettaDAO {
 
+    private static final String UNIQUE_VIOLATION = "23505";
+
     @Override
     public List<Ricetta> getAllRicette() throws DAOException {
         List<Ricetta> ricette = new ArrayList<>();
@@ -67,7 +69,7 @@ public class RicettaDAO_Postgree implements RicettaDAO {
                 }
             }
         } catch (SQLException e) {
-            if ("23505".equals(e.getSQLState()) || e.getErrorCode() == 23505) {
+            if (UNIQUE_VIOLATION.equals(e.getSQLState())) {
                 throw new DuplicateRecipeException(e.getMessage());
             }
             throw new DAOException("Impossibile aggiungere la ricetta", e);

@@ -27,7 +27,6 @@ public class Main extends Application {
 
         appController.loadView("login", "/progetto/app/login.fxml");
         appController.loadView("dashboard", "/progetto/app/Dashboard.fxml");
-        appController.loadView("home", "/progetto/app/view/HomeView.fxml");
         appController.loadView("courses", "/progetto/app/view/CoursesView.fxml");
         appController.loadView("recipes", "/progetto/app/view/RecipesView.fxml");
         appController.loadView("notifications", "/progetto/app/view/NotificationsView.fxml");

@@ -12,6 +12,8 @@ import java.util.List;
 
 public class CorsoDAO_Postgree implements CorsoDAO {
 
+    private static final String UNIQUE_VIOLATION = "23505";
+
     @Override
     public void addCorso(Corso corso) throws DAOException, DuplicateCorsoException {
         String sql = "INSERT INTO corso (titolo, categoria, data_inizio, frequenza, numero_sessioni, chef_id) VALUES (?, ?, ?, ?, ?, ?)";
@@ -32,7 +34,7 @@ public class CorsoDAO_Postgree implements CorsoDAO {
                 }
             }
         } catch (SQLException e) {
-            if (e.getSQLState().equals("23505")) {
+            if (e.getSQLState().equals(UNIQUE_VIOLATION)) {
                 throw new DuplicateCorsoException("Il corso \""+ corso.getTitolo()+ "\" esiste già.");
             }
             e.printStackTrace();

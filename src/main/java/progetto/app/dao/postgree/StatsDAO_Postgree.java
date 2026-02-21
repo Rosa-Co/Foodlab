@@ -18,7 +18,7 @@ public class StatsDAO_Postgree implements StatsDAO {
 
         try (Connection con = DatabaseConnection.getConnection()) {
 
-            // 1. Total Courses
+            // Corsi totali
             String coursesSql = "SELECT COUNT(*) FROM corso WHERE chef_id = ?";
             try (PreparedStatement ps = con.prepareStatement(coursesSql)) {
                 ps.setInt(1, chefId);
@@ -29,7 +29,7 @@ public class StatsDAO_Postgree implements StatsDAO {
                 }
             }
 
-            // 2. Sessions (Online vs In Presenza)
+            // Sessioni (Online vs In Presenza)
             String sessionsSql = "SELECT s.modalita, COUNT(*) " +
                     "FROM sessione s " +
                     "JOIN corso c ON s.corso_id = c.id " +
@@ -51,7 +51,7 @@ public class StatsDAO_Postgree implements StatsDAO {
                 }
             }
 
-            // 3. Recipe Stats for "In Presenza" sessions
+            // 3. Stats per ricette in Presenza
             String recipeStatsSql = "WITH RecipeCounts AS ( " +
                     "    SELECT s.id, COUNT(sr.ricetta_id) as num_recipes " +
                     "    FROM sessione s " +

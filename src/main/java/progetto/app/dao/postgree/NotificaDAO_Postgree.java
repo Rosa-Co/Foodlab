@@ -14,7 +14,6 @@ public class NotificaDAO_Postgree implements NotificaDAO {
     @Override
     public List<Notifica> getNotificheByChef(int chefId) throws DAOException {
         List<Notifica> notifiche = new ArrayList<>();
-        // Updated query for real schema
         String sql = "SELECT * FROM avvisi WHERE id_chef = ? ORDER BY id_avviso DESC";
 
         try (Connection con = DatabaseConnection.getConnection();

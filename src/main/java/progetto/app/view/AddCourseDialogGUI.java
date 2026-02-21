@@ -70,7 +70,7 @@ public class AddCourseDialogGUI implements Initializable {
 
     private void setupFrequencyComboBox() {
         for (Frequency frequency : Frequency.values()) {
-            frequencyComboBox.getItems().add(frequency.name()); // ? capisci perchè da warning nonostante questo metodo
+            frequencyComboBox.getItems().add(frequency.name());
         }
     }
 
@@ -92,7 +92,6 @@ public class AddCourseDialogGUI implements Initializable {
         sessionBox.setStyle(
                 "-fx-background-color: -color-bg-default; -fx-padding: 15; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);");
 
-        // Header with remove button
         HBox header = new HBox(10);
         header.setAlignment(Pos.CENTER_LEFT);
         Label sessionLabel = new Label("Sessione " + sessionNumber);
@@ -105,7 +104,6 @@ public class AddCourseDialogGUI implements Initializable {
         removeButton.setGraphic(new FontIcon("fas-trash"));
         removeButton.getStyleClass().addAll("button-icon", "danger");
 
-        // Components for data gathering
         DatePicker datePicker = new DatePicker();
         ComboBox<String> modeCombo = new ComboBox<>();
         Spinner<Integer> durationSpinner = new Spinner<>(30, 480, 60);
@@ -247,14 +245,14 @@ public class AddCourseDialogGUI implements Initializable {
                             sessionRecipes.add(rc.existingCombo.getValue());
                         }
                     } else {
-                        // New Recipe
+                        // nuova ricetta
                         String name = rc.nameField.getText();
                         String desc = rc.descArea.getText();
                         if (name.isBlank() || desc.isBlank()) {
                             appController.showWarningDialog("Attenzione!", "Riempire tutti i campi.");
                             return null;
                         } else {
-                            // ID 0 indicates new recipe
+                            // ID 0 indica una nuova ricetta
                             sessionRecipes.add(new RecipeDTO(0, name, desc));
                         }
                     }
@@ -302,7 +300,7 @@ public class AddCourseDialogGUI implements Initializable {
         descArea.setWrapText(true);
         newRecipeBox.getChildren().addAll(nameField, descArea);
 
-        // Logic to switch
+        // Logica per switchare
         Runnable updateView = () -> {
             contentPane.getChildren().clear();
             if ("Esistente".equals(typeCombo.getValue())) {
@@ -313,7 +311,7 @@ public class AddCourseDialogGUI implements Initializable {
         };
 
         typeCombo.setOnAction(e -> updateView.run());
-        updateView.run(); // ! ...
+        updateView.run();
 
         Button removeBtn = new Button();
         removeBtn.setGraphic(new FontIcon("fas-trash"));
@@ -344,7 +342,7 @@ public class AddCourseDialogGUI implements Initializable {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setDialogPane(dialogPane);
         dialog.setTitle("Crea Nuovo Corso");
-        dialog.initOwner(owner); // split methods getResult
+        dialog.initOwner(owner);
 
         Optional<ButtonType> result = dialog.showAndWait();
 
@@ -357,8 +355,8 @@ public class AddCourseDialogGUI implements Initializable {
     }
 
     /**
-     * Helper class to hold UI components for a session
-     * Static to avoid implicit reference to outer class
+     *Classe helper per contenere i componenti dell'interfaccia utente per una sessione.
+     *Statica per evitare riferimenti impliciti alla classe esterna
      */
     private static class SessionUIComponents {
         VBox container;

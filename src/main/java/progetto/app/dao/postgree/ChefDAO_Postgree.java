@@ -18,7 +18,7 @@ public class ChefDAO_Postgree implements ChefDAO {
     public ChefDAO_Postgree() {}
 
     @Override
-    public void addChef(Chef chef) throws DAOException{
+    public void addChef(Chef chef) throws DAOException, DuplicateChefException{
         String checkSql = "SELECT COUNT(*) FROM chef WHERE LOWER(username) = LOWER(?) OR LOWER(email) = LOWER(?)";
         try(Connection con=DatabaseConnection.getConnection()) {
             try(PreparedStatement checkPs = con.prepareStatement(checkSql)) {
