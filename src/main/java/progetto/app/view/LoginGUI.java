@@ -70,7 +70,7 @@ public class LoginGUI {
         headerBox.setAlignment(Pos.CENTER);
         headerBox.setPadding(new Insets(40, 30, 30, 30));
 
-        Label mainTitle = new Label("Scopri FoodHub");
+        Label mainTitle = new Label("Scopri FoodLab");
         mainTitle.setStyle("-fx-font-size: 32px; -fx-font-weight: bold;");
 
         Label subtitle = new Label("La tua piattaforma per condividere passione culinaria");
@@ -87,7 +87,7 @@ public class LoginGUI {
                 { FontAwesomeSolid.COFFEE, "Ingredienti Freschi",
                         "Scopri ingredienti freschi e stagionali consigliati dai migliori chef.", "#4ECDC4" },
                 { FontAwesomeSolid.USERS, "Community Attiva",
-                        "Connettiti con altri appassionati, commenta e valuta le ricette.", "#FFE66D" }
+                        "Connettiti con altri appassionati, la cucina è magica", "#FFE66D" }
         };
 
         VBox cardsContainer = new VBox(20);

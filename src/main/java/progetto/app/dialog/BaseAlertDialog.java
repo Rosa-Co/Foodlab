@@ -52,7 +52,7 @@ public abstract class BaseAlertDialog {
         alert.setContentText(content);
     }
 
-    Alert getAlert() {
+    public Alert getAlert() {
         return alert;
     }
 }
