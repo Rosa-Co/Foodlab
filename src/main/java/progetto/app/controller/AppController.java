@@ -1131,6 +1131,9 @@ public class AppController {
 
         try {
             chefDAO.addChef(chef);
+            DashboardGUI controller = (DashboardGUI) controllers.get("dashboard");
+            controller.updateUsername(username);
+            this.userLogged = chef;
             navigateToDashboard();
             return true;
         } catch (DuplicateChefException e) {

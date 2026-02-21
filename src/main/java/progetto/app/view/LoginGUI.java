@@ -275,8 +275,9 @@ public class LoginGUI {
     /** Nasconde il form di login e mostra il form di registrazione. */
     @FXML
     private void showRegisterForm() {
+        clearRegisterFields();
         loginPane.setVisible(false);
-        loginPane.setManaged(false); // così non occupa spazio nel layout.
+        loginPane.setManaged(false);// così non occupa spazio nel layout.
         registerPane.setVisible(true);
         registerPane.setManaged(true);
     }
@@ -284,6 +285,7 @@ public class LoginGUI {
     /** Nasconde il form di registrazione e mostra il form di login. */
     @FXML
     private void showLoginForm() {
+        clearLoginFields();
         registerPane.setVisible(false);
         registerPane.setManaged(false);
         loginPane.setVisible(true);
