@@ -16,26 +16,47 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Controller del dialog per inviare una nuova notifica.
+ * <p>
+ * Lo chef può scegliere di inviare la notifica a tutti i corsi o a uno
+ * specifico. Il metodo statico {@link #showDialog(Window)} apre il dialog
+ * e restituisce un {@link NotificationDTO} con i dati inseriti.
+ * </p>
+ */
 public class AddNotificationDialogGUI {
 
+    /** Radio button per inviare la notifica a tutti i corsi. */
     @FXML
     private RadioButton allCoursesRadio;
+    /** Radio button per inviare la notifica a un corso specifico. */
     @FXML
     private RadioButton specificCourseRadio;
+    /**
+     * Pannello con la ComboBox del corso, visibile solo se si sceglie un corso
+     * specifico.
+     */
     @FXML
     private VBox courseSelectionBox;
+    /** ComboBox per selezionare il corso destinatario. */
     @FXML
     private ComboBox<String> courseComboBox;
+    /** Campo testo per il titolo della notifica. */
     @FXML
     private TextField titleField;
+    /** Area di testo per il corpo della notifica. */
     @FXML
     private TextArea messageArea;
+    /** Label che mostra messaggi di errore di validazione. */
     @FXML
     private Label errorLabel;
 
+    /** Gruppo per i radio button (solo uno selezionabile per volta). */
     private ToggleGroup toggleGroup;
+    /** Mappa nome del corso → ID, per risalire all'ID dal testo selezionato. */
     private final Map<String, Integer> courseMap = new HashMap<>(); // Nome -> ID
 
+    /** Configura i radio button e carica l'elenco dei corsi nella ComboBox. */
     @FXML
     public void initialize() {
         toggleGroup = new ToggleGroup();
@@ -51,6 +72,7 @@ public class AddNotificationDialogGUI {
         loadCourses();
     }
 
+    /** Popola la ComboBox con i titoli dei corsi dello chef. */
     private void loadCourses() {
         List<CourseDTO> courses = AppController.getInstance().getSimpleCoursesData();
         for (CourseDTO c : courses) {
@@ -61,6 +83,11 @@ public class AddNotificationDialogGUI {
         }
     }
 
+    /**
+     * Legge i campi del form e costruisce un {@link NotificationDTO}.
+     *
+     * @return il DTO con i dati, oppure {@code null} se il form non è valido
+     */
     public NotificationDTO getNotificationData() {
         String title = titleField.getText();
         String message = messageArea.getText();
@@ -85,11 +112,19 @@ public class AddNotificationDialogGUI {
         return new NotificationDTO(title, message, corsoId);
     }
 
+    /**
+     * Mostra il dialog modale per creare una nuova notifica.
+     *
+     * @param owner la finestra proprietaria del dialog
+     * @return un {@link Optional} con il {@link NotificationDTO}, oppure vuoto se
+     *         annullato
+     * @throws IOException se il file FXML non viene trovato
+     */
     public static Optional<NotificationDTO> showDialog(Window owner) throws IOException {
         FXMLLoader loader = new FXMLLoader(
                 AddNotificationDialogGUI.class.getResource("/progetto/app/dialog/AddNotificationDialog.fxml"));
         DialogPane dialogPane = loader.load();
-        //Poiché il metodo è statico.
+        // Poiché il metodo è statico.
         AddNotificationDialogGUI controller = loader.getController();
 
         Dialog<ButtonType> dialog = new Dialog<>();

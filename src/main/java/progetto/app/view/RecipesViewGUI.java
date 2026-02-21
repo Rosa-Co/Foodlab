@@ -15,15 +15,25 @@ import progetto.app.dto.RecipeDTO;
 
 import java.util.List;
 
+/**
+ * Controller della schermata che mostra l'elenco delle ricette dello chef.
+ * <p>
+ * Ogni ricetta è mostrata come una card con nome e descrizione. Il pulsante
+ * in alto apre il dialog per aggiungere una nuova ricetta.
+ * </p>
+ */
 public class RecipesViewGUI {
 
+    /** Pulsante per aprire il dialog di creazione di una nuova ricetta. */
     @FXML
     private Button createRecipeButton;
+    /** Contenitore verticale in cui vengono inserite le card delle ricette. */
     @FXML
     private VBox recipesContainer;
 
     private final AppController appController = AppController.getInstance();
 
+    /** Registra il listener sul pulsante di creazione ricetta. */
     @FXML
     public void initialize() {
         if (createRecipeButton != null) {
@@ -31,6 +41,10 @@ public class RecipesViewGUI {
         }
     }
 
+    /**
+     * Carica l'elenco delle ricette su un thread in background e aggiorna
+     * la UI nel thread JavaFX.
+     */
     public void loadRecipes() {
         recipesContainer.getChildren().clear();
         Label loadingLabel = new Label("Caricamento in corso...");
@@ -55,6 +69,12 @@ public class RecipesViewGUI {
         }).start();
     }
 
+    /**
+     * Crea la card grafica per una singola ricetta.
+     *
+     * @param recipe il {@link RecipeDTO} da rappresentare
+     * @return il nodo JavaFX pronto da aggiungere al layout
+     */
     private Node createRecipeCard(RecipeDTO recipe) {
         VBox card = new VBox(5);
         card.setStyle(
@@ -81,6 +101,7 @@ public class RecipesViewGUI {
         return card;
     }
 
+    /** Apre il dialog di creazione ricetta; se confermato, ricarica l'elenco. */
     private void openCreateRecipeDialog() {
         boolean success = appController.showCreateRecipeDialog(createRecipeButton.getScene().getWindow());
         if (success) {

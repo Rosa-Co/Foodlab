@@ -22,24 +22,48 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 
+/**
+ * Controller del dialog per la creazione di un nuovo corso.
+ * <p>
+ * Permette di inserire titolo, categoria, data di inizio e frequenza del corso.
+ * Contiene anche una sezione dinamica per aggiungere sessioni, ognuna con
+ * data, modalità, durata, descrizione e (per le sessioni in presenza) ricette.
+ * Il metodo statico {@link #showDialog(Window)} mostra il dialog e restituisce
+ * un {@link CourseWithSessionsDTO} con tutti i dati inseriti.
+ * </p>
+ */
 public class AddCourseDialogGUI implements Initializable {
 
+    /** Campo testo per il titolo del corso. */
     @FXML
     private TextField titleField;
+    /** ComboBox per selezionare la categoria culinaria. */
     @FXML
     private ComboBox<String> categoryComboBox;
+    /** DatePicker per la data di inizio del corso. */
     @FXML
     private DatePicker startDatePicker;
+    /** ComboBox per la frequenza delle sessioni. */
     @FXML
     private ComboBox<String> frequencyComboBox;
+    /** Contenitore verticale in cui vengono aggiunte le card delle sessioni. */
     @FXML
     private VBox sessionsContainer;
 
     private final AppController appController = AppController.getInstance();
+    /** Lista delle ricette disponibili, caricata dal controller all'avvio. */
     private final List<RecipeDTO> availableRecipes = new ArrayList<>();
+    /** Lista dei componenti UI associati a ciascuna sessione aggiunta. */
     private final List<SessionUIComponents> sessionComponentsList = new ArrayList<>();
+    /**
+     * Contatore progressivo usato per etichettare le sessioni (es. "Sessione 1").
+     */
     private int sessionCounter = 0;
 
+    /**
+     * Configura le ComboBox, il DatePicker, carica le ricette e aggiunge la prima
+     * sessione.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setupCategoryComboBox();
@@ -50,6 +74,7 @@ public class AddCourseDialogGUI implements Initializable {
         handleAddSession();
     }
 
+    /** Limita la selezione al giorno odierno o successivo. */
     private void setupStartDatePicker() {
         startDatePicker.setEditable(false);
         startDatePicker.setDayCellFactory(picker -> new DateCell() {
@@ -62,23 +87,27 @@ public class AddCourseDialogGUI implements Initializable {
         });
     }
 
+    /** Popola la ComboBox con i valori dell'enum {@link CuisineCategory}. */
     private void setupCategoryComboBox() {
         for (CuisineCategory category : CuisineCategory.values()) {
             categoryComboBox.getItems().add(category.name());
         }
     }
 
+    /** Popola la ComboBox con i valori dell'enum {@link Frequency}. */
     private void setupFrequencyComboBox() {
         for (Frequency frequency : Frequency.values()) {
             frequencyComboBox.getItems().add(frequency.name());
         }
     }
 
+    /** Carica tutte le ricette disponibili dello chef nella lista locale. */
     private void loadRecipes() {
         availableRecipes.clear();
         availableRecipes.addAll(appController.getAllRecipesDTO());
     }
 
+    /** Aggiunge una nuova card sessione al form. */
     @FXML
     private void handleAddSession() {
         sessionCounter++;
@@ -87,6 +116,12 @@ public class AddCourseDialogGUI implements Initializable {
         sessionsContainer.getChildren().add(sessionComponents.container);
     }
 
+    /**
+     * Costruisce programmaticamente la card UI di una sessione.
+     *
+     * @param sessionNumber numero progressivo della sessione
+     * @return i componenti UI della sessione creata
+     */
     private SessionUIComponents createSessionNode(int sessionNumber) {
         VBox sessionBox = new VBox(10);
         sessionBox.setStyle(
@@ -108,13 +143,14 @@ public class AddCourseDialogGUI implements Initializable {
         ComboBox<String> modeCombo = new ComboBox<>();
         Spinner<Integer> durationSpinner = new Spinner<>(30, 480, 60);
 
-        durationSpinner.getEditor().setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), durationSpinner.getValue(), change -> {
-            String newText = change.getControlNewText();
-            if (newText.matches("\\d*")) {
-                return change;
-            }
-            return null;
-        }));
+        durationSpinner.getEditor().setTextFormatter(
+                new TextFormatter<>(new IntegerStringConverter(), durationSpinner.getValue(), change -> {
+                    String newText = change.getControlNewText();
+                    if (newText.matches("\\d*")) {
+                        return change;
+                    }
+                    return null;
+                }));
 
         TextArea descriptionArea = new TextArea();
 
@@ -197,6 +233,7 @@ public class AddCourseDialogGUI implements Initializable {
         return components;
     }
 
+    /** Aggiorna le etichette di tutte le sessioni dopo la rimozione di una. */
     private void updateSessionNumbers() {
         sessionCounter = 0;
         for (SessionUIComponents components : sessionComponentsList) {
@@ -205,6 +242,12 @@ public class AddCourseDialogGUI implements Initializable {
         }
     }
 
+    /**
+     * Raccoglie i dati del corso dall'interfaccia e li restituisce come DTO.
+     *
+     * @return un {@link CourseDTO} con i dati inseriti, oppure {@code null} se non
+     *         valido
+     */
     public CourseDTO getCourseDTO() {
         if (isCourseDTOValid()) {
             return new CourseDTO(
@@ -216,6 +259,12 @@ public class AddCourseDialogGUI implements Initializable {
         return null;
     }
 
+    /**
+     * Controlla che tutti i campi del corso siano compilati e che la data sia
+     * valida.
+     *
+     * @return {@code true} se il form è valido
+     */
     public boolean isCourseDTOValid() {
         if (!areCourseFieldsFilled()) {
             return false;
@@ -223,6 +272,10 @@ public class AddCourseDialogGUI implements Initializable {
         return isStartDateValid();
     }
 
+    /**
+     * @return {@code true} se tutti i campi (titolo, categoria, data, frequenza)
+     *         sono compilati
+     */
     public boolean areCourseFieldsFilled() {
         return !titleField.getText().isBlank()
                 && categoryComboBox.getValue() != null
@@ -230,10 +283,17 @@ public class AddCourseDialogGUI implements Initializable {
                 && frequencyComboBox.getValue() != null;
     }
 
+    /** @return {@code true} se la data di inizio è uguale o successiva a oggi */
     public boolean isStartDateValid() {
         return !startDatePicker.getValue().isBefore(LocalDate.now());
     }
 
+    /**
+     * Raccoglie i dati di tutte le sessioni dall'interfaccia.
+     *
+     * @return la lista di {@link SessionDTO} oppure {@code null} se i dati non sono
+     *         validi
+     */
     public List<SessionDTO> getSessionDTOs() {
         List<SessionDTO> results = new ArrayList<>();
         for (SessionUIComponents components : sessionComponentsList) {
@@ -271,6 +331,13 @@ public class AddCourseDialogGUI implements Initializable {
         return results;
     }
 
+    /**
+     * Aggiunge una riga per selezionare o creare una ricetta all'interno di una
+     * sessione.
+     *
+     * @param sessionComponents i componenti UI della sessione a cui aggiungere la
+     *                          riga
+     */
     private void addRecipeRow(SessionUIComponents sessionComponents) {
         HBox row = new HBox(10);
         row.setAlignment(Pos.CENTER_LEFT);
@@ -333,6 +400,15 @@ public class AddCourseDialogGUI implements Initializable {
         sessionComponents.recipesContainer.getChildren().add(row);
     }
 
+    /**
+     * Mostra il dialog modale per creare un nuovo corso.
+     *
+     * @param owner la finestra proprietaria del dialog
+     * @return un {@link Optional} con il {@link CourseWithSessionsDTO} inserito,
+     *         oppure vuoto se l'utente ha annullato
+     * @throws IOException          se il file FXML non viene trovato
+     * @throws NullPointerException se il file FXML è {@code null}
+     */
     public static Optional<CourseWithSessionsDTO> showDialog(Window owner) throws IOException, NullPointerException {
         FXMLLoader loader = new FXMLLoader(
                 AddCourseDialogGUI.class.getResource("/progetto/app/dialog/AddCourseDialog.fxml"));
@@ -355,8 +431,9 @@ public class AddCourseDialogGUI implements Initializable {
     }
 
     /**
-     *Classe helper per contenere i componenti dell'interfaccia utente per una sessione.
-     *Statica per evitare riferimenti impliciti alla classe esterna
+     * Classe helper per contenere i componenti dell'interfaccia utente per una
+     * sessione.
+     * Statica per evitare riferimenti impliciti alla classe esterna
      */
     private static class SessionUIComponents {
         VBox container;

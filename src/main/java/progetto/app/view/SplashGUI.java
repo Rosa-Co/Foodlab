@@ -15,13 +15,28 @@ import progetto.app.controller.TypeWritingController;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Controller della schermata di avvio (splash screen).
+ * <p>
+ * Anima il logo con una transizione di scala ciclica e simula un testo
+ * in stile "typewriter". Dopo 4 secondi reindirizza automaticamente
+ * alla schermata di login e chiude la splash window.
+ * </p>
+ */
 public class SplashGUI implements Initializable {
+    /** Controller principale dell'applicazione. */
     AppController appController = AppController.getInstance();
+    /** Logo mostrato nella splash screen. */
     @FXML
     private ImageView logo;
+    /** Etichetta su cui viene animato il testo di caricamento. */
     @FXML
     private Label typeWriterText;
 
+    /**
+     * Inizializza la schermata di avvio: avvia l'animazione del logo e del testo,
+     * poi naviga verso il login dopo 4 secondi su un thread separato.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         TypeWritingController animation = new TypeWritingController(typeWriterText, "Caricamento...", 100);

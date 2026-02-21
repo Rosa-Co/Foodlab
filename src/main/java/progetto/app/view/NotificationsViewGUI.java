@@ -13,15 +13,25 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Controller della schermata che mostra le notifiche inviate dallo chef.
+ * <p>
+ * Ogni notifica è mostrata come una card con titolo, destinatario e testo.
+ * Il pulsante in alto apre il dialog per inviare una nuova notifica.
+ * </p>
+ */
 public class NotificationsViewGUI implements Initializable {
 
+    /** Contenitore verticale in cui vengono inserite le card delle notifiche. */
     @FXML
     private VBox notificationsContainer;
+    /** Pulsante per aprire il dialog di invio di una nuova notifica. */
     @FXML
     private Button newNotificationButton;
 
     private final AppController appController = AppController.getInstance();
 
+    /** Registra il listener sul pulsante di nuova notifica. */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (newNotificationButton != null) {
@@ -29,6 +39,10 @@ public class NotificationsViewGUI implements Initializable {
         }
     }
 
+    /**
+     * Carica le notifiche su un thread in background e aggiorna la UI nel thread
+     * JavaFX.
+     */
     public void loadNotifications() {
         notificationsContainer.getChildren().clear();
         Label loadingLabel = new Label("Caricamento in corso...");
@@ -41,6 +55,12 @@ public class NotificationsViewGUI implements Initializable {
         }).start();
     }
 
+    /**
+     * Popola il contenitore con le card delle notifiche, o mostra un placeholder
+     * se non ce ne sono.
+     *
+     * @param notifications lista di {@link NotificationDTO} da mostrare
+     */
     private void populateNotifications(List<NotificationDTO> notifications) {
         notificationsContainer.getChildren().clear();
 
@@ -57,6 +77,12 @@ public class NotificationsViewGUI implements Initializable {
         }
     }
 
+    /**
+     * Crea la card grafica per una singola notifica.
+     *
+     * @param notifica il {@link NotificationDTO} da rappresentare
+     * @return il {@link VBox} della card
+     */
     private VBox createNotificationCard(NotificationDTO notifica) {
         VBox card = new VBox(5);
         card.setStyle(
@@ -81,6 +107,7 @@ public class NotificationsViewGUI implements Initializable {
         return card;
     }
 
+    /** Apre il dialog per creare una nuova notifica e poi ricarica l'elenco. */
     private void handleNewNotification() {
         appController.showCreateNotificationDialog(notificationsContainer.getScene().getWindow());
         loadNotifications(); // Ricarica dopo una potenziale aggiunta

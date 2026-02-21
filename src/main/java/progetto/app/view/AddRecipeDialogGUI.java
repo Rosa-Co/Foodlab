@@ -13,10 +13,19 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * Controller del dialog per aggiungere una nuova ricetta.
+ * <p>
+ * Il metodo statico {@link #showDialog(Window)} apre il dialog e restituisce
+ * un {@link RecipeDTO} con nome e descrizione della ricetta inserita.
+ * </p>
+ */
 public class AddRecipeDialogGUI implements Initializable {
 
+    /** Campo testo per il nome della ricetta. */
     @FXML
     private TextField nameField;
+    /** Area di testo per la descrizione (ingredienti e procedimento). */
     @FXML
     private TextArea descriptionArea;
 
@@ -26,6 +35,11 @@ public class AddRecipeDialogGUI implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
     }
 
+    /**
+     * Legge i campi del form e restituisce un {@link RecipeDTO}.
+     *
+     * @return il DTO con i dati, oppure {@code null} se il form non è valido
+     */
     public RecipeDTO getRecipeData() {
         if (isInputValid()) {
             // ID 0 per una nuova ricetta
@@ -34,6 +48,12 @@ public class AddRecipeDialogGUI implements Initializable {
         return null;
     }
 
+    /**
+     * Controlla che nome e descrizione non siano vuoti; in caso contrario
+     * mostra un dialog di avviso.
+     *
+     * @return {@code true} se i campi sono tutti compilati
+     */
     private boolean isInputValid() {
         if (nameField.getText().isBlank() || descriptionArea.getText().isBlank()) {
             appController.showWarningDialog("Attenzione", "Compila tutti i campi!");
@@ -42,6 +62,14 @@ public class AddRecipeDialogGUI implements Initializable {
         return true;
     }
 
+    /**
+     * Mostra il dialog modale per creare una nuova ricetta.
+     *
+     * @param owner la finestra proprietaria del dialog
+     * @return un {@link Optional} con il {@link RecipeDTO}, oppure vuoto se
+     *         annullato
+     * @throws IOException se il file FXML non viene trovato
+     */
     public static Optional<RecipeDTO> showDialog(Window owner) throws IOException {
         FXMLLoader loader = new FXMLLoader(
                 AddRecipeDialogGUI.class.getResource("/progetto/app/dialog/AddRecipeDialog.fxml"));

@@ -24,20 +24,46 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-
+/**
+ * Controller del dialog che mostra i dettagli di un corso.
+ * <p>
+ * Elenca tutte le sessioni del corso come card, ognuna con pulsante di
+ * modifica e di eliminazione. Il metodo statico
+ * {@link #showDialog(Window, int, String)}
+ * restituisce {@code true} se l'utente ha modificato o eliminato almeno una
+ * sessione,
+ * così che il chiamante possa ricaricare l'elenco dei corsi.
+ * </p>
+ */
 public class CourseDetailsDialogGUI {
 
+    /** Label che mostra il titolo del corso. */
     @FXML
     private Label courseTitleLabel;
+    /** Contenitore verticale in cui vengono inserite le card delle sessioni. */
     @FXML
     private VBox sessionsContainer;
+    /** Pulsante per chiudere il dialog. */
     @FXML
     private Button closeButton;
 
+    /** ID del corso selezionato. */
     private int corsoId;
-    private final AppController appController = AppController.getInstance();
+    /** Flag che indica se almeno una sessione è stata modificata o eliminata. */
     private boolean dataChanged = false;
 
+    private final AppController appController = AppController.getInstance();
+
+    /**
+     * Mostra il dialog modale con i dettagli del corso.
+     *
+     * @param owner       la finestra proprietaria
+     * @param corsoId     ID del corso da visualizzare
+     * @param corsoTitolo titolo del corso (mostrato nell'intestazione)
+     * @return {@code true} se l'utente ha modificato o eliminato almeno una
+     *         sessione
+     * @throws IOException se il file FXML non viene trovato
+     */
     public static boolean showDialog(Window owner, int corsoId, String corsoTitolo) throws IOException {
         FXMLLoader loader = new FXMLLoader(
                 CourseDetailsDialogGUI.class.getResource("/progetto/app/dialog/CourseDetailsDialog.fxml"));
@@ -56,6 +82,12 @@ public class CourseDetailsDialogGUI {
         return controller.dataChanged;
     }
 
+    /**
+     * Imposta l'ID e il titolo del corso, poi carica le sessioni.
+     *
+     * @param corsoId     ID del corso
+     * @param corsoTitolo titolo da mostrare nell'intestazione
+     */
     public void initData(int corsoId, String corsoTitolo) {
         this.corsoId = corsoId;
         courseTitleLabel.setText("Corso: " + corsoTitolo);
@@ -63,6 +95,7 @@ public class CourseDetailsDialogGUI {
         closeButton.setOnAction(e -> closeButton.getScene().getWindow().hide());
     }
 
+    /** Recupera le sessioni dal controller e le mostra come card. */
     private void loadSessions() {
         sessionsContainer.getChildren().clear();
         List<SessionDTO> sessions = appController.getSessioniByCorso(corsoId);
@@ -77,6 +110,12 @@ public class CourseDetailsDialogGUI {
         }
     }
 
+    /**
+     * Crea la card grafica per una singola sessione.
+     *
+     * @param session il {@link SessionDTO} da rappresentare
+     * @return la {@link VBox} della card
+     */
     private VBox createSessionCard(SessionDTO session) {
         VBox card = new VBox(5);
         card.setStyle(
@@ -113,6 +152,11 @@ public class CourseDetailsDialogGUI {
         return card;
     }
 
+    /**
+     * Mostra un dialog di conferma e, se accettato, elimina la sessione.
+     *
+     * @param session la sessione da eliminare
+     */
     private void handleDeleteSession(SessionDTO session) {
         int sessionId = session.getId();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -129,6 +173,12 @@ public class CourseDetailsDialogGUI {
         }
     }
 
+    /**
+     * Apre un dialog in-place per modificare data, durata e descrizione della
+     * sessione.
+     *
+     * @param session la sessione corrente da modificare
+     */
     private void handleEditSession(SessionDTO session) {
         // Dialog semplice per modificare data, modalità, duration, description
         Dialog<SessionDTO> dialog = new Dialog<>();
@@ -154,13 +204,14 @@ public class CourseDetailsDialogGUI {
         Spinner<Integer> durationSpinner = new Spinner<>(30, 480, session.getDurata());
         durationSpinner.setEditable(true);
 
-        durationSpinner.getEditor().setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), durationSpinner.getValue(), change -> {
-            String newText = change.getControlNewText();
-            if (newText.matches("\\d*")) {
-                return change;
-            }
-            return null;
-        }));
+        durationSpinner.getEditor().setTextFormatter(
+                new TextFormatter<>(new IntegerStringConverter(), durationSpinner.getValue(), change -> {
+                    String newText = change.getControlNewText();
+                    if (newText.matches("\\d*")) {
+                        return change;
+                    }
+                    return null;
+                }));
 
         TextArea descArea = new TextArea(session.getDescrizione());
         descArea.setPromptText("Descrizione");

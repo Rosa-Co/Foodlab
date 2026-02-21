@@ -13,8 +13,19 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
 import progetto.app.controller.AppController;
 
+/**
+ * Controller della schermata di login e registrazione.
+ * <p>
+ * Gestisce due pannelli sovrapposti: {@code loginPane} (login) e
+ * {@code registerPane} (registrazione). Solo uno è visibile per volta;
+ * i metodi {@link #showRegisterForm()} e {@link #showLoginForm()} effettuano
+ * lo scambio. Il pannello sinistro ({@code featuresPane}) mostra card
+ * promozionali con icone FontAwesome.
+ * </p>
+ */
 public class LoginGUI {
 
+    /** Controller principale dell'applicazione. */
     AppController mainController = AppController.getInstance();
 
     @FXML
@@ -54,16 +65,22 @@ public class LoginGUI {
     @FXML
     private Button registerButton;
 
+    /** Inizializza la view costruendo programmaticamente le card promozionali. */
     @FXML
     private void initialize() {
         setupFeatures();
     }
 
+    /** Apre il dialogo dei termini di servizio. */
     @FXML
     private void showTerms() {
         mainController.showTermsOfService();
     }
 
+    /**
+     * Costruisce e popola programmaticamente il pannello delle feature con card
+     * animate.
+     */
     private void setupFeatures() {
         VBox headerBox = new VBox(8);
         headerBox.setAlignment(Pos.CENTER);
@@ -104,6 +121,15 @@ public class LoginGUI {
         featuresPane.getChildren().addAll(headerBox, cardsContainer, spacer);
     }
 
+    /**
+     * Crea una singola card feature con icona, titolo e descrizione.
+     *
+     * @param iconEnum    enum FontAwesome dell'icona
+     * @param title       titolo della card
+     * @param description testo descrittivo
+     * @param accentColor colore esadecimale dell'accento
+     * @return {@link HBox} pronto da aggiungere al layout
+     */
     private HBox createFeatureCard(Object iconEnum, String title, String description, String accentColor) {
         HBox card = new HBox(15);
         card.setAlignment(Pos.CENTER_LEFT);
@@ -160,6 +186,10 @@ public class LoginGUI {
         return card;
     }
 
+    /**
+     * Gestisce il click sul pulsante di login; mostra un avviso se i campi sono
+     * vuoti.
+     */
     @FXML
     private void handleLogin() {
         if (!usernameField.getText().isBlank() && !passwordField.getText().isBlank()) {
@@ -169,6 +199,10 @@ public class LoginGUI {
         }
     }
 
+    /**
+     * Gestisce il click sul pulsante di registrazione, validando email, campi,
+     * password e termini.
+     */
     @FXML
     private void handleRegister() {
         if (!AppController.checkEmail(registerEmailField.getText().strip())) {
@@ -194,6 +228,10 @@ public class LoginGUI {
 
     }
 
+    /**
+     * @return {@code true} se tutti i campi del form di registrazione sono
+     *         compilati
+     */
     private boolean areAllFieldsFilled() {
         return !registerNameField.getText().trim().isEmpty() &&
                 !registerSurnameField.getText().trim().isEmpty() &&
@@ -203,10 +241,19 @@ public class LoginGUI {
                 !registerConfirmPasswordField.getText().trim().isEmpty();
     }
 
+    /**
+     * @return {@code true} se la checkbox di accettazione dei termini è selezionata
+     */
     private boolean areTermsAccepted() {
         return acceptTermsCheck.isSelected();
     }
 
+    /**
+     * Esegue la registrazione come allievo o come chef a seconda del radio button
+     * selezionato.
+     *
+     * @return {@code true} se la registrazione ha avuto successo
+     */
     private boolean performRegistration() {
         if (userTypeRadio.isSelected()) {
             return mainController.registerAllievo(
@@ -225,6 +272,7 @@ public class LoginGUI {
         }
     }
 
+    /** Nasconde il form di login e mostra il form di registrazione. */
     @FXML
     private void showRegisterForm() {
         loginPane.setVisible(false);
@@ -233,6 +281,7 @@ public class LoginGUI {
         registerPane.setManaged(true);
     }
 
+    /** Nasconde il form di registrazione e mostra il form di login. */
     @FXML
     private void showLoginForm() {
         registerPane.setVisible(false);
@@ -241,6 +290,10 @@ public class LoginGUI {
         loginPane.setManaged(true);
     }
 
+    /**
+     * Cancella tutti i campi del form di registrazione e deseleziona la checkbox
+     * dei termini.
+     */
     public void clearRegisterFields() {
         registerNameField.clear();
         registerSurnameField.clear();
@@ -251,6 +304,7 @@ public class LoginGUI {
         acceptTermsCheck.setSelected(false);
     }
 
+    /** Cancella i campi di username e password del form di login. */
     public void clearLoginFields() {
         usernameField.clear();
         passwordField.clear();

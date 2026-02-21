@@ -14,30 +14,52 @@ import progetto.app.dto.ChefStatsDTO;
 
 import java.awt.*;
 
+/**
+ * Controller della schermata del report mensile dello chef.
+ * <p>
+ * Mostra le statistiche aggregate (corsi, sessioni, ricette) sotto forma
+ * di label e un grafico a torta (JFreeChart) che confronta sessioni online
+ * e in presenza.
+ * </p>
+ */
 public class ReportViewGUI {
 
+    /** Label che mostra il numero totale di corsi. */
     @FXML
     private Label totalCoursesLabel;
+    /** Label che mostra il numero di sessioni online. */
     @FXML
     private Label onlineSessionsLabel;
+    /** Label che mostra il numero di sessioni in presenza. */
     @FXML
     private Label presenceSessionsLabel;
+    /** Label che mostra la media di ricette per sessione in presenza. */
     @FXML
     private Label avgRecipesLabel;
+    /**
+     * Label che mostra il numero massimo di ricette in una sessione in presenza.
+     */
     @FXML
     private Label maxRecipesLabel;
+    /** Label che mostra il numero minimo di ricette in una sessione in presenza. */
     @FXML
     private Label minRecipesLabel;
+    /** Contenitore in cui viene inserito il grafico JFreeChart. */
     @FXML
     private BorderPane chartContainer;
 
     private final AppController appController = AppController.getInstance();
 
+    /** Carica i dati al momento dell'inizializzazione della view. */
     @FXML
     public void initialize() {
         loadData();
     }
 
+    /**
+     * Recupera le statistiche su un thread in background e aggiorna la UI
+     * nel thread JavaFX.
+     */
     public void loadData() {
         new Thread(() -> {
             ChefStatsDTO stats = appController.getChefReportData();
@@ -45,6 +67,11 @@ public class ReportViewGUI {
         }).start();
     }
 
+    /**
+     * Aggiorna tutte le label e ricostruisce il grafico a torta.
+     *
+     * @param stats statistiche dello chef; se {@code null} non fa nulla
+     */
     private void updateUI(ChefStatsDTO stats) {
         if (stats == null)
             return;
@@ -64,6 +91,13 @@ public class ReportViewGUI {
         createChart(online, presence);
     }
 
+    /**
+     * Crea e inserisce nel layout un grafico a torta che mostra la distribuzione
+     * tra sessioni online e in presenza.
+     *
+     * @param online   numero di sessioni online
+     * @param presence numero di sessioni in presenza
+     */
     @SuppressWarnings("unchecked")
     private void createChart(int online, int presence) {
         DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
@@ -82,6 +116,7 @@ public class ReportViewGUI {
         plot.setSectionPaint("In Presenza", new Color(230, 126, 34)); // Arancione
         plot.setBackgroundPaint(Color.WHITE);
         plot.setOutlineVisible(false);
+        
 
         ChartViewer viewer = new ChartViewer(chart);
         chartContainer.setCenter(viewer);

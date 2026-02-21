@@ -20,15 +20,26 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Controller della schermata che mostra l'elenco dei corsi.
+ * <p>
+ * Visualizza una lista di card, una per ogni corso. Cliccando su una card
+ * si apre {@link CourseDetailsDialogGUI}. Il pulsante in alto permette
+ * di aprire il form di creazione di un nuovo corso.
+ * </p>
+ */
 public class CoursesViewGUI implements Initializable {
 
+    /** Pulsante per aprire il dialog di creazione di un nuovo corso. */
     @FXML
     private Button createCourseButton;
+    /** Contenitore verticale in cui vengono inserite le card dei corsi. */
     @FXML
     private VBox coursesContainer;
 
     private final AppController appController = AppController.getInstance();
 
+    /** Registra il listener sul pulsante di creazione corso. */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (createCourseButton != null) {
@@ -36,6 +47,10 @@ public class CoursesViewGUI implements Initializable {
         }
     }
 
+    /**
+     * Carica l'elenco dei corsi dal controller su un thread in background
+     * e poi aggiorna la UI nel JavaFX Application Thread.
+     */
     public void loadCourses() {
         coursesContainer.getChildren().clear();
         Label loadingLabel = new Label("Caricamento in corso...");
@@ -59,6 +74,12 @@ public class CoursesViewGUI implements Initializable {
         }).start();
     }
 
+    /**
+     * Crea la card grafica per un singolo corso.
+     *
+     * @param course il {@link CourseDTO} da rappresentare
+     * @return il nodo JavaFX pronto da aggiungere al layout
+     */
     private Node createCourseCard(CourseDTO course) {
         VBox card = new VBox(5);
         card.setStyle(
@@ -107,6 +128,13 @@ public class CoursesViewGUI implements Initializable {
         return card;
     }
 
+    /**
+     * Crea una label con icona FontIcon a sinistra del testo.
+     *
+     * @param iconCode codice icona (es. {@code "fas-calendar-alt"})
+     * @param text     testo da visualizzare
+     * @return la {@link Label} configurata
+     */
     private Label createIconLabel(String iconCode, String text) {
         Label label = new Label(text);
         FontIcon icon = new FontIcon(iconCode);
@@ -117,6 +145,7 @@ public class CoursesViewGUI implements Initializable {
         return label;
     }
 
+    /** Apre il dialog di creazione corso; se confermato, ricarica l'elenco. */
     private void openCreateCourseDialog() {
         boolean success = appController.showCreateCourseDialog(createCourseButton.getScene().getWindow());
         if (success) {
