@@ -1,5 +1,7 @@
 package progetto.app.model;
 
+import java.util.Objects;
+
 public abstract class User {
     private int id;
     private String username;
@@ -74,4 +76,22 @@ public abstract class User {
     }
 
     public abstract boolean isChef();
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof User user)) return false;
+        return id == user.id && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(password, user.password);
+    }
 }
