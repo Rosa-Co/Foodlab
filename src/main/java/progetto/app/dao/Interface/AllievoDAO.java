@@ -6,7 +6,7 @@ import progetto.app.model.Allievo;
 import java.util.List;
 
 /**
- * Interfaccia DAO per la gestione degli allievi nel sistema Foodlab.
+ * Interfaccia DAO per la gestione degli allievi
  * <p>
  * Definisce le operazioni CRUD (Create, Read, Update, Delete) per le entità
  * {@link Allievo}, astraendo il meccanismo di persistenza sottostante.

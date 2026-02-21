@@ -6,7 +6,7 @@ import progetto.app.model.Chef;
 import java.util.List;
 
 /**
- * Interfaccia DAO per la gestione degli chef nel sistema Foodlab.
+ * Interfaccia DAO per la gestione degli chef.
  * <p>
  * Definisce le operazioni CRUD (Create, Read, Update, Delete) per le entità
  * {@link Chef}, astraendo il meccanismo di persistenza sottostante.

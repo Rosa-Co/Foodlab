@@ -7,7 +7,7 @@ import progetto.app.model.Corso;
 import java.util.List;
 
 /**
- * Interfaccia DAO per la gestione dei corsi nel sistema Foodlab.
+ * Interfaccia DAO per la gestione dei corsi.
  * <p>
  * Definisce le operazioni di persistenza per le entità {@link Corso}.
  * Le implementazioni concrete (es.

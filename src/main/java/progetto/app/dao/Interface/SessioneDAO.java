@@ -6,7 +6,7 @@ import progetto.app.model.Sessione;
 import java.util.List;
 
 /**
- * Interfaccia DAO per la gestione delle sessioni nel sistema Foodlab.
+ * Interfaccia DAO per la gestione delle sessioni.
  * <p>
  * Definisce le operazioni CRUD per le entità {@link Sessione}, che
  * rappresentano

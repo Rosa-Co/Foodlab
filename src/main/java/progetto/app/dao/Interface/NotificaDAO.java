@@ -6,7 +6,7 @@ import progetto.app.model.Notifica;
 import java.util.List;
 
 /**
- * Interfaccia DAO per la gestione delle notifiche (avvisi) nel sistema Foodlab.
+ * Interfaccia DAO per la gestione delle notifiche (avvisi).
  * <p>
  * Definisce le operazioni di lettura e scrittura per le entità
  * {@link Notifica},

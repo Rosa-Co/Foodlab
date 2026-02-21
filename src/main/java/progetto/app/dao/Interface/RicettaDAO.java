@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Interfaccia DAO per la gestione delle ricette nel sistema Foodlab.
+ * Interfaccia DAO per la gestione delle ricette.
  * <p>
  * Definisce le operazioni di lettura, scrittura e associazione per le entità
  * {@link Ricetta}. Le ricette sono collegate agli chef che le creano

@@ -4,8 +4,7 @@ import progetto.app.dto.ChefStatsDTO;
 import progetto.app.exception.DAOException;
 
 /**
- * Interfaccia DAO per il recupero delle statistiche aggregate nel sistema
- * Foodlab.
+ * Interfaccia DAO per il recupero delle statistiche aggregate.
  * <p>
  * Fornisce metodi di sola lettura che aggregano dati da più tabelle del
  * database
