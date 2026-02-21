@@ -3,11 +3,13 @@ package progetto.app.dao.postgree;
 import progetto.app.dao.Interface.RicettaDAO;
 import progetto.app.database.DatabaseConnection;
 import progetto.app.exception.DAOException;
-import progetto.app.exception.DuplicateCorsoException;
 import progetto.app.exception.DuplicateRecipeException;
 import progetto.app.model.Ricetta;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

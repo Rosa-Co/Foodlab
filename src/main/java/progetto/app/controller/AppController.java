@@ -16,21 +16,14 @@ import progetto.app.dao.postgree.*;
 import progetto.app.dialog.ErrorDialog;
 import progetto.app.dialog.TermsOfServiceDialog;
 import progetto.app.dialog.WarningDialog;
-import progetto.app.dto.ChefStatsDTO;
-import progetto.app.dto.CourseDTO;
-import progetto.app.dto.CourseWithSessionsDTO;
-import progetto.app.dto.NotificationDTO;
-import progetto.app.dto.RecipeDTO;
-import progetto.app.dto.SessionDTO;
+import progetto.app.dto.*;
 import progetto.app.exception.*;
 import progetto.app.model.*;
 import progetto.app.view.*;
 
 import java.io.IOException;
-
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.temporal.WeekFields;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -426,10 +419,7 @@ public class AppController {
         try {
             SessioneDAO dao = getSessioneDAO();
 
-            int dummyCorsoId = 0;
-            int dummyNumSessione = 0;
-
-            Sessione s = new Sessione(sessionId, dummyCorsoId, dummyNumSessione,
+            Sessione s = new Sessione(sessionId, 0,0,
                     sessionDTO.getDataSessione(),
                     sessionDTO.getModalita(),
                     sessionDTO.getDurata(),
@@ -464,13 +454,9 @@ public class AppController {
     // --- NOTIFICHE ---
 
     public List<NotificationDTO> getNotificationsData() {
-        if (userLogged == null || !userLogged.isChef())
-            return new ArrayList<>();
-
         List<NotificationDTO> result = new ArrayList<>();
 
         try {
-            // Load all courses for the chef to map ID -> Title
             List<Corso> corsi = corsoDAO.getCorsiByChef(userLogged.getId());
             Map<Integer, String> corsiMap = new HashMap<>();
             for (Corso c : corsi) {
@@ -481,7 +467,6 @@ public class AppController {
             for (Notifica n : notifiche) {
                 String target = "Tutti i corsi";
                 if (n.getIdCorso() != null && n.getIdCorso() != 0) {
-                    // Check if map contains the ID, otherwise fallback to ID
                     if (corsiMap.containsKey(n.getIdCorso())) {
                         target = "Corso: " + corsiMap.get(n.getIdCorso());
                     } else {
@@ -492,14 +477,12 @@ public class AppController {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            new ErrorDialog("Errore", "Impossibile recuperare le notifiche.").show();
         }
         return result;
     }
 
     public boolean createNotification(NotificationDTO notificationDTO) {
-        if (userLogged == null)
-            return false;
-
         String titolo = notificationDTO.getTitolo();
         String contenuto = notificationDTO.getContenuto();
         Integer corsoId = notificationDTO.getCorsoId();
@@ -512,20 +495,17 @@ public class AppController {
             return true;
         } catch (Exception e) {
             e.printStackTrace();
+            new ErrorDialog("Errore", "Impossibile creare la notifica.").show();
             return false;
         }
     }
 
     public List<CourseDTO> getSimpleCoursesData() {
-        if (userLogged == null || !userLogged.isChef())
-            return new ArrayList<>();
-
         List<CourseDTO> result = new ArrayList<>();
         try {
             List<Corso> corsi = corsoDAO.getCorsiByChef(userLogged.getId());
 
             for (Corso c : corsi) {
-                // Populate minimal info
                 CourseDTO dto = new CourseDTO();
                 dto.setId(c.getId());
                 dto.setTitolo(c.getTitolo());
@@ -533,6 +513,7 @@ public class AppController {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            new ErrorDialog("Errore", "Impossibile recuperare i corsi.").show();
         }
         return result;
     }
@@ -583,16 +564,6 @@ public class AppController {
         return root;
     }
 
-    public Scene createScene(String fxmlPath) {
-        Scene newScene = null;
-        try {
-            newScene = new Scene(loadView(fxmlPath));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return newScene;
-    }
-
     public void logout() {
         this.userLogged = null;
         LoginGUI loginGUI = (LoginGUI) getController("login");
@@ -627,7 +598,6 @@ public class AppController {
         navigateTo("notImplemented");
     }
 
-    // ! fare il check!
     public Parent getView(String name) {
         return views.get(name);
     }
@@ -659,16 +629,18 @@ public class AppController {
                     return loginChef(username, password);
                 }
             } catch (ChefNotFoundException e1) {
-                showErrorDialog(e.getMessage(), "controlla i dati e riprova");
-                return false;
+                showErrorDialog(e1.getMessage(), "controlla i dati e riprova");
             }
         }
         return false;
     }
 
     public boolean registerAllievo(String username, String password, String name, String surname, String email) {
-        if (searchChef(username, email))
+        if (searchChef(username, email)){
+            showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
             return false;
+        }
+
 
         String pswHashed = BCrypt.hashpw(password, BCrypt.gensalt(10));
         Allievo allievo = new Allievo(username, pswHashed, email, name, surname);
@@ -686,7 +658,7 @@ public class AppController {
         }
     }
 
-    public boolean loginAllievo(String username, String password) throws AllievoNotFoundException {
+    private boolean loginAllievo(String username, String password) throws AllievoNotFoundException {
         try {
             Allievo allievo = allievoDAO.getAllievoByUsername(username);
             if (allievo == null)
@@ -706,8 +678,10 @@ public class AppController {
     }
 
     public boolean registerChef(String username, String password, String name, String surname, String email) {
-        if (searchAllievo(username, email))
+        if (searchAllievo(username, email)){
+            showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
             return false;
+        }
 
         String pswHashed = BCrypt.hashpw(password, BCrypt.gensalt(10));
         Chef chef = new Chef(username, pswHashed, email, name, surname);
@@ -725,7 +699,7 @@ public class AppController {
         }
     }
 
-    public boolean loginChef(String username, String password) throws ChefNotFoundException {
+    private boolean loginChef(String username, String password) throws ChefNotFoundException {
         try {
             Chef chef = chefDAO.getChefByUsername(username);
             if (chef == null)
@@ -746,12 +720,14 @@ public class AppController {
 
     public boolean searchAllievo(String username, String email) {
         try {
-            if (searchAllievoByUsername(username))
+            if (searchAllievoByUsername(username)){
                 return true;
+            }
         } catch (AllievoNotFoundException e) {
             try {
-                if (searchAllievoByEmail(email))
+                if (searchAllievoByEmail(email)){
                     return true;
+                }
             } catch (AllievoNotFoundException e1) {
                 return false;
             }
@@ -761,12 +737,14 @@ public class AppController {
 
     public boolean searchChef(String username, String email) {
         try {
-            if (searchChefByUsername(username))
+            if (searchChefByUsername(username)) {
                 return true;
+            }
         } catch (ChefNotFoundException e) {
             try {
-                if (searchChefByEmail(email))
+                if (searchChefByEmail(email)){
                     return true;
+                }
             } catch (ChefNotFoundException e1) {
                 return false;
             }
@@ -787,35 +765,19 @@ public class AppController {
     }
 
     public boolean searchAllievoByUsername(String username) throws AllievoNotFoundException {
-        if (allievoDAO.getAllievoByUsername(username) != null) {
-            showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
-            return true;
-        }
-        return false;
+        return allievoDAO.getAllievoByUsername(username) != null;
     }
 
     public boolean searchAllievoByEmail(String email) throws AllievoNotFoundException {
-        if (allievoDAO.getAllievoByEmail(email) != null) {
-            showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
-            return true;
-        }
-        return false;
+        return allievoDAO.getAllievoByEmail(email) != null;
     }
 
     public boolean searchChefByUsername(String username) throws ChefNotFoundException {
-        if (chefDAO.getChefByUsername(username) != null) {
-            showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
-            return true;
-        }
-        return false;
+        return chefDAO.getChefByUsername(username) != null;
     }
 
     public boolean searchChefByEmail(String email) throws ChefNotFoundException {
-        if (chefDAO.getChefByEmail(email) != null) {
-            showWarningDialog("Account già esistente.", "Proseguire sulla schermata di accesso.");
-            return true;
-        }
-        return false;
+        return chefDAO.getChefByEmail(email) != null;
     }
 
     public void showErrorDialog(String title, String message) {

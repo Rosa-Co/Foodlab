@@ -6,12 +6,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Window;
 import progetto.app.controller.AppController;
+import progetto.app.dto.RecipeDTO;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import progetto.app.dto.RecipeDTO;
 
 public class AddRecipeDialogGUI implements Initializable {
 

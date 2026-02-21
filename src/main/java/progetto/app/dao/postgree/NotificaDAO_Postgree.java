@@ -1,7 +1,7 @@
 package progetto.app.dao.postgree;
 
-import progetto.app.database.DatabaseConnection;
 import progetto.app.dao.Interface.NotificaDAO;
+import progetto.app.database.DatabaseConnection;
 import progetto.app.exception.DAOException;
 import progetto.app.model.Notifica;
 

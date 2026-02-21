@@ -7,13 +7,13 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 import progetto.app.controller.AppController;
+import progetto.app.dto.CourseDTO;
+import progetto.app.dto.NotificationDTO;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import progetto.app.dto.CourseDTO;
-import progetto.app.dto.NotificationDTO;
 import java.util.Optional;
 
 public class AddNotificationDialogGUI {

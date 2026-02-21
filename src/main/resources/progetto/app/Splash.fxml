@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-
 <StackPane style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="progetto.app.view.SplashGUI">
    <children>
       <VBox alignment="CENTER" spacing="30.0" style="-fx-background-color: linear-gradient(to bottom right, #ffffff, #f0f0f0); -fx-background-radius: 20; -fx-border-radius: 20; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 20;">

@@ -1,34 +1,26 @@
 package progetto.app.view;
 
-import javafx.fxml.FXMLLoader;
-import javafx.stage.Window;
-import javafx.util.converter.IntegerStringConverter;
-import progetto.app.dto.CourseWithSessionsDTO;
-import progetto.app.enums.CuisineCategory;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
+import javafx.stage.Window;
+import javafx.util.converter.IntegerStringConverter;
 import org.kordamp.ikonli.javafx.FontIcon;
 import progetto.app.controller.AppController;
 import progetto.app.dto.CourseDTO;
+import progetto.app.dto.CourseWithSessionsDTO;
 import progetto.app.dto.RecipeDTO;
 import progetto.app.dto.SessionDTO;
+import progetto.app.enums.CuisineCategory;
 import progetto.app.enums.Frequency;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
-
-import static java.time.temporal.WeekFields.ISO;
 
 public class AddCourseDialogGUI implements Initializable {
 

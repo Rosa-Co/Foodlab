@@ -2,9 +2,9 @@ package progetto.app.dao.postgree;
 
 import progetto.app.dao.Interface.AllievoDAO;
 import progetto.app.database.DatabaseConnection;
+import progetto.app.exception.AllievoNotFoundException;
 import progetto.app.exception.DAOException;
 import progetto.app.exception.DuplicateAllievoException;
-import progetto.app.exception.AllievoNotFoundException;
 import progetto.app.model.Allievo;
 
 import java.sql.*;

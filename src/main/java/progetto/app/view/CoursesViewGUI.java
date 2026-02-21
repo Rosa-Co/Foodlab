@@ -3,9 +3,9 @@ package progetto.app.view;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -14,10 +14,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.kordamp.ikonli.javafx.FontIcon;
 import progetto.app.controller.AppController;
+import progetto.app.dto.CourseDTO;
+
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import progetto.app.dto.CourseDTO;
 
 public class CoursesViewGUI implements Initializable {
 

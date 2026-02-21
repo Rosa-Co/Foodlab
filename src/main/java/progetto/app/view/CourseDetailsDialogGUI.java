@@ -17,15 +17,12 @@ import javafx.stage.Window;
 import javafx.util.converter.IntegerStringConverter;
 import org.kordamp.ikonli.javafx.FontIcon;
 import progetto.app.controller.AppController;
+import progetto.app.dto.SessionDTO;
 
 import java.io.IOException;
 import java.time.LocalDate;
-
-
 import java.util.List;
 import java.util.Optional;
-import progetto.app.dto.SessionDTO;
-import javafx.scene.control.DateCell;
 
 
 public class CourseDetailsDialogGUI {

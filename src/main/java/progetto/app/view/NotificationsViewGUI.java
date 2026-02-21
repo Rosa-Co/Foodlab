@@ -7,11 +7,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import progetto.app.controller.AppController;
+import progetto.app.dto.NotificationDTO;
 
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import progetto.app.dto.NotificationDTO;
 
 public class NotificationsViewGUI implements Initializable {
 

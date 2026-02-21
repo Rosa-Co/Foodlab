@@ -11,9 +11,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import progetto.app.controller.AppController;
+import progetto.app.dto.RecipeDTO;
 
 import java.util.List;
-import progetto.app.dto.RecipeDTO;
 
 public class RecipesViewGUI {
 

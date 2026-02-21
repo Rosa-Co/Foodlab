@@ -1,7 +1,7 @@
 package progetto.app.view;
 
-import javafx.fxml.FXML;
 import javafx.application.Platform;
+import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import org.jfree.chart.ChartFactory;
@@ -10,9 +10,9 @@ import org.jfree.chart.fx.ChartViewer;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.data.general.DefaultPieDataset;
 import progetto.app.controller.AppController;
-
 import progetto.app.dto.ChefStatsDTO;
-import java.awt.Color;
+
+import java.awt.*;
 
 public class ReportViewGUI {
 
