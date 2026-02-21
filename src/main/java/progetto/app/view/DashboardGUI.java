@@ -29,7 +29,6 @@ public class DashboardGUI implements Initializable {
     private StackPane contentContainer;
     @FXML
     private ImageView logoImage;
-    // Sidebar buttons
     @FXML
     private Button homeButton;
     @FXML
@@ -40,8 +39,6 @@ public class DashboardGUI implements Initializable {
     private Button notificationsButton;
     @FXML
     private Button reportButton;
-
-    // Header
     @FXML
     private Label chefNameLabel;
     @FXML
@@ -100,7 +97,7 @@ public class DashboardGUI implements Initializable {
      * Carica la vista Home nel container centrale
      */
     private void loadHomeView() {
-        // Display welcome message instead of loading a view
+        // Mostra il welcome message invece di caricare una view
         contentContainer.getChildren().clear();
 
         VBox welcomeBox = new VBox(20);

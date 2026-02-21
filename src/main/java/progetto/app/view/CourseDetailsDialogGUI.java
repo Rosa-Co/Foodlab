@@ -91,7 +91,7 @@ public class CourseDetailsDialogGUI {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        // Edit/Delete buttons (Icons)
+        // Bottoni di modifica/cancellazione
         Button editBtn = new Button();
         editBtn.setGraphic(new FontIcon("fas-edit"));
         editBtn.setStyle("-fx-background-color: transparent; -fx-cursor: hand; -fx-text-fill: #3498db;");
@@ -124,13 +124,13 @@ public class CourseDetailsDialogGUI {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             if (appController.deleteSession(sessionId)) {
                 dataChanged = true;
-                loadSessions(); // Refresh list
+                loadSessions();
             }
         }
     }
 
     private void handleEditSession(SessionDTO session) {
-        // Simple dialog to edit date, modality, duration, description
+        // Dialog semplice per modificare data, modalità, duration, description
         Dialog<SessionDTO> dialog = new Dialog<>();
         dialog.setTitle("Modifica Sessione");
         dialog.setHeaderText("Modifica i dettagli della sessione");
@@ -175,7 +175,7 @@ public class CourseDetailsDialogGUI {
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
                 SessionDTO newData = new SessionDTO();
-                // Preserve ID and session number, update others
+                // Preserva ID e numero sessione, aggiorna il resto
                 newData.setId(session.getId());
                 newData.setNumeroSessione(session.getNumeroSessione());
 

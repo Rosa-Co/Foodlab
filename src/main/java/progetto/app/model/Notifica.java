@@ -1,5 +1,7 @@
 package progetto.app.model;
 
+import java.util.Objects;
+
 public class Notifica {
     private int idAvviso;
     private String titolo;
@@ -60,5 +62,22 @@ public class Notifica {
 
     public void setIdCorso(Integer idCorso) {
         this.idCorso = idCorso;
+    }
+
+    @Override
+    public String toString() {
+        return "Notifica{" +
+                "idAvviso=" + idAvviso +
+                ", titolo='" + titolo + '\'' +
+                ", contenuto='" + contenuto + '\'' +
+                ", idChef=" + idChef +
+                ", idCorso=" + idCorso +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Notifica notifica)) return false;
+        return idAvviso == notifica.idAvviso && idChef == notifica.idChef && Objects.equals(titolo, notifica.titolo) && Objects.equals(contenuto, notifica.contenuto) && Objects.equals(idCorso, notifica.idCorso);
     }
 }

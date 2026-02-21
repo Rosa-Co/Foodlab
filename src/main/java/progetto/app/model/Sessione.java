@@ -1,6 +1,7 @@
 package progetto.app.model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Sessione {
     private int id;
@@ -86,5 +87,24 @@ public class Sessione {
 
     public void setDescrizione(String descrizione) {
         this.descrizione = descrizione;
+    }
+
+    @Override
+    public String toString() {
+        return "Sessione{" +
+                "id=" + id +
+                ", corsoId=" + corsoId +
+                ", numeroSessione=" + numeroSessione +
+                ", dataSessione=" + dataSessione +
+                ", modalita='" + modalita + '\'' +
+                ", durata=" + durata +
+                ", descrizione='" + descrizione + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Sessione sessione)) return false;
+        return id == sessione.id && corsoId == sessione.corsoId && numeroSessione == sessione.numeroSessione && durata == sessione.durata && Objects.equals(dataSessione, sessione.dataSessione) && Objects.equals(modalita, sessione.modalita) && Objects.equals(descrizione, sessione.descrizione);
     }
 }

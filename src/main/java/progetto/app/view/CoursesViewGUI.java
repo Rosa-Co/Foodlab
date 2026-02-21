@@ -64,14 +64,13 @@ public class CoursesViewGUI implements Initializable {
         card.setStyle(
                 "-fx-background-color: white; -fx-padding: 12; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 5, 0, 0, 2); -fx-cursor: hand;");
 
-        // Add click listener to open details
         card.setOnMouseClicked(e -> {
             int corsoId = course.getId();
             String titolo = course.getTitolo();
             appController.showCourseDetailsDialog(card.getScene().getWindow(), corsoId, titolo);
         });
 
-        // Header: Title + Category
+        // Header: Titolo + Categoria
         HBox header = new HBox(10);
         header.setAlignment(Pos.CENTER_LEFT);
 
@@ -87,7 +86,7 @@ public class CoursesViewGUI implements Initializable {
 
         header.getChildren().addAll(title, spacer, category);
 
-        // Details Row 1
+        // Dettagli riga 1
         HBox details1 = new HBox(15);
         details1.setAlignment(Pos.CENTER_LEFT);
 
@@ -96,7 +95,7 @@ public class CoursesViewGUI implements Initializable {
 
         details1.getChildren().addAll(dateLabel, sessionsLabel);
 
-        // Details Row 2
+        // Dettagli riga 2
         HBox details2 = new HBox(15);
         details2.setAlignment(Pos.CENTER_LEFT);
 

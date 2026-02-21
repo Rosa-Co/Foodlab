@@ -1,5 +1,7 @@
 package progetto.app.model;
 
+import java.util.Objects;
+
 public class Ricetta {
     private int id;
     private String nome;
@@ -53,6 +55,13 @@ public class Ricetta {
 
     @Override
     public String toString() {
-        return nome; // Useful for ComboBox display
+        return nome;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Ricetta ricetta)) return false;
+        return id == ricetta.id && chefId == ricetta.chefId && Objects.equals(nome, ricetta.nome) && Objects.equals(descrizione, ricetta.descrizione);
+    }
+
 }

@@ -28,7 +28,7 @@ public class AddRecipeDialogGUI implements Initializable {
 
     public RecipeDTO getRecipeData() {
         if (isInputValid()) {
-            // ID 0 for new recipe
+            // ID 0 per una nuova ricetta
             return new RecipeDTO(0, nameField.getText(), descriptionArea.getText());
         }
         return null;

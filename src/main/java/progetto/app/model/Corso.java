@@ -1,6 +1,7 @@
 package progetto.app.model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Corso {
     private int id;
@@ -87,4 +88,24 @@ public class Corso {
     public void setChefId(int chefId) {
         this.chefId = chefId;
     }
+
+    @Override
+    public String toString() {
+        return "Corso{" +
+                "id=" + id +
+                ", titolo='" + titolo + '\'' +
+                ", categoria='" + categoria + '\'' +
+                ", dataInizio=" + dataInizio +
+                ", frequenza='" + frequenza + '\'' +
+                ", numeroSessioni=" + numeroSessioni +
+                ", chefId=" + chefId +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Corso corso)) return false;
+        return id == corso.id && numeroSessioni == corso.numeroSessioni && chefId == corso.chefId && Objects.equals(titolo, corso.titolo) && Objects.equals(categoria, corso.categoria) && Objects.equals(dataInizio, corso.dataInizio) && Objects.equals(frequenza, corso.frequenza);
+    }
+
 }

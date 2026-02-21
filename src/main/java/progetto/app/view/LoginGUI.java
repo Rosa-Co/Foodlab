@@ -65,7 +65,6 @@ public class LoginGUI {
     }
 
     private void setupFeatures() {
-        // Header section
         VBox headerBox = new VBox(8);
         headerBox.setAlignment(Pos.CENTER);
         headerBox.setPadding(new Insets(40, 30, 30, 30));
@@ -76,7 +75,6 @@ public class LoginGUI {
         Label subtitle = new Label("La tua piattaforma per condividere passione culinaria");
         subtitle.setStyle("-fx-font-size: 14px; -fx-opacity: 0.7; -fx-text-alignment: center;");
         subtitle.setWrapText(true);
-        // subtitle.setMaxWidth(400);
 
         headerBox.getChildren().addAll(mainTitle, subtitle);
 
@@ -100,7 +98,6 @@ public class LoginGUI {
             cardsContainer.getChildren().add(card);
         }
 
-        // Add spacing
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
 
@@ -117,7 +114,7 @@ public class LoginGUI {
                         "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0, 0, 3); " +
                         "-fx-cursor: hand;");
 
-        // Hover effect
+        // effetto Hover
         card.setOnMouseEntered(e -> card.setStyle(
                 "-fx-background-color: -color-bg-default; " +
                         "-fx-background-radius: 12px; " +
@@ -131,7 +128,6 @@ public class LoginGUI {
                         "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0, 0, 3); " +
                         "-fx-cursor: hand;"));
 
-        // Icon container
         VBox iconContainer = new VBox();
         iconContainer.setAlignment(Pos.CENTER);
         iconContainer.setPrefSize(50, 50);
@@ -147,7 +143,6 @@ public class LoginGUI {
         icon.setIconColor(Color.valueOf(accentColor));
         iconContainer.getChildren().add(icon);
 
-        // Text content
         VBox textBox = new VBox(5);
         textBox.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(textBox, Priority.ALWAYS);

@@ -83,6 +83,6 @@ public class NotificationsViewGUI implements Initializable {
 
     private void handleNewNotification() {
         appController.showCreateNotificationDialog(notificationsContainer.getScene().getWindow());
-        loadNotifications(); // Reload after potential add
+        loadNotifications(); // Ricarica dopo una potenziale aggiunta
     }
 }

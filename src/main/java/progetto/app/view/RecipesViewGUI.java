@@ -60,7 +60,7 @@ public class RecipesViewGUI {
         card.setStyle(
                 "-fx-background-color: white; -fx-padding: 12; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 5, 0, 0, 2);");
 
-        // Header: Name + Category
+        // Header: Nome + Categoria
         HBox header = new HBox(10);
         header.setAlignment(Pos.CENTER_LEFT);
 
@@ -72,7 +72,7 @@ public class RecipesViewGUI {
 
         header.getChildren().addAll(name, spacer);
 
-        // Description
+        // Descrizione
         Label desc = new Label(recipe.getDescrizione());
         desc.setWrapText(true);
         desc.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 12px;");
