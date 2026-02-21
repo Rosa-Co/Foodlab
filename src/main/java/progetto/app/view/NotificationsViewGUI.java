@@ -66,7 +66,7 @@ public class NotificationsViewGUI implements Initializable {
 
         if (notifications.isEmpty()) {
             Label placeholder = new Label("Nessuna notifica inviata.");
-            placeholder.setStyle("-fx-text-fill: -color-text-subtle; -fx-font-size: 14px;");
+            placeholder.setStyle("-fx-font-size: 14px;");
             notificationsContainer.getChildren().add(placeholder);
             return;
         }

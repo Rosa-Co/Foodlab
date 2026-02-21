@@ -21,7 +21,6 @@ public class DatabaseConnection {
     private static final String URL = "jdbc:postgresql://ep-spring-dust-adb2oyjm-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
     private static final String USER = "neondb_owner";
     private static final String PASSWORD = "npg_3QxTHSCYk1wi";
-    private static Connection connection = null;
 
     /** Costruttore privato per impedire istanziazione */
     private DatabaseConnection() {
@@ -29,7 +28,7 @@ public class DatabaseConnection {
 
     /**
      * Ottiene una nuova connessione al database PostgreSQL.
-     * Questo metodo crea una nuova connessione fisica al database.
+     * Questo metodo crea una nuova connessione fisica al database ad ogni chiamata.
      * La connessione deve essere chiusa dal chiamante per evitare memory leak.
      * 
      * @return una nuova connessione al database, mai {@code null}
@@ -37,12 +36,8 @@ public class DatabaseConnection {
      *                      configurate correttamente
      * @see #testConnection()
      */
-
     public static Connection getConnection() throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
-        }
-        return connection;
+        return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
     /**
@@ -55,21 +50,11 @@ public class DatabaseConnection {
      * @see #getConnection()
      */
     public static boolean testConnection() {
-        try {
-            connection = getConnection();
-            return connection != null && connection.isValid(2);
+        try (Connection conn = getConnection()) {
+            return conn != null && conn.isValid(2);
         } catch (SQLException e) {
             System.err.println("Test connessione fallito: " + e.getMessage());
             return false;
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                    System.out.println("Connessione chiusa");
-                } catch (SQLException e) {
-                    System.err.println("Errore chiusura connessione: " + e.getMessage());
-                }
-            }
         }
     }
 

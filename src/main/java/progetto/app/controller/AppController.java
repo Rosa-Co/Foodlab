@@ -2,6 +2,7 @@ package progetto.app.controller;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -218,9 +219,10 @@ public class AppController {
     public ChefStatsDTO getChefReportData() {
         if (userLogged != null && userLogged.isChef()) {
             try {
-                return statsDAO.getChefStats(getCurrentChefId());
+                return getStatsDAO().getChefStats(getCurrentChefId());
             } catch (DAOException e) {
-                new ErrorDialog("Errore Report", "Impossibile recuperare i dati del report: " + e.getMessage()).show();
+                Platform.runLater(() -> new ErrorDialog("Errore Report",
+                        "Impossibile recuperare i dati del report: " + e.getMessage()).show());
             }
         }
         return new ChefStatsDTO();
@@ -247,7 +249,7 @@ public class AppController {
             }
         } catch (DAOException e) {
             e.printStackTrace();
-            new ErrorDialog("Errore Database", "Impossibile caricare le ricette.").show();
+            Platform.runLater(() -> new ErrorDialog("Errore Database", "Impossibile caricare le ricette.").show());
         }
         return dtos;
     }
@@ -281,7 +283,8 @@ public class AppController {
                 }
                 return coursesData;
             } catch (DAOException e) {
-                new ErrorDialog("Errore di Caricamento", "Impossibile caricare i corsi: " + e.getMessage()).show();
+                Platform.runLater(() -> new ErrorDialog("Errore di Caricamento",
+                        "Impossibile caricare i corsi: " + e.getMessage()).show());
             }
         }
         return new ArrayList<>();
@@ -312,7 +315,8 @@ public class AppController {
                 }
                 return recipesData;
             } catch (DAOException e) {
-                new ErrorDialog("Errore di Caricamento", "Impossibile caricare le ricette: " + e.getMessage()).show();
+                Platform.runLater(() -> new ErrorDialog("Errore di Caricamento",
+                        "Impossibile caricare le ricette: " + e.getMessage()).show());
             }
         }
         return new ArrayList<>();
@@ -783,7 +787,7 @@ public class AppController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            new ErrorDialog("Errore", "Impossibile recuperare le notifiche.").show();
+            Platform.runLater(() -> new ErrorDialog("Errore", "Impossibile recuperare le notifiche.").show());
         }
         return result;
     }
@@ -911,18 +915,41 @@ public class AppController {
     }
 
     /**
+     * Tenta di rimuovere i controller delle viste figlie dalla memoria.
+     * Al prossimo login, verranno re-istanzati da zero, assicurandosi
+     * che non rimangano dati del vecchio utente.
+     */
+    private void clearControllersData() {
+        controllers.remove("dashboard");
+        controllers.remove("courses");
+        controllers.remove("recipes");
+        controllers.remove("notifications");
+        controllers.remove("report");
+        views.remove("dashboard");
+        views.remove("courses");
+        views.remove("recipes");
+        views.remove("notifications");
+        views.remove("report");
+    }
+
+    /**
      * Effettua il logout dell'utente corrente.
      * <p>
-     * Azzera l'utente autenticato, pulisce i campi del form di login e
-     * reindirizza alla schermata di accesso.
+     * Azzera l'utente autenticato, distrugge la cache delle view dinamiche
+     * per il vecchio utente e reindirizza alla schermata di accesso.
      * </p>
      */
     public void logout() {
         this.userLogged = null;
+
+        clearControllersData();
+
         LoginGUI loginGUI = (LoginGUI) getController("login");
-        loginGUI.clearLoginFields();
-        loginGUI.clearRegisterFields();
-        navigateToLogin();
+        if (loginGUI != null) {
+            loginGUI.clearLoginFields();
+            loginGUI.clearRegisterFields();
+            navigateToLogin();
+        }
     }
 
     /**
@@ -1020,15 +1047,11 @@ public class AppController {
     public boolean login(String username, String password) {
         try {
             if (allievoDAO.getAllievoByUsername(username) != null) {
-                DashboardGUI controller = (DashboardGUI) controllers.get("dashboard");
-                controller.updateUsername(username);
                 return loginAllievo(username, password);
             }
         } catch (AllievoNotFoundException e) {
             try {
                 if (chefDAO.getChefByUsername(username) != null) {
-                    DashboardGUI controller = (DashboardGUI) controllers.get("dashboard");
-                    controller.updateUsername(username);
                     return loginChef(username, password);
                 }
             } catch (ChefNotFoundException e1) {
@@ -1131,9 +1154,14 @@ public class AppController {
 
         try {
             chefDAO.addChef(chef);
+            this.userLogged = chef;
+
+            // Inizializza le GUI dinamicamente per questo utente
+            loadAppViews();
+
             DashboardGUI controller = (DashboardGUI) controllers.get("dashboard");
             controller.updateUsername(username);
-            this.userLogged = chef;
+
             navigateToDashboard();
             return true;
         } catch (DuplicateChefException e) {
@@ -1143,6 +1171,18 @@ public class AppController {
             showErrorDialog("Password errata", "Riprova");
             return false;
         }
+    }
+
+    /**
+     * Carica in memoria i file FXML salvandone i controlli legati alla dashboard e
+     * ai sotto-menu (corsi, ricette, notifiche, report).
+     */
+    private void loadAppViews() {
+        loadView("dashboard", "/progetto/app/Dashboard.fxml");
+        loadView("courses", "/progetto/app/view/CoursesView.fxml");
+        loadView("recipes", "/progetto/app/view/RecipesView.fxml");
+        loadView("notifications", "/progetto/app/view/NotificationsView.fxml");
+        loadView("report", "/progetto/app/view/ReportView.fxml");
     }
 
     /**
@@ -1164,6 +1204,15 @@ public class AppController {
                 showErrorDialog("Password errata", "Riprova");
                 return false;
             }
+
+            // Inizializza le GUI dinamicamente per questo utente
+            loadAppViews();
+
+            DashboardGUI controller = (DashboardGUI) controllers.get("dashboard");
+            if (controller != null) {
+                controller.updateUsername(username);
+            }
+
             navigateToDashboard();
             return true;
         } catch (DAOException e) {
@@ -1368,4 +1417,5 @@ public class AppController {
     public String getLoggedUsername() {
         return userLogged != null ? userLogged.getUsername() : null;
     }
+
 }

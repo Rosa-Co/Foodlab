@@ -26,11 +26,6 @@ public class Main extends Application {
         stage.getIcons().add(icon);
 
         appController.loadView("login", "/progetto/app/login.fxml");
-        appController.loadView("dashboard", "/progetto/app/Dashboard.fxml");
-        appController.loadView("courses", "/progetto/app/view/CoursesView.fxml");
-        appController.loadView("recipes", "/progetto/app/view/RecipesView.fxml");
-        appController.loadView("notifications", "/progetto/app/view/NotificationsView.fxml");
-        appController.loadView("report", "/progetto/app/view/ReportView.fxml");
         appController.loadView("notImplemented", "/progetto/app/view/NotImplementedView.fxml");
 
         Stage splashStage = new Stage();
