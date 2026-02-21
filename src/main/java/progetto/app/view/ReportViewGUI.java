@@ -7,12 +7,14 @@ import javafx.scene.layout.BorderPane;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.fx.ChartViewer;
+import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.data.general.DefaultPieDataset;
 import progetto.app.controller.AppController;
 import progetto.app.dto.ChefStatsDTO;
 
 import java.awt.*;
+import java.text.DecimalFormat;
 
 /**
  * Controller della schermata del report mensile dello chef.
@@ -116,7 +118,14 @@ public class ReportViewGUI {
         plot.setSectionPaint("In Presenza", new Color(230, 126, 34)); // Arancione
         plot.setBackgroundPaint(Color.WHITE);
         plot.setOutlineVisible(false);
-        
+
+        plot.setLabelGenerator(
+                new StandardPieSectionLabelGenerator(
+                        "{0}: {2}",              // nome + percentuale
+                        new DecimalFormat("0"),  // valore assoluto
+                        new DecimalFormat("0.0%")// formato percentuale
+                )
+        );
 
         ChartViewer viewer = new ChartViewer(chart);
         chartContainer.setCenter(viewer);

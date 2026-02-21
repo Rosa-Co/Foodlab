@@ -65,7 +65,7 @@ public class LoginGUI {
     @FXML
     private Button registerButton;
 
-    /** Inizializza la view costruendo programmaticamente le card promozionali. */
+    /** Inizializza la view costruendo le card. */
     @FXML
     private void initialize() {
         setupFeatures();
