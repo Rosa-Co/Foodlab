@@ -3,15 +3,41 @@ package progetto.app.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
+/**
+ * Modello che rappresenta una singola sessione di un {@link Corso}.
+ * <p>
+ * Ogni sessione appartiene a un corso specifico ({@code corsoId}) ed è
+ * identificata da {@code numeroSessione} all'interno di quel corso.
+ * Le sessioni in presenza ({@code modalita = "In Presenza"}) possono
+ * avere ricette associate tramite la tabella {@code sessione_ricetta}.
+ * </p>
+ */
 public class Sessione {
+    /** Identificatore univoco della sessione (0 se non ancora persistita). */
     private int id;
+    /** ID del {@link Corso} a cui appartiene questa sessione. */
     private int corsoId;
+    /** Numero progressivo della sessione all'interno del corso. */
     private int numeroSessione;
+    /** Data in cui si svolge la sessione. */
     private LocalDate dataSessione;
+    /** Modalità di svolgimento ({@code Online} o {@code In Presenza}). */
     private String modalita;
+    /** Durata della sessione in minuti. */
     private int durata;
+    /** Descrizione del contenuto della sessione. */
     private String descrizione;
 
+    /**
+     * Crea una sessione senza ID (da usare prima della persistenza).
+     *
+     * @param corsoId        ID del corso a cui appartiene
+     * @param numeroSessione numero progressivo della sessione
+     * @param dataSessione   data della sessione
+     * @param modalita       modalità ({@code Online} o {@code In Presenza})
+     * @param durata         durata in minuti
+     * @param descrizione    descrizione del contenuto
+     */
     public Sessione(int corsoId, int numeroSessione, LocalDate dataSessione, String modalita, int durata,
             String descrizione) {
         this.corsoId = corsoId;
@@ -22,6 +48,17 @@ public class Sessione {
         this.descrizione = descrizione;
     }
 
+    /**
+     * Crea una sessione con ID (usato quando viene recuperata dal database).
+     *
+     * @param id             identificatore univoco
+     * @param corsoId        ID del corso a cui appartiene
+     * @param numeroSessione numero progressivo della sessione
+     * @param dataSessione   data della sessione
+     * @param modalita       modalità ({@code Online} o {@code In Presenza})
+     * @param durata         durata in minuti
+     * @param descrizione    descrizione del contenuto
+     */
     public Sessione(int id, int corsoId, int numeroSessione, LocalDate dataSessione, String modalita, int durata,
             String descrizione) {
         this.id = id;
@@ -104,7 +141,10 @@ public class Sessione {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Sessione sessione)) return false;
-        return id == sessione.id && corsoId == sessione.corsoId && numeroSessione == sessione.numeroSessione && durata == sessione.durata && Objects.equals(dataSessione, sessione.dataSessione) && Objects.equals(modalita, sessione.modalita) && Objects.equals(descrizione, sessione.descrizione);
+        if (!(o instanceof Sessione sessione))
+            return false;
+        return id == sessione.id && corsoId == sessione.corsoId && numeroSessione == sessione.numeroSessione
+                && durata == sessione.durata && Objects.equals(dataSessione, sessione.dataSessione)
+                && Objects.equals(modalita, sessione.modalita) && Objects.equals(descrizione, sessione.descrizione);
     }
 }

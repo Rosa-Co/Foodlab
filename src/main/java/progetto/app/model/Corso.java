@@ -3,15 +3,41 @@ package progetto.app.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
+/**
+ * Modello che rappresenta un corso di cucina nel sistema.
+ * <p>
+ * Un corso è creato da uno {@link Chef} (identificato da {@code chefId})
+ * e è suddiviso in più {@link Sessione}. I campi {@code frequenza} e
+ * {@code numeroSessioni} descrivono la cadenza e la durata pianificata del
+ * corso.
+ * </p>
+ */
 public class Corso {
+    /** Identificatore univoco del corso (0 se non ancora persistito). */
     private int id;
+    /** Titolo del corso. */
     private String titolo;
+    /** Categoria culinaria del corso. */
     private String categoria;
+    /** Data di inizio del corso. */
     private LocalDate dataInizio;
+    /** Cadenza delle sessioni (es. {@code Settimanale}, {@code Bisettimanale}). */
     private String frequenza;
+    /** Numero totale di sessioni pianificate. */
     private int numeroSessioni;
+    /** Identificatore dello {@link Chef} che ha creato il corso. */
     private int chefId;
 
+    /**
+     * Crea un corso senza ID (da usare prima della persistenza).
+     *
+     * @param titolo         titolo del corso
+     * @param categoria      categoria culinaria
+     * @param dataInizio     data di inizio
+     * @param frequenza      cadenza delle sessioni
+     * @param numeroSessioni numero di sessioni pianificate
+     * @param chefId         ID dello chef proprietario del corso
+     */
     public Corso(String titolo, String categoria, LocalDate dataInizio, String frequenza, int numeroSessioni,
             int chefId) {
         this.titolo = titolo;
@@ -22,6 +48,17 @@ public class Corso {
         this.chefId = chefId;
     }
 
+    /**
+     * Crea un corso con ID (usato quando viene recuperato dal database).
+     *
+     * @param id             identificatore univoco del corso
+     * @param titolo         titolo del corso
+     * @param categoria      categoria culinaria
+     * @param dataInizio     data di inizio
+     * @param frequenza      cadenza delle sessioni
+     * @param numeroSessioni numero di sessioni pianificate
+     * @param chefId         ID dello chef proprietario del corso
+     */
     public Corso(int id, String titolo, String categoria, LocalDate dataInizio, String frequenza, int numeroSessioni,
             int chefId) {
         this.id = id;
@@ -104,8 +141,11 @@ public class Corso {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Corso corso)) return false;
-        return id == corso.id && numeroSessioni == corso.numeroSessioni && chefId == corso.chefId && Objects.equals(titolo, corso.titolo) && Objects.equals(categoria, corso.categoria) && Objects.equals(dataInizio, corso.dataInizio) && Objects.equals(frequenza, corso.frequenza);
+        if (!(o instanceof Corso corso))
+            return false;
+        return id == corso.id && numeroSessioni == corso.numeroSessioni && chefId == corso.chefId
+                && Objects.equals(titolo, corso.titolo) && Objects.equals(categoria, corso.categoria)
+                && Objects.equals(dataInizio, corso.dataInizio) && Objects.equals(frequenza, corso.frequenza);
     }
 
 }
