@@ -25,14 +25,9 @@ public class SplashGUI implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         TypeWritingController animation = new TypeWritingController(typeWriterText, "Caricamento...", 100);
-        // Removed manual ugly styling. Handled in FXML.
-
-        // Ensure text is visible
         typeWriterText.setOpacity(1);
 
-        // === Pulse Animation ===
         ScaleTransition pulse = new ScaleTransition(Duration.seconds(0.8), logo);
-        // Dal 100% all’110% di scala
         pulse.setFromX(0.7);
         pulse.setFromY(0.7);
         pulse.setToX(1.0);
@@ -41,7 +36,6 @@ public class SplashGUI implements Initializable {
         pulse.setCycleCount(Animation.INDEFINITE);
         pulse.play();
         animation.play();
-        // ========================
 
         new Thread(() -> {
             try {

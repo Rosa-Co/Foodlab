@@ -78,8 +78,8 @@ public class ReportViewGUI {
                 false);
 
         PiePlot<String> plot = (PiePlot<String>) chart.getPlot();
-        plot.setSectionPaint("Online", new Color(52, 152, 219)); // Blue
-        plot.setSectionPaint("In Presenza", new Color(230, 126, 34)); // Orange
+        plot.setSectionPaint("Online", new Color(52, 152, 219)); // Blu
+        plot.setSectionPaint("In Presenza", new Color(230, 126, 34)); // Arancione
         plot.setBackgroundPaint(Color.WHITE);
         plot.setOutlineVisible(false);
 

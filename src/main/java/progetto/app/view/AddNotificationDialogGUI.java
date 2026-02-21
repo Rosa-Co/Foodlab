@@ -66,7 +66,7 @@ public class AddNotificationDialogGUI {
         String message = messageArea.getText();
 
         if (title == null || title.trim().isEmpty() || message == null || message.trim().isEmpty()) {
-            return null; 
+            return null;
         }
 
         Integer corsoId = null;
