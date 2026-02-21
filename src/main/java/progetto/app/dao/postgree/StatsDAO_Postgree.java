@@ -10,8 +10,46 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Implementazione PostgreSQL dell'interfaccia {@link StatsDAO}.
+ * <p>
+ * Calcola statistiche aggregate per uno chef eseguendo più query analitiche
+ * sulla stessa connessione JDBC ({@link DatabaseConnection}). Le query
+ * operano sulle tabelle {@code corso}, {@code sessione} e
+ * {@code sessione_ricetta}.
+ * </p>
+ * <p>
+ * Il metodo {@link #getChefStats(int)} esegue tre query distinte all'interno
+ * della stessa connessione:
+ * <ol>
+ * <li>Conta il numero totale di corsi dello chef.</li>
+ * <li>Raggruppa le sessioni per modalità ({@code Online} / {@code In Presenza})
+ * per ottenere i rispettivi conteggi.</li>
+ * <li>Calcola media, massimo e minimo del numero di ricette per sessione
+ * in presenza, tramite una CTE ({@code WITH RecipeCounts}).</li>
+ * </ol>
+ * I valori {@code NULL} nei risultati aggregati (es. quando non esistono
+ * sessioni)
+ * vengono gestiti tramite {@link ResultSet#wasNull()}.
+ * </p>
+ */
 public class StatsDAO_Postgree implements StatsDAO {
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Esegue tre query analitiche in sequenza sulla stessa connessione:
+     * <ol>
+     * <li><b>Corsi totali</b>:
+     * {@code SELECT COUNT(*) FROM corso WHERE chef_id = ?}</li>
+     * <li><b>Sessioni per modalità</b>: join {@code sessione}-{@code corso}
+     * raggruppato per {@code modalita}</li>
+     * <li><b>Statistiche ricette</b>: CTE {@code RecipeCounts} con {@code AVG},
+     * {@code MAX}, {@code MIN}
+     * sul numero di ricette nelle sessioni in presenza</li>
+     * </ol>
+     * </p>
+     */
     @Override
     public ChefStatsDTO getChefStats(int chefId) throws DAOException {
         ChefStatsDTO stats = new ChefStatsDTO();

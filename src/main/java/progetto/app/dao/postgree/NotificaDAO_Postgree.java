@@ -9,8 +9,30 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementazione PostgreSQL dell'interfaccia {@link NotificaDAO}.
+ * <p>
+ * Gestisce la persistenza delle entità {@link Notifica} sulla tabella
+ * {@code avvisi}
+ * del database PostgreSQL, utilizzando JDBC tramite {@link DatabaseConnection}.
+ * </p>
+ * <p>
+ * Il campo {@code id_corso} può essere {@code NULL} (notifica generica non
+ * associata a nessun corso particolare); in questo caso viene usato
+ * {@link PreparedStatement#setNull(int, int)} con tipo {@link Types#INTEGER}.
+ * </p>
+ */
 public class NotificaDAO_Postgree implements NotificaDAO {
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Le notifiche vengono recuperate ordinate per {@code id_avviso DESC},
+     * quindi le più recenti appaiono per prime.
+     * Il campo {@code id_corso} è letto via {@code rs.getObject()} per gestire
+     * correttamente i valori {@code NULL} del database.
+     * </p>
+     */
     @Override
     public List<Notifica> getNotificheByChef(int chefId) throws DAOException {
         List<Notifica> notifiche = new ArrayList<>();
@@ -38,6 +60,15 @@ public class NotificaDAO_Postgree implements NotificaDAO {
         return notifiche;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Se {@link Notifica#getIdCorso()} è non-null, il valore viene impostato come
+     * intero; altrimenti il parametro viene impostato a {@code NULL} SQL.
+     * In caso di successo aggiorna il campo {@code idAvviso} dell'oggetto
+     * {@code notifica} con la chiave generata dal database.
+     * </p>
+     */
     @Override
     public int addNotifica(Notifica notifica) throws DAOException {
         String sql = "INSERT INTO avvisi (titolo, contenuto, id_chef, id_corso) VALUES (?, ?, ?, ?)";

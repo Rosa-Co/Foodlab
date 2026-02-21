@@ -10,10 +10,33 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementazione PostgreSQL dell'interfaccia {@link CorsoDAO}.
+ * <p>
+ * Gestisce la persistenza delle entità {@link Corso} sulla tabella
+ * {@code corso}
+ * del database PostgreSQL, utilizzando JDBC tramite {@link DatabaseConnection}.
+ * </p>
+ * <p>
+ * Il metodo {@link #getCorsiByChef(int)} calcola il numero reale di sessioni
+ * tramite sottoquery sulla tabella {@code sessione}, ignorando il valore
+ * memorizzato nella colonna {@code numero_sessioni} del corso.
+ * </p>
+ */
 public class CorsoDAO_Postgree implements CorsoDAO {
 
+    /** Codice SQL State per la violazione di vincolo UNIQUE in PostgreSQL. */
     private static final String UNIQUE_VIOLATION = "23505";
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Esegue un {@code INSERT} con {@code RETURN_GENERATED_KEYS} per ottenere
+     * l'ID assegnato dal database e aggiornarlo nell'oggetto {@code corso}.
+     * La violazione UNIQUE (titolo duplicato) viene convertita in
+     * {@link DuplicateCorsoException}.
+     * </p>
+     */
     @Override
     public void addCorso(Corso corso) throws DAOException, DuplicateCorsoException {
         String sql = "INSERT INTO corso (titolo, categoria, data_inizio, frequenza, numero_sessioni, chef_id) VALUES (?, ?, ?, ?, ?, ?)";
@@ -35,13 +58,20 @@ public class CorsoDAO_Postgree implements CorsoDAO {
             }
         } catch (SQLException e) {
             if (e.getSQLState().equals(UNIQUE_VIOLATION)) {
-                throw new DuplicateCorsoException("Il corso \""+ corso.getTitolo()+ "\" esiste già.");
+                throw new DuplicateCorsoException("Il corso \"" + corso.getTitolo() + "\" esiste già.");
             }
             e.printStackTrace();
             throw new DAOException("Impossibile aggiungere il corso, riprova più tardi.", e);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Utilizza il metodo helper privato {@link #mapRowToCorso(ResultSet)} per
+     * mappare ciascuna riga del {@code ResultSet} in un'entità {@link Corso}.
+     * </p>
+     */
     @Override
     public List<Corso> getAllCorsi() throws DAOException {
         List<Corso> corsi = new ArrayList<>();
@@ -58,6 +88,16 @@ public class CorsoDAO_Postgree implements CorsoDAO {
         return corsi;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * La query calcola il numero di sessioni reali con una sottoquery
+     * {@code (SELECT COUNT(*) FROM sessione WHERE corso_id = corso.id)},
+     * pertanto il valore restituito potrebbe differire dal campo
+     * {@code numero_sessioni}
+     * memorizzato nella tabella {@code corso}.
+     * </p>
+     */
     @Override
     public List<Corso> getCorsiByChef(int chefId) throws DAOException {
         List<Corso> corsi = new ArrayList<>();
@@ -76,6 +116,13 @@ public class CorsoDAO_Postgree implements CorsoDAO {
         return corsi;
     }
 
+    /**
+     * Mappa una riga del {@link ResultSet} in un'entità {@link Corso}.
+     *
+     * @param rs il {@link ResultSet} posizionato sulla riga corrente
+     * @return un'istanza di {@link Corso} popolata con i valori della riga
+     * @throws SQLException in caso di errore nella lettura delle colonne
+     */
     private Corso mapRowToCorso(ResultSet rs) throws SQLException {
         return new Corso(
                 rs.getInt("id"),

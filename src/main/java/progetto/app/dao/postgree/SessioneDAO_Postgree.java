@@ -9,8 +9,30 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementazione PostgreSQL dell'interfaccia {@link SessioneDAO}.
+ * <p>
+ * Gestisce la persistenza delle entità {@link Sessione} sulla tabella
+ * {@code sessione}
+ * del database PostgreSQL, utilizzando JDBC tramite {@link DatabaseConnection}.
+ * </p>
+ * <p>
+ * Le date vengono convertite tra {@link java.time.LocalDate} (usato nel modello
+ * Java)
+ * e {@link java.sql.Date} (usato in JDBC) tramite {@code Date.valueOf()} e
+ * {@code rs.getDate().toLocalDate()}.
+ * </p>
+ */
 public class SessioneDAO_Postgree implements SessioneDAO {
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * L'ID generato dal database viene recuperato tramite
+     * {@code Statement.RETURN_GENERATED_KEYS}
+     * e scritto nell'oggetto {@code sessione} tramite {@link Sessione#setId(int)}.
+     * </p>
+     */
     @Override
     public void addSessione(Sessione sessione) throws DAOException {
         String sql = "INSERT INTO sessione (corso_id, numero_sessione, data_sessione, modalita, durata, descrizione) VALUES (?, ?, ?, ?, ?, ?)";
@@ -35,6 +57,13 @@ public class SessioneDAO_Postgree implements SessioneDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Le sessioni vengono ordinate per {@code numero_sessione} ascendente,
+     * in modo da restituirle nell'ordine corretto del corso.
+     * </p>
+     */
     @Override
     public List<Sessione> getSessioniByCorso(int corsoId) throws DAOException {
         List<Sessione> sessioni = new ArrayList<>();
@@ -60,6 +89,9 @@ public class SessioneDAO_Postgree implements SessioneDAO {
         return sessioni;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteSessione(int id) throws DAOException {
         String sql = "DELETE FROM sessione WHERE id = ?";
@@ -72,6 +104,14 @@ public class SessioneDAO_Postgree implements SessioneDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * I campi aggiornabili sono: {@code data_sessione}, {@code modalita},
+     * {@code durata} e {@code descrizione}. Il campo {@code id} dell'oggetto
+     * {@code sessione} viene utilizzato come chiave della clausola {@code WHERE}.
+     * </p>
+     */
     @Override
     public void updateSessione(Sessione sessione) throws DAOException {
         String sql = "UPDATE sessione SET data_sessione=?, modalita=?, durata=?, descrizione=? WHERE id=?";

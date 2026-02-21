@@ -13,10 +13,35 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementazione PostgreSQL dell'interfaccia {@link RicettaDAO}.
+ * <p>
+ * Gestisce la persistenza delle entità {@link Ricetta} sulla tabella
+ * {@code ricetta}
+ * e le associazioni ricetta-sessione sulla tabella {@code sessione_ricetta},
+ * utilizzando JDBC tramite {@link DatabaseConnection}.
+ * </p>
+ * <p>
+ * Il metodo {@link #addRicetta(Ricetta)} usa la clausola PostgreSQL
+ * {@code RETURNING id} per recuperare la chiave generata direttamente
+ * nel {@link ResultSet}.
+ * La violazione di unicità (codice SQL State {@code 23505}) viene intercettata
+ * e
+ * convertita in {@link DuplicateRecipeException}.
+ * </p>
+ */
 public class RicettaDAO_Postgree implements RicettaDAO {
 
+    /** Codice SQL State per la violazione di vincolo UNIQUE in PostgreSQL. */
     private static final String UNIQUE_VIOLATION = "23505";
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Utilizza il metodo helper privato {@link #mapRowToRicetta(ResultSet)} per
+     * mappare ciascuna riga del {@code ResultSet} in un'entità {@link Ricetta}.
+     * </p>
+     */
     @Override
     public List<Ricetta> getAllRicette() throws DAOException {
         List<Ricetta> ricette = new ArrayList<>();
@@ -33,6 +58,9 @@ public class RicettaDAO_Postgree implements RicettaDAO {
         return ricette;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Ricetta> getRicetteByChef(int chefId) throws DAOException {
         List<Ricetta> ricette = new ArrayList<>();
@@ -51,11 +79,20 @@ public class RicettaDAO_Postgree implements RicettaDAO {
         return ricette;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Usa la clausola PostgreSQL {@code RETURNING id} per ottenere l'ID generato
+     * direttamente dal {@code ResultSet} della query, senza necessità di
+     * {@code Statement.RETURN_GENERATED_KEYS}. L'ID viene anche scritto
+     * nell'oggetto {@code ricetta} tramite {@link Ricetta#setId(int)}.
+     * </p>
+     */
     @Override
     public int addRicetta(Ricetta ricetta) throws DAOException, DuplicateRecipeException {
         String sql = "INSERT INTO ricetta (nome, descrizione, chef_id) VALUES (?, ?, ?) RETURNING id";
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, ricetta.getNome());
             ps.setString(2, ricetta.getDescrizione());
             ps.setInt(3, ricetta.getChefId());
@@ -76,6 +113,13 @@ public class RicettaDAO_Postgree implements RicettaDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Esegue un {@code INSERT} nella tabella di join {@code sessione_ricetta}
+     * con la coppia ({@code sessioneId}, {@code ricettaId}).
+     * </p>
+     */
     @Override
     public void addRicettaSessione(int sessioneId, int ricettaId) throws DAOException {
         String sql = "INSERT INTO sessione_ricetta (sessione_id, ricetta_id) VALUES (?, ?)";
@@ -89,6 +133,13 @@ public class RicettaDAO_Postgree implements RicettaDAO {
         }
     }
 
+    /**
+     * Mappa una riga del {@link ResultSet} in un'entità {@link Ricetta}.
+     *
+     * @param rs il {@link ResultSet} posizionato sulla riga corrente
+     * @return un'istanza di {@link Ricetta} popolata con i valori della riga
+     * @throws SQLException in caso di errore nella lettura delle colonne
+     */
     private Ricetta mapRowToRicetta(ResultSet rs) throws SQLException {
         return new Ricetta(
                 rs.getInt("id"),
