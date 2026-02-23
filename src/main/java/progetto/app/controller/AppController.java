@@ -1168,7 +1168,7 @@ public class AppController {
             showWarningDialog(e.getMessage(), "Passa alla schermata login.");
             return false;
         } catch (DAOException e1) {
-            showErrorDialog("Password errata", "Riprova");
+            showErrorDialog(e1.getMessage(), "Riprova più tardi.");
             return false;
         }
     }
